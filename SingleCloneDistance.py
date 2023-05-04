@@ -19,7 +19,15 @@ import itertools as it
 def sampleTopol(Manifold, L_Scale, pos, angles):
     
     """
-    Holds the function for performing a sampling of a fundamental domain without the need to find the closest clone location.
+    Overview function that holds the subfunctions to be called in from 'sampleTopology.py' file. To be used when sampling the manifold, 
+    rather than interest in a single point. Leads through a computationally simpler process.
+    -----------------------------------------
+    
+    - Calls the constructions function to determine the manifold parameters
+    - Calls the E_general_topol function that contains all the relevant functions and returns a single value
+    
+    -----------------------------------------
+    Returns: array of distances from the initial given points to their closest clones
     """
     
     M, translations, pureTranslations, E1Dict, translationList, genNum, x0 = constructions(Manifold, L_Scale, angles)
@@ -64,6 +72,7 @@ def constructions(Manifold, L_Scale, angles):
     
     """    
     Constructs the generators from the given parameters from the python file
+    -----------------------------------------
     
     
     -Groups if your chosen manifold uses 2 or 3 generators to characterize the fundamental domain.
@@ -72,8 +81,8 @@ def constructions(Manifold, L_Scale, angles):
     -If origin is placed at the center of the fundamental domain (nearly all should be True), calls the translation function that 
     returns all arangements of translations for the associated E1
     
-    
-    Returns the initial parameters along with the translation list described above
+    -----------------------------------------
+    Returns: the initial parameters along with the translation list described above
     
     """
     
@@ -102,6 +111,7 @@ def E1_Associated_Trans(pureTranslations, pos):
     
     """
     Performs all the calculations for the trivial topologies
+    -----------------------------------------
     
     - Labels the generators 
     - Sets all the translations to be pure translations (the side edges of the fundamental domains)
@@ -110,7 +120,8 @@ def E1_Associated_Trans(pureTranslations, pos):
     - Gets the index of the shortest translation vector
     - Labels 'shortestTrans' as the generator associated with the shortest pure translaiton vector
     
-    Returns the location of the neareset clone, the distance, and the generator associated with that clone
+    -----------------------------------------
+    Returns: the location of the neareset clone, the distance, and the generator associated with that clone
     """
     
     gens = ['g1','g2','g3']
@@ -131,10 +142,10 @@ def E_general(Manifold, pos, x0, M, translations, pureTranslations, E1Dict, genN
     Function that contains and runs all the core functions of the code for the non-trivial topologies
     -----------------------------------------
     
-    - Function that XXX
-    - Function that XXX
-    - Function that XXX
-    - Function that returns [location of the closest clone (x,y,z), distance to closest clone]
+    - Function that 'finds pattern of clones for associated E1 and generators applied to reach them'
+    - Function that 'translates all the clones from the associated E1 to find the full list of clone positions'
+    - Function that 'finds the distances to all the clones in the same layer as the initial point'
+    - Function that 'finds the closest clone from all layers' and returns [location of the closest clone (x,y,z), distance to closest clone]
     - Function that determines the generator combination that gives the location of the closest clone
     
     -----------------------------------------
@@ -156,14 +167,13 @@ def E_general_topol(Manifold, pos, x0, M, translations, pureTranslations, E1Dict
     Function that contains and runs all the core functions of the code for the non-trivial topologies (without determining the generator combination for nearest clone)
     -----------------------------------------
     
-    - Function that XXX
-    - Function that XXX
-    - Function that XXX
-    - Function that returns [location of the closest clone (x,y,z), distance to closest clone]
-    - Function that determines the generator combination that gives the location of the closest clone
+    - Function that 'finds pattern of clones for associated E1 and generators applied to reach them'
+    - Function that 'translates all the clones from the associated E1 to find the full list of clone positions'
+    - Function that 'finds the distances to all the clones in the same layer as the initial point'
+    - Function that 'finds the closest clone from all layers' and returns [location of the closest clone (x,y,z), distance to closest clone]
     
     -----------------------------------------
-    Returns: [xyz coordinates of closest clone, distance to closest clone, generator combination to closest clone]
+    Returns: [xyz coordinates of closest clone]
     """
     
     clonePositions, genApplied = findClones(pos, x0, M, translations, E1Dict, genNum)

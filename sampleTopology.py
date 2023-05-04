@@ -4,6 +4,16 @@ import SingleCloneDistance as d
 import numpy as np
 
 def scatterPoints(randomPoints, translations, precision, center, genNum, L3):
+    """
+    Creates an array of random points in the given 'fundamental domain'
+    -----------------------------------------
+    
+    - Creates an array of random points by taking random point along each basis vector of the FD and adding them together
+    - Does same for 2 generators (where the 3rd vector w/-0.5 and 2*L3 says how far into the infinite dimension we will sample)
+    
+    -----------------------------------------
+    Returns: Scatter of random points within the fundamental domain
+    """
     if genNum == 3:
         L_scatter = [(randomPoints[i][0] * translations[0] + randomPoints[i][1] * translations[1] - randomPoints[i][2] * translations[2]) for i in range(precision)]
     else:
@@ -12,6 +22,27 @@ def scatterPoints(randomPoints, translations, precision, center, genNum, L3):
 
 
 def samplePoints(Manifold, angles, precision, L_Scale):
+    
+    """
+    Repeats everything described in "SingleCloneDist.py" without finding the generator pattern to reach nearest clone. 
+    -----------------------------------------
+    
+    - Creates array of random points of [num of points to test in a chosen manifold, 3]
+    - Constructs generators for chosen manifold
+    - Runs function to determine cartesian position of points in the manifold
+    - Relocates the origin to be in the center of the FD
+    
+    Precision Loop:
+    - Loops over all points being sampled in the manifold
+    - Applies the function sampleTopol located in 'SingleCloneDistance.py' file which returns the distance for each point in the given array
+    - Tests if point produces circles in the sky (dist<1) and sorts point into respective array
+    
+    - Determines the fraction (percent) of points that produce circles from all sampled points
+    - Sorts into exportable arrays to be used later for plotting/use with pickle
+    
+    -----------------------------------------
+    Returns: [Fraction of points that produce circles, {x of excluded pts, y .., z ..}, {x of allowed pts, y .., z ..}]
+    """
     
     if Manifold in {'E1','E2','E3','E4','E5','E6'}:
         genNum = 3
@@ -32,6 +63,8 @@ def samplePoints(Manifold, angles, precision, L_Scale):
     count = 0
     excludedPoints = []
     allowedPoints = []
+    
+    
 
     for k in range(precision):
         
