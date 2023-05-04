@@ -12,12 +12,16 @@ from numpy.linalg import inv, pinv
 import itertools as it
 
 
-# ## Distance Functions
+
+
+# ## Distance Functions: Sets up which computation is of interest (parameter search or nearest clone)
 
 def sampleTopol(Manifold, L_Scale, pos, angles):
+    
     """
     Holds the function for performing a sampling of a fundamental domain without the need to find the closest clone location.
     """
+    
     M, translations, pureTranslations, E1Dict, translationList, genNum, x0 = constructions(Manifold, L_Scale, angles)
     
     dist = E_general_topol(Manifold, pos, x0, M, translations, pureTranslations, E1Dict, genNum, translationList)
@@ -27,7 +31,18 @@ def sampleTopol(Manifold, L_Scale, pos, angles):
 def distance_to_CC(Manifold, L_Scale, pos, angles):
 
     """
-    Holds the function for running the distance and clone location code.
+    Function called from jupyter file
+    -----------------------------------------
+    
+    - Takes the given parameters from the jupyter file input and calls the construction function returning the generators, matricies, and 
+    necessary values for the following calculations. 
+    
+    - Identifies if intersted in the trivial topologies (E1 or E11) and calls the necessary function, skipping many steps if interested in trivial version.
+    
+    - Runs the respective function that contains all the core functions for the code (E_general or E1_Associataed_Trans)
+    
+    -----------------------------------------
+    Returns: location of closest clone, distance to clone, and combination of generators applied to reach this clone
     """
 
     M, translations, pureTranslations, E1Dict, translationList, genNum, x0 = constructions(Manifold, L_Scale, angles)
@@ -41,13 +56,25 @@ def distance_to_CC(Manifold, L_Scale, pos, angles):
     return(closestClone, dist, genApplied)
 
 
+
+
 # ## Code for performing the distance calculations
 
 def constructions(Manifold, L_Scale, angles):
     
-    """
-    Constructs the foundational values (generators and their individual pieces [translations, matricies, etc.]) 
-    for the problem (based on given values and chosen Manifold)
+    """    
+    Constructs the generators from the given parameters from the python file
+    
+    
+    -Groups if your chosen manifold uses 2 or 3 generators to characterize the fundamental domain.
+    -Calls the manifolds class depending on if the chosen topology has 2 or 3 generators. Takes the given parameters and return 
+    the generators for that specfic manifold.
+    -If origin is placed at the center of the fundamental domain (nearly all should be True), calls the translation function that 
+    returns all arangements of translations for the associated E1
+    
+    
+    Returns the initial parameters along with the translation list described above
+    
     """
     
     _3Gen = {'E1','E2','E3','E4','E5','E6'}
@@ -72,6 +99,20 @@ def constructions(Manifold, L_Scale, angles):
 
 
 def E1_Associated_Trans(pureTranslations, pos):
+    
+    """
+    Performs all the calculations for the trivial topologies
+    
+    - Labels the generators 
+    - Sets all the translations to be pure translations (the side edges of the fundamental domains)
+    - Calculates the distance for each of the translation vectors in an array
+    - Finds the shortest vector
+    - Gets the index of the shortest translation vector
+    - Labels 'shortestTrans' as the generator associated with the shortest pure translaiton vector
+    
+    Returns the location of the neareset clone, the distance, and the generator associated with that clone
+    """
+    
     gens = ['g1','g2','g3']
     
     translationList = pureTranslations
@@ -86,15 +127,44 @@ def E1_Associated_Trans(pureTranslations, pos):
 
 def E_general(Manifold, pos, x0, M, translations, pureTranslations, E1Dict, genNum, translationList):
     
+    """
+    Function that contains and runs all the core functions of the code for the non-trivial topologies
+    -----------------------------------------
+    
+    - Function that XXX
+    - Function that XXX
+    - Function that XXX
+    - Function that returns [location of the closest clone (x,y,z), distance to closest clone]
+    - Function that determines the generator combination that gives the location of the closest clone
+    
+    -----------------------------------------
+    Returns: [xyz coordinates of closest clone, distance to closest clone, generator combination to closest clone]
+    """
+    
     clonePositions, genApplied = findClones(pos, x0, M, translations, E1Dict, genNum)
     translatedClonePos = [translateClones(clonePositions[i], translationList) for i in range(len(clonePositions))]
     nearestFromLayer = [distances(translatedClonePos[i], pos, x0) for i in range(len(translatedClonePos))]
     closestClone = findClosestClone(nearestFromLayer, pureTranslations, x0, pos)
     generatorCombo = findGeneratorCombo(closestClone[0], clonePositions, pureTranslations, pos, E1Dict, Manifold, genApplied, genNum)
+    
     return (closestClone[0], closestClone[1], generatorCombo)
 
 
 def E_general_topol(Manifold, pos, x0, M, translations, pureTranslations, E1Dict, genNum, translationList):
+    
+    """
+    Function that contains and runs all the core functions of the code for the non-trivial topologies (without determining the generator combination for nearest clone)
+    -----------------------------------------
+    
+    - Function that XXX
+    - Function that XXX
+    - Function that XXX
+    - Function that returns [location of the closest clone (x,y,z), distance to closest clone]
+    - Function that determines the generator combination that gives the location of the closest clone
+    
+    -----------------------------------------
+    Returns: [xyz coordinates of closest clone, distance to closest clone, generator combination to closest clone]
+    """
     
     clonePositions, genApplied = findClones(pos, x0, M, translations, E1Dict, genNum)
     translatedClonePos = [translateClones(clonePositions[i], translationList) for i in range(len(clonePositions))]
@@ -108,7 +178,21 @@ def E_general_topol(Manifold, pos, x0, M, translations, pureTranslations, E1Dict
 
 def findAllTranslationsCorner(pureTranslations):
     
-    """Determines all the combinations of pure translations for manifolds with the origin at the corner of the fundamental domain."""
+    """
+    Determines all combinations of pure translations for fundamental domains with origin set to be the corner (unused/outdated but for different sampling methods)
+    -----------------------------------------
+    
+    - Makes use of itertools function to find all combinations of possible pure translations arrangements. Has a nested array form for the different arangements
+    - Adds the translation vectors in the nested array to create a simple list of all the possible pure translations
+    - Appends the location of the farthest (upper) corner fundamental domain to the list of translations (necessary based on the itertools output)
+    - Appends the location of the farthest (lower) corner fundamental domain to the list of translations (necessary based on the itertools output)
+    - Replaces the first element with the origin (necessary based on the itertools output)
+    - Changes the form of the array and element type to be readable as arrays (list)
+    - Removes the duplicate pure translation vectors
+    
+    -----------------------------------------
+    Returns: All pure translation vectors in a nested numpy array
+    """
     
     _trans1 = [list(it.combinations_with_replacement(pureTranslations, i)) for i in range(len(pureTranslations) + 2)]
     _trans2 = [[(np.add.reduce(_trans1[i][j])) for j in range(len(_trans1[i]))] for i in range(len(_trans1))]
@@ -127,7 +211,22 @@ def findAllTranslationsCorner(pureTranslations):
 
 
 def findAllTranslationsCenter(pureTranslations, genNum):
-    """Determines all the combinations of pure translations for manifolds with the origin at the center of the associated E1."""
+   
+    """
+    Determines all combinations of pure translations for fundamental domains with origin set to be the center. Used as primary method 
+    of finding arrangements of associated E1 translations. Generally, manually finds the 26 associated E1s surrounding the base chosen 
+    associated E1 by combining the pure translation vectors
+    -----------------------------------------
+    
+    - Manually creating an array of pure translation vectors for all the 8 objects neighboring the initial chosen point
+    - Checks the number of generators to determine if we have an additional axis of neighboring clones
+    - If 3 generators, combines the array of pure translation vectors in the same plane as the initial point, with the pure translation vectors in the plane 'above' the initial point
+    - If 2 generators, does not need a vertical translation list of associated E1s and so just returns the pure translations vectors in the same plane
+    
+    -----------------------------------------
+    Returns: The array of pure translation vectors that produce all the necessary neighboring associated E1s
+    """
+    
     layerTrans = [pureTranslations[0],    pureTranslations[1],       -pureTranslations[0],   -pureTranslations[1],
                -2*pureTranslations[0], -2*pureTranslations[1],      2*pureTranslations[0],  2*pureTranslations[1],
                   pureTranslations[0] + pureTranslations[1],        pureTranslations[0] - pureTranslations[1], 
@@ -145,11 +244,29 @@ def findAllTranslationsCenter(pureTranslations, genNum):
 
 
 def findClones(pos, x0, M, translations, E1Dict, genNum):
-    """The first loop (clonePos) determines the arrangements generators need to be applied in order to fully represent each of the clones (up to the associated E1).
-    For example, an element of clonePos may look like [1,1,2] which means applying g1 . g2 . g3 . g3 to the initial position.
     
-    The second loop (fullCloneList) determines the new position after applying the combination of generators described by the corrosponding element in clonePos. 
     """
+    ISSUES: Probably should be rewritten, this applies generators in g1, g2, then g3. Might not need all of them, might to not be in that order etc. 
+    
+    -----------------------------------------
+    Determines the pattern of generators and location of new clones necessary to fill the associated E1
+    
+    First Loop: Determines the full arangement of generators to fill the associated E1. For example, an element 
+    of clonePos may look like [1,1,2] which means applying g1 . g2 . g3 . g3 to the initial position.
+    
+    Second Loop: Determines the new position of the original point after applying the combination of generators described in the corrosponding element in clonePos. 
+    - Loops over all arangements of generators to fill associated E1
+    - If all the elements in generator pattern are not 0 set the initial position to x
+    - Loop over each element in each arrangement of generators
+    - Apply g1, g2, and g3 the number of times described by the associated element in clonePos. (For example, for clonePos[i] = [1,1,2] it will apply to _x: g1 -> g2 -> g3 -> g3.
+    - Adds the new position to the list of all the clones
+    
+    - If there are no arangements of generators necessary (for trivial cases) thenn fullCloneList is empty and skips second loop
+    
+    -----------------------------------------
+    Returns: (for trivial case) original position and empty arangements of generator; (for non-trivial case) new locations of clones in associated E1 and generator pattern
+    """
+    
     clonePos = []
     
     for i in range(E1Dict[0]):
@@ -180,7 +297,16 @@ def findClones(pos, x0, M, translations, E1Dict, genNum):
 
 
 def generatorPos(x,x0, M, translations):
-    """Application of a generator to an initial point, x"""
+    
+    """
+    Application of a generator to an initial point, x
+    -----------------------------------------
+    
+    - Takes the rotation matrix, initial point, translation vector, and origin and calculates the clone position
+    
+    -----------------------------------------
+    Returns: New clone position   
+    """
     
     x_out = M.dot(x-x0) + translations + x0
     
@@ -192,8 +318,16 @@ def generatorPos(x,x0, M, translations):
 
 
 def translateClones(clonePos, translations):
-    """Translates the clone by all the combinations of pure translations in the "translations" list. The pure translations are determined based on the
-    parameters and the given manifold."""
+    
+    """
+    Translates a given position by all the translations given in the nested translation vector
+    -----------------------------------------
+    
+    - Adds a clone position to a list of translation vectors to create an array of the new location of that clone
+    
+    -----------------------------------------
+    Returns: A nested array of how a specific clone position is translated by all the pure translation vectors    
+    """
     
     translatedClonePos = [(clonePos + translations[i]) for i in range(len(translations))]
     
@@ -205,7 +339,18 @@ def translateClones(clonePos, translations):
 
 def distances(clonePos, pos, x0):
     
-    """Determines the distance between the inital position and each of the clones in a single "layer". That is, after applying a generator (or combination
+    """
+    Determines distance between initial position and all elements in the clonePos array. In this case, all elements of clonePos are pure translations of the initial point
+    -----------------------------------------
+    
+    - Creates array of distances between initial point and all the clones in the same 'layer' as that point
+    - Finds the minimum distance from this array
+    - Determines the position of the closest clone associated with this minimum distance
+    
+    -----------------------------------------
+    Returns: Position of closest clone in that layer and the distance to that clone
+    
+    Determines the distance between the inital position and each of the clones in a single "layer". That is, after applying a generator (or combination
     of generators) and then all the pre-determined pure translations to that clone, which of these new clones is closest to the original position.
     For example, E3 has 3 unique clones (g3, g3^2, and g3^3) and so has 3 unique layers. This function returns the closest clone (to the original position)
     in each of these layers"""
@@ -223,8 +368,17 @@ def distances(clonePos, pos, x0):
 
 def findClosestClone(generatedClones, pureTrans, x0, pos):
     
-    """Determines the closest clone from the list of closest clones. For example, in E3 we have 3 layers (described above), each with their own closest clone.
-    This function returns the closest of these 3 clones."""
+    """
+    Determines the closest clone from the clones in the initial points layer, and the clones in the upper and lower layers
+    -----------------------------------------
+    
+    - Creates a nested array where each element contains the location of all the clones in the upper layer and the distance to that clone (from the initial position)
+    - Finds the closest clone from the upper layer to the original point (by checking the minimum of the distances so long as they are above some small number to avoid the same point)
+    - Finds the closest clone from all the clones in same layer as the original point
+    
+    -----------------------------------------
+    Returns: The minimum of the clones between the same layer and the above layer
+    """
     
     _TranslateClone = [[(pureTrans[x] + pos) , distance.euclidean(x0,pureTrans[x])] for x in range(len(pureTrans))] 
     
@@ -242,7 +396,13 @@ def findClosestClone(generatedClones, pureTrans, x0, pos):
 
 def findGeneratorCombo(pos, clones, translations, origPos, E1Dict, Manifold, genApplied, genNum):
     """
-    Description: Finds the series of generators that produces the closest clone. 
+    Find the series of generators that produces the closest clone
+    -----------------------------------------
+    
+    - Need to add some more comments here describing this better
+    
+    -----------------------------------------
+    Returns: List of generators producing the closest clone
     
     Method: Determines which clone from the set produced by the findClones() function gave the closest clone. 
     Finds the linear combination of pure translations applied after. Returns a description of non-trivial generator and pure translations.
@@ -295,6 +455,11 @@ def findGeneratorCombo(pos, clones, translations, origPos, E1Dict, Manifold, gen
 class manifolds:
     """
     Class containing the manifold constructions, divided between 2 and 3 generator manifolds
+    For 3 generators need to define 3 generators by defining;
+    -----------------------------------------------------------------------------------
+    M1, M2, M3 : Rotation matricies associated with g1, g2, g3 respectively
+    E1_g1, E1_g2, E1_g3 : Order of rotation matricies that return to identity
+    TA1, TA2, TB : 3 component numpy array  defining the the translation vectors 
     """
         
     def construct3Generators(Manifold, L_Scale, angles):
@@ -431,7 +596,7 @@ class manifolds:
         
             
         translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
-        pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)
+        pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)   #Probably an iffy way to solve this problem, needs to figure out if theres a better way to do this
         associatedE1Dict = np.array([E1_g1, E1_g2, E1_g3])
         M = [M1, M2, M3]
         #x0 = 0.5*np.sum(translations, axis =0)
