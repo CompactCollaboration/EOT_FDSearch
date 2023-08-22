@@ -130,10 +130,42 @@ class Manifold(ABC):
         pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)   #Probably an iffy way to solve this problem, needs to figure out if theres a better way to do this
         associatedE1Dict = np.array([g1, g2, g3])
         M = [M1, M2, M3]
-        x0 = np.array([0,0,0])
+        x0 = np.array([0, 0, 0])
         
         return M, translations, pureTranslations, associatedE1Dict, center, x0
 
-    def construct_2_generators(self,):
-        pass
+    def construct_2_generators(self, name, L_scale, angles):
+        L1, L2 = L_scale
 
+        match name:
+            case "E11":
+                g1 = 1
+                g2 = 1
+                
+                M1 = M2 = np.eye(3)
+                TA1 = T1 = L1 * np.array([1, 0, 0])
+                TA2 = T2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
+                
+                center = False
+
+            case "E12":
+                g1 = 1
+                g2 = 2
+                
+                M1 = np.eye(3)
+                M2 = np.diag([-1, 1, -1])
+                
+                TA1 = T1 = L1 * np.array([np.cos(angles[0]), 0, np.sin(angles[0])])
+                TA2 = np.array([0, L2, 0])
+                
+                T2 = np.array([0, 2 * L2, 0])
+                
+                center = True
+        
+        translations = np.around(np.array([TA1, TA2]), decimals = 5)
+        pureTranslations = np.around(np.array([T1, T2]), decimals = 5)
+        associatedE1Dict = np.array([g1, g2])
+        M = [M1, M2]
+        x0 = np.array([0, 0, 0])
+
+        return M, translations, pureTranslations, associatedE1Dict, center, x0
