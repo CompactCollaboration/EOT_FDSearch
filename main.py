@@ -2,6 +2,16 @@ from abc import ABC
 
 import numpy as np
 
+from numbers import Integral
+
+
+def get_num_of_generators(topology_name: str) -> Integral:
+    if topology_name in ["E1", "E2", "E3", "E4", "E5", "E6"]:
+        num_gens = 3
+    elif topology_name in ["E11", "E12"]:
+        num_gens = 2
+    return num_gens
+
 class Manifold(ABC):
     def __init__(self):
         pass
