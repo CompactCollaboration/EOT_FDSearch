@@ -132,6 +132,18 @@ def find_clones(
     
     full_clone_list = []
 
+    for i in range(len(clone_pos)):
+        if not (all(x == 0 for x in clone_pos[i])):
+            _x = pos
+            for j in range(len(clone_pos[i])):
+                for k in range(clone_pos[i][j]):
+                    _x = generator_pos(_x, x0, M[j], translations[j])
+            full_clone_list.append(_x)
+
+    if not full_clone_list:
+        return pos, clone_pos
+    else:
+        return full_clone_list, clone_pos
 
 def E_general_topol(
     pos,
