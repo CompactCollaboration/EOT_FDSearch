@@ -82,7 +82,6 @@ def find_all_translations_corner(pure_translations):
 
     return all_new_trans
 
-
 def constructions(
     manifold,
     L_scale,
@@ -101,6 +100,8 @@ def constructions(
             translation_list = find_all_translations_corner(pure_translations)
     else:
         raise Exception("num_gens can be 2 or 3 only")
+    
+    return M, translations, pure_translations, E1_dict, translation_list, num_gens, x0
 
 def sample_topology(
     manifold,
