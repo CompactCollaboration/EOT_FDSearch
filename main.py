@@ -12,6 +12,46 @@ def get_num_of_generators(topology_name: str) -> Integral:
         num_gens = 2
     return num_gens
 
+def scatter_points(
+    points,
+    translations,
+    # precision, # UNUSED
+    num_gens,
+    L3,
+):
+    if num_gens == 2:
+        scatter = (
+            points[:][0] * translations[0]
+            + points[:][1] * translations[1]
+            + (points[:][2] - 0.5) * np.array([0, 0, 2 * L3])
+        )
+    elif num_gens == 3:
+        scatter = (
+            points[:][0] * translations[0]
+            + points[:][1] * translations[1]
+            - points[:][2] * translations[2]
+        )
+    else:
+        raise Exception("gen_nums can be 2 or 3 only")
+    
+    return scatter
+
+def sample_points(
+    manifold,
+    angles,
+    precision,
+    L_scale,
+):
+    num_gens = get_num_of_generators(manifold)
+    points = np.random.rand(precision, 3)
+    
+    match num_gens:
+        case 2:
+            _, _, pureTranslations, _, center, _ = Manifold.construct_2_generators(manifold, L_scale, angles)
+        case 3:
+            _, _, pureTranslations, _, center, _ = Manifold.construct_3_generators(manifold, L_scale, angles)
+
+
 class Manifold(ABC):
     def __init__(self):
         pass
@@ -70,7 +110,7 @@ class Manifold(ABC):
                 g3 = 3
                 
                 M1 = M2 = MA = np.eye(3)
-                M3  = MB = np.array([
+                M3 = MB = np.array([
                     [-1/2, np.sqrt(3)/2, 0],
                     [-np.sqrt(3)/2, -1/2, 0],
                     [0, 0, 1],
