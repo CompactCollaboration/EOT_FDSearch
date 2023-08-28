@@ -15,7 +15,11 @@ class Manifold(ABC):
                 g1 = g2 = g3 = 1
                 T1 = TA1 = L1 * np.array([1, 0, 0])
                 T2 = TA2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                T3 = TB = L3 * np.array([np.cos(angles[1]) * np.cos(angles[2]), np.cos(angles[1]) * np.sin(angles[2]), np.sin(angles[1])])
+                T3 = TB = L3 * np.array([
+                    np.cos(angles[1]) * np.cos(angles[2]),
+                    np.cos(angles[1]) * np.sin(angles[2]),
+                    np.sin(angles[1]),
+                ])
                 center = False
 
             case "E2":
@@ -68,8 +72,8 @@ class Manifold(ABC):
                 
                 T1 = L1 * np.array([1, 0, 0])
                 T2 = L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                T3 = L3 * np.array([0, 0, 3 * np.sin(angles[1])])
-                T3 = np.array([0, 0, 3*L3])
+                # T3 = L3 * np.array([0, 0, 3 * np.sin(angles[1])])
+                T3 = np.array([0, 0, 3 * L3])
                 
                 center = True
                 
@@ -127,7 +131,9 @@ class Manifold(ABC):
                 center = True
             
         translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
-        pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)   #Probably an iffy way to solve this problem, needs to figure out if theres a better way to do this
+        # Probably an iffy way to solve this problem, needs to figure out if 
+        # theres a better way to do this
+        pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)
         associatedE1Dict = np.array([g1, g2, g3])
         M = [M1, M2, M3]
         x0 = np.array([0, 0, 0])
