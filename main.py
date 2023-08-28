@@ -218,6 +218,23 @@ def sample_points(
     
     for k in range(precision):
         distance = sample_topology(manifold, L_scale, pos[k], angles)
+        if distance < 1:
+            count +=1
+            excluded_points.append(pos[k])
+        else:
+            allowed_points.append(pos[k])
+
+    percents = 1 - count / precision
+
+    L_x = [allowed_points[i][0] for i in range(len(allowed_points))]
+    L_y = [allowed_points[i][1] for i in range(len(allowed_points))]
+    L_z = [allowed_points[i][2] for i in range(len(allowed_points))]
+
+    excluded_points_x = [excluded_points[i][0] for i in range(len(excluded_points))]
+    excluded_points_y = [excluded_points[i][1] for i in range(len(excluded_points))]
+    excluded_points_z = [excluded_points[i][2] for i in range(len(excluded_points))]
+
+    return percents, [excluded_points_x, excluded_points_y, excluded_points_z], [L_x, L_y, L_z]
 
 
 class Manifold(ABC):
