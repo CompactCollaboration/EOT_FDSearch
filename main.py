@@ -181,6 +181,7 @@ def E_general_topol(
     translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
     nearest_from_layer = [distances(translated_clone_pos[i], pos, x0) for i in range(len(translated_clone_pos))]
     closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
+    return closest_clone[1]
 
 def sample_topology(
     manifold,
