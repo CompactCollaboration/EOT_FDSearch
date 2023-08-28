@@ -32,9 +32,69 @@ def scatter_points(
             - points[:][2] * translations[2]
         )
     else:
-        raise Exception("gen_nums can be 2 or 3 only")
+        raise Exception("num_gens can be 2 or 3 only")
     
     return scatter
+
+def find_all_translations_center(
+    pure_translations,
+    num_gens,
+):
+    layer_trans = [
+        pure_translations[0],
+        pure_translations[1],
+        -pure_translations[0],
+        -pure_translations[1],
+        -2 * pure_translations[0],
+        -2 * pure_translations[1],
+        2 * pure_translations[0],
+        2 * pure_translations[1],
+        pure_translations[0] + pure_translations[1],
+        pure_translations[0] - pure_translations[1], 
+        -pure_translations[0] + pure_translations[1],
+        -pure_translations[0] - pure_translations[1],
+    ]
+
+    if num_gens == 2:
+        return layer_trans
+    elif num_gens == 3:
+        all_new_trans = np.concatenate([
+            layer_trans,
+            layer_trans + pure_translations[2],
+            [pure_translations[2]]
+        ])
+        return all_new_trans
+    else:
+        raise Exception("num_gens can be 2 or 3 only")
+
+def find_all_translations_corner():
+
+def constructions(
+    manifold,
+    L_scale,
+    angles,
+):
+    num_gens = get_num_of_generators(manifold)
+
+    if num_gens == 2:
+        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_2_generators(Manifold, L_scale, angles)
+        translation_list = find_all_translations_center(pure_translations, num_gens)
+    elif num_gens == 3:
+        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_3_generators(Manifold, L_scale, angles)
+        if center == True:
+            translation_list = find_all_translations_center(pure_translations, num_gens)
+        else:
+            translation_list = find_all_translations_corner(pure_translations)
+    else:
+        raise Exception("num_gens can be 2 or 3 only")
+
+def sample_topology(
+    manifold,
+    L_scale,
+    pos,
+    angles,
+):
+    M, translations, pure_translations, E1_dict, translation_list, num_gens, x0 = constructions(manifold, L_scale, angles)
 
 def sample_points(
     manifold,
@@ -47,9 +107,20 @@ def sample_points(
     
     match num_gens:
         case 2:
-            _, _, pureTranslations, _, center, _ = Manifold.construct_2_generators(manifold, L_scale, angles)
+            _, _, pure_translations, _, _, _ = Manifold.construct_2_generators(manifold, L_scale, angles)
+            L_scatter = scatter_points(points, pure_translations, num_gens, L_scale[2])
+            pos = L_scatter - 0.5 * ((pure_translations[0] + pure_translations[1]))
         case 3:
-            _, _, pureTranslations, _, center, _ = Manifold.construct_3_generators(manifold, L_scale, angles)
+            _, _, pure_translations, _, _, _ = Manifold.construct_3_generators(manifold, L_scale, angles)
+            L_scatter = scatter_points(points, pure_translations, num_gens, L_scale[2])
+            pos = L_scatter - 0.5 * ((pure_translations[0] + pure_translations[1] - pure_translations[2]))
+
+    count = 0
+    allowed_points = []
+    excluded_points = []
+    
+    for k in range(precision):
+        distance = sample_topology(manifold, L_scale, pos[k], angles)
 
 
 class Manifold(ABC):
