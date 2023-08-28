@@ -1,6 +1,7 @@
 from abc import ABC
 
 import numpy as np
+import itertools
 
 from numbers import Integral
 
@@ -67,7 +68,20 @@ def find_all_translations_center(
     else:
         raise Exception("num_gens can be 2 or 3 only")
 
-def find_all_translations_corner():
+def find_all_translations_corner(pure_translations):
+    trans1 = [list(itertools.combinations_with_replacement(pure_translations, i)) for i in range(len(pure_translations) + 2)]
+    trans2 = [[(np.add.reduce(trans1[i][j])) for j in range(len(trans1[i]))] for i in range(len(trans1))]
+
+    trans2.append([pure_translations[0] - pure_translations[1]])
+    trans2.append([pure_translations[1] - pure_translations[0]])
+
+    trans2[0] = [[0, 0, 0]]
+
+    trans_upplane = list(itertools.chain.from_iterable(trans2))
+    all_new_trans = np.array((np.unique(trans_upplane, axis = 0)))
+
+    return all_new_trans
+
 
 def constructions(
     manifold,
