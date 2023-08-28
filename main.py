@@ -103,6 +103,48 @@ def constructions(
     
     return M, translations, pure_translations, E1_dict, translation_list, num_gens, x0
 
+def generator_pos(
+    x,
+    x0,
+    M,
+    translations,
+):  
+    x_out = M.dot(x - x0) + translations + x0
+    return x_out
+
+def find_clones(
+    pos,
+    x0,
+    M,
+    translations,
+    E1_dict,
+    num_gens,
+):
+    clone_pos = []
+
+    for i in range(E1_dict[0]):
+        for j in range(E1_dict[1]):
+            if num_gens == 3:
+                for k in range(E1_dict[2]):
+                    clone_pos.append([i, j, k])
+            elif num_gens == 2:
+                clone_pos.append([i, j])
+    
+    full_clone_list = []
+
+
+def E_general_topol(
+    pos,
+    x0,
+    M,
+    translations,
+    pure_translations,
+    E1_dict,
+    num_gens,
+    translation_list,
+):
+    pass
+
 def sample_topology(
     manifold,
     L_scale,
@@ -110,6 +152,7 @@ def sample_topology(
     angles,
 ):
     M, translations, pure_translations, E1_dict, translation_list, num_gens, x0 = constructions(manifold, L_scale, angles)
+    distance = E_general_topol(pos, x0, M, translations, pure_translations, E1_dict, num_gens, translation_list)
 
 def sample_points(
     manifold,
