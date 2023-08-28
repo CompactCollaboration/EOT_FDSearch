@@ -145,6 +145,10 @@ def find_clones(
     else:
         return full_clone_list, clone_pos
 
+def translate_clones(clone_pos, translations):
+    translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
+    return translated_clone_pos
+
 def E_general_topol(
     pos,
     x0,
@@ -155,7 +159,8 @@ def E_general_topol(
     num_gens,
     translation_list,
 ):
-    pass
+    clone_positions, _ = find_clones(pos, x0, M, translations, E1_dict, num_gens)
+    translated_clone_pos = [translateClones(clonePositions[i], translationList) for i in range(len(clonePositions))]
 
 def sample_topology(
     manifold,
