@@ -156,6 +156,17 @@ def distances(clone_pos, pos):
     closest_clone_pos = clone_pos[trans_dist.index(min_trans_dist)]
     return closest_clone_pos, min_trans_dist
 
+def find_closest_clone(
+    generated_clones,
+    pure_translations,
+    x0,
+    pos,
+):
+    translate_clone = [[(pure_translations[x] + pos), distance.euclidean(x0, pure_translations[x])] for x in range(len(pure_translations))]
+    closest_translated_clone = min(translate_clone, key = lambda x: x[1] if (x[1] > 10e-12) else np.nan)
+    closest_generated_clone = min(generated_clones, key = lambda x: x[1] if (x[1]> 10e-12) else np.nan, default = closest_translated_clone)
+    return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
+
 def E_general_topol(
     pos,
     x0,
@@ -169,6 +180,7 @@ def E_general_topol(
     clone_positions, _ = find_clones(pos, x0, M, translations, E1_dict, num_gens)
     translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
     nearest_from_layer = [distances(translated_clone_pos[i], pos, x0) for i in range(len(translated_clone_pos))]
+    closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
 
 def sample_topology(
     manifold,
