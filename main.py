@@ -191,6 +191,7 @@ def sample_topology(
 ):
     M, translations, pure_translations, E1_dict, translation_list, num_gens, x0 = constructions(manifold, L_scale, angles)
     distance = E_general_topol(pos, x0, M, translations, pure_translations, E1_dict, num_gens, translation_list)
+    return distance
 
 def sample_points(
     manifold,
