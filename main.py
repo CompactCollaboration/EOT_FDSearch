@@ -2,6 +2,7 @@ from abc import ABC
 
 import numpy as np
 import itertools
+from scipy.spatial import distance
 
 from numbers import Integral
 
@@ -149,6 +150,12 @@ def translate_clones(clone_pos, translations):
     translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
     return translated_clone_pos
 
+def distances(clone_pos, pos):
+    trans_dist = [distance.euclidean(pos, clone_pos[i]) for i in range(len(clone_pos))]
+    min_trans_dist = min(trans_dist)
+    closest_clone_pos = clone_pos[trans_dist.index(min_trans_dist)]
+    return closest_clone_pos, min_trans_dist
+
 def E_general_topol(
     pos,
     x0,
@@ -160,7 +167,8 @@ def E_general_topol(
     translation_list,
 ):
     clone_positions, _ = find_clones(pos, x0, M, translations, E1_dict, num_gens)
-    translated_clone_pos = [translateClones(clonePositions[i], translationList) for i in range(len(clonePositions))]
+    translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
+    nearest_from_layer = [distances(translated_clone_pos[i], pos, x0) for i in range(len(translated_clone_pos))]
 
 def sample_topology(
     manifold,
