@@ -237,178 +237,188 @@ def sample_points(
 
 
 class Manifold(ABC):
-    def __init__(self):
-        pass
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.L = None
+        self.L1 = self.L2 = self.L3 = None
+        self.angles = None
+        self.α = self.β = self.γ = None
+        self.M1 = self.M2 = self.M3 = None
+        self.M = None
+        self.g1 = self.g2 = self.g3 = None
+        self.T1 = self.T2 = self.T3 = None
+        self.TA1 = self.TA2 = None
+        self.TB = None
+        self.center = None
+        self.x0 = np.array([0, 0, 0])
+        self.pure_translations = None
+        self.translations = None
 
-    def construct_3_generators(name, L_scale, angles):
-        L1, L2, L3 = L_scale
+        topologies = ["E1", "E2", "E3", "E4", "E5", "E6", "E11", "E12"]
+        assert self.name in topologies, f"Topology {self.name} is not supported."
 
-        match name:
+    def construct_generators(self, L_scale, angles):
+        self._get_num_generators()
+        match self.num_gens:
+            case 2:
+                self.L1, self.L2 = self.L = L_scale
+                self.α = self.β = self.angles = angles
+            case 3:
+                self.L1, self.L2, self.L3 = self.L = L_scale
+                self.α = self.β = self.γ = self.angles = angles
+        
+        self._construct_generators()
+
+    def _get_num_generators(self):
+        match self.name:
+            case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
+                self.num_gens = 3
+            case "E11" | "E12":
+                self.num_gens = 2
+
+    def _construct_generators(self) -> None:
+        match self.name:
             case "E1":
-                M1 = M2 = M3 = np.eye(3)
-                g1 = g2 = g3 = 1
-                T1 = TA1 = L1 * np.array([1, 0, 0])
-                T2 = TA2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                T3 = TB = L3 * np.array([
-                    np.cos(angles[1]) * np.cos(angles[2]),
-                    np.cos(angles[1]) * np.sin(angles[2]),
-                    np.sin(angles[1]),
+                self.M1 = self.M2 = self.M3 = np.eye(3)
+                self.g1 = self.g2 = self.g3 = 1
+                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.TA2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
                 ])
-                center = False
+                self.T3 = self.TB = self.L3 * np.array([
+                    np.cos(self.β) * np.cos(self.γ),
+                    np.cos(self.β) * np.sin(self.γ),
+                    np.sin(self.β),
+                ])
+                self.center = False
 
             case "E2":
-                M1 = M2 = np.eye(3)
-                M3 = np.diag([-1, -1, 1])
-                g1 = g2 = 1
-                g3 = 2
-                TA1 = L1 * np.array([1, 0, 0])
-                TA2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                TB  = np.array([0, 0, L3])
-                
-                T1 = L1 * np.array([1, 0, 0])
-                T2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                T3 = np.array([0, 0, 2 * L3])
-                center = True
+                self.M1 = self.M2 = np.eye(3)
+                self.M3 = np.diag([-1, -1, 1])
+                self.g1 = self.g2 = 1
+                self.g3 = 2
+                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
+                ])
+                self.T3 = np.array([0, 0, 2 * self.L3])
+                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.TA2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
+                ])
+                self.TB  = np.array([0, 0, self.L3])
+                self.center = True
 
             case "E3":
-                M1 = M2 = MA = np.eye(3)
-                M3 = MB = np.array([
+                assert self.L1 == self.L2, "Restriction on E3: L1 = L2"
+                assert self.α == np.pi/2, "Restriction on E3: α = π/2"
+
+                self.M1 = self.M2 = self.MA = np.eye(3)
+                self.M3 = self.MB = np.array([
                     [0,  1,  0],
                     [-1, 0,  0],
                     [0,  0,  1],
                 ])
-                TA1 = L1 * np.array([1, 0, 0])
-                TA2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                TB = np.array([0, 0, L3])
-                T1 = L1 * np.array([1, 0, 0])
-                T2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                T3 = np.array([0, 0, 4 * L3])
-                center = True
+                self.g1 = self.g2 = 1
+                self.g3 = 4
+                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
+                ])
+                self.T3 = np.array([0, 0, 4 * self.L3])
+                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.TA2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
+                ])
+                self.TB = np.array([0, 0, self.L3])
+                self.center = True
 
-                if L1 != L2 or angles[0] != np.pi/2:
-                    raise ValueError("Restrictions on E3: L1 = L2 and alpha = pi/2")
-                
             case "E4":
-                g1 = 1
-                g2 = 1
-                g3 = 3
-                
-                M1 = M2 = MA = np.eye(3)
-                M3 = MB = np.array([
+                assert self.L1 == self.L2, "Restriction on E4: L1 = L2"
+
+                self.M1 = self.M2 = self.MA = np.eye(3)
+                self.M3 = self.MB = np.array([
                     [-1/2, np.sqrt(3)/2, 0],
                     [-np.sqrt(3)/2, -1/2, 0],
                     [0, 0, 1],
                 ])
-                
-                TA1 = L1 * np.array([1, 0, 0])
-                TA2 = L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                TB = np.array([0, 0, L3])
-                
-                T1 = L1 * np.array([1, 0, 0])
-                T2 = L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                # T3 = L3 * np.array([0, 0, 3 * np.sin(angles[1])])
-                T3 = np.array([0, 0, 3 * L3])
-                
-                center = True
-                
-                if (L1 != L2):
-                    raise ValueError("Restrictions on E4: L1 = L2")
-                
+                self.g1 = self.g2 = 1
+                self.g3 = 3
+                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
+                self.T3 = np.array([0, 0, 3 * self.L3])
+                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
+                self.TB = np.array([0, 0, self.L3])
+                self.center = True
+
             case "E5":
-                g1 = 1
-                g2 = 1
-                g3 = 6
-                
-                M1 = M2 = MA = np.eye(3)
-                M3  = MB = np.array([
+                assert self.L1 == self.L2, "Restriction on E5: L1 = L2"
+
+                self.M1 = self.M2 = self.MA = np.eye(3)
+                self.M3 = self.MB = np.array([
                     [1/2, np.sqrt(3)/2, 0],
                     [-np.sqrt(3)/2, 1/2, 0],
                     [0, 0, 1],
                 ])
-                
-                TA1 = L1 * np.array([1, 0, 0])
-                TA2 = L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                TB = np.array([0, 0, L3])
-                
-                T1 = L1 * np.array([1, 0, 0])
-                T2 = L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                T3 = np.array([0, 0, 6 * L3])
-                
-                center = True
-                
-                if (L1 != L2):
-                    raise ValueError("Restrictions on E5: L1 = L2")
-                
+                self.g1 = self.g2 = 1
+                self.g3 = 6
+                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
+                self.T3 = np.array([0, 0, 6 * self.L3])
+                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
+                self.TB = np.array([0, 0, self.L3])
+                self.center = True
+
             case "E6":
-                LCx, LAy, LBz = L_scale
-            
-                g1 = 2
-                g2 = 2
-                g3 = 2
+                LAx = LCx = self.L1
+                LBy = LAy = self.L2
+                LCz = LBz = self.L3
                 
-                M1 = np.diag(([1, -1, -1]))
-                M2 = np.diag(([-1, 1, -1]))
-                M3 = np.diag(([-1, -1, 1]))
-                
-                LAx = LCx
-                LBy = LAy
-                LCz = LBz
-                
-                TA1 = np.array([LAx, LAy, 0])
-                TA2 = np.array([0, LBy, LBz])
-                TB  = np.array([LCx, 0, LCz])
-                
-                T1 = 2 * LAx * np.array([1, 0, 0])
-                T2 = 2 * LBy * np.array([0, 1, 0])
-                T3 = 2 * LCz * np.array([0, 0, 1])
-                
-                center = True
-            
-        translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
-        # Probably an iffy way to solve this problem, needs to figure out if 
-        # theres a better way to do this
-        pureTranslations = np.around(np.array([T1, T2, -T3]), decimals = 5)
-        associatedE1Dict = np.array([g1, g2, g3])
-        M = [M1, M2, M3]
-        x0 = np.array([0, 0, 0])
-        
-        return M, translations, pureTranslations, associatedE1Dict, center, x0
+                self.M1 = np.diag(([1, -1, -1]))
+                self.M2 = np.diag(([-1, 1, -1]))
+                self.M3 = np.diag(([-1, -1, 1]))
+                self.g1 = self.g2 = self.g3 = 2
+                self.T1 = 2 * LAx * np.array([1, 0, 0])
+                self.T2 = 2 * LBy * np.array([0, 1, 0])
+                self.T3 = 2 * LCz * np.array([0, 0, 1])
+                self.TA1 = np.array([LAx, LAy, 0])
+                self.TA2 = np.array([0, LBy, LBz])
+                self.TB  = np.array([LCx, 0, LCz])
+                self.center = True
 
-    def construct_2_generators(name, L_scale, angles):
-        L1, L2 = L_scale
-
-        match name:
             case "E11":
-                g1 = 1
-                g2 = 1
-                
-                M1 = M2 = np.eye(3)
-                TA1 = T1 = L1 * np.array([1, 0, 0])
-                TA2 = T2 = L2 * np.array([np.cos(angles[0]), np.sin(angles[0]), 0])
-                
-                center = False
+                self.M1 = self.M2 = np.eye(3)
+                self.g1 = self.g2 = 1
+                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T2 = self.TA2 = self.L2 * np.array([
+                    np.cos(self.α), np.sin(self.α), 0,
+                ])
+                self.center = False
 
             case "E12":
-                g1 = 1
-                g2 = 2
-                
-                M1 = np.eye(3)
-                M2 = np.diag([-1, 1, -1])
-                
-                TA1 = T1 = L1 * np.array([np.cos(angles[0]), 0, np.sin(angles[0])])
-                TA2 = np.array([0, L2, 0])
-                
-                T2 = np.array([0, 2 * L2, 0])
-                
-                center = True
-        
-        translations = np.around(np.array([TA1, TA2]), decimals = 5)
-        pureTranslations = np.around(np.array([T1, T2]), decimals = 5)
-        associatedE1Dict = np.array([g1, g2])
-        M = [M1, M2]
-        x0 = np.array([0, 0, 0])
+                self.M1 = np.eye(3)
+                self.M2 = np.diag([-1, 1, -1])
+                self.g1 = 1
+                self.g2 = 2
+                self.T1 = self.TA1 = self.L1 * np.array([
+                    np.cos(self.α), 0, np.sin(self.α),
+                ])
+                self.T2 = np.array([0, 2 * L2, 0])
+                self.TA2 = np.array([0, L2, 0])
+                self.center = True
 
-        return M, translations, pureTranslations, associatedE1Dict, center, x0
+        if num_gens == 2:
+            self.M = [M1, M2]
+            self.g = [g1, g2]
+            self.pure_translations = np.array([T1, T2])
+            self.translations = np.array([TA1, TA2])
+        elif num_gens == 3:
+            self.M = [M1, M2, M3]
+            self.g = [g1, g2, g3]
+            self.pure_translations = np.array([T1, T2, -T3])
+            self.translations = np.array([TA1, TA2, TB])
 
 
 if __name__ == "__main__":
