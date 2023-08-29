@@ -17,21 +17,20 @@ def get_num_of_generators(topology_name: str) -> Integral:
 def scatter_points(
     points,
     translations,
-    # precision, # UNUSED
     num_gens,
     L3,
 ):
     if num_gens == 2:
         scatter = (
-            points[:][0] * translations[0]
-            + points[:][1] * translations[1]
-            + (points[:][2] - 0.5) * np.array([0, 0, 2 * L3])
+            np.outer(points[:, 0], translations[0])
+            + np.outer(points[:, 1], translations[1])
+            + np.outer((points[:, 2] - 0.5), np.array([0, 0, 2 * L3]))
         )
     elif num_gens == 3:
         scatter = (
-            points[:][0] * translations[0]
-            + points[:][1] * translations[1]
-            - points[:][2] * translations[2]
+            np.outer(points[:, 0], translations[0])
+            + np.outer(points[:, 1], translations[1])
+            - np.outer(points[:, 2], translations[2])
         )
     else:
         raise Exception("num_gens can be 2 or 3 only")
@@ -179,7 +178,7 @@ def E_general_topol(
 ):
     clone_positions, _ = find_clones(pos, x0, M, translations, E1_dict, num_gens)
     translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
-    nearest_from_layer = [distances(translated_clone_pos[i], pos, x0) for i in range(len(translated_clone_pos))]
+    nearest_from_layer = [distances(translated_clone_pos[i], pos) for i in range(len(translated_clone_pos))]
     closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
     return closest_clone[1]
 
@@ -243,7 +242,7 @@ class Manifold(ABC):
 
     def construct_3_generators(name, L_scale, angles):
         L1, L2, L3 = L_scale
-        
+
         match name:
             case "E1":
                 M1 = M2 = M3 = np.eye(3)
@@ -418,11 +417,13 @@ class Manifold(ABC):
 
 
 if __name__ == "__main__":
+    np.random.seed(1234)
+
     manifold = "E2"
-    precision = 2000
-    param_precision = 1000
-    alpha = beta = gamma = np.pi / 2
-    angles = np.array([alpha, beta, gamma])
+    precision = 20
+    param_precision = 10
+    α = β = γ = np.pi / 2
+    angles = np.array([α, β, γ])
 
     L1 = np.array([np.random.uniform(low = 1, high = 2, size = param_precision)])
     L2 = np.array([np.random.uniform(low = L1[0], high = 2, size = param_precision)])
@@ -435,4 +436,10 @@ if __name__ == "__main__":
 
     for i in range(param_precision): 
         percents, excludedPoints, allowedPoints = sample_points(manifold, angles, precision, random_L_sample[i])
-        print(percents)
+        
+        if percents > 0.05:
+            L_accept.append(random_L_sample[i])
+        else:
+            L_reject.append(random_L_sample[i])
+        if (i%10 == 0):
+            print(i)
