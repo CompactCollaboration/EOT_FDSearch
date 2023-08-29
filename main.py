@@ -364,11 +364,6 @@ class Manifold(ABC):
                 
                 center = True
             
-            # case _:
-            #     TA1 = None
-            #     TA2 = None
-            #     TB = None
-            
         translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
         # Probably an iffy way to solve this problem, needs to figure out if 
         # theres a better way to do this
@@ -434,7 +429,7 @@ if __name__ == "__main__":
     L_accept = []
     L_reject = []
 
-    for i in range(param_precision): 
+    for i in range(param_precision):
         percents, excludedPoints, allowedPoints = sample_points(manifold, angles, precision, random_L_sample[i])
         
         if percents > 0.05:
@@ -443,3 +438,6 @@ if __name__ == "__main__":
             L_reject.append(random_L_sample[i])
         if (i%10 == 0):
             print(i)
+
+    print(L_accept)
+    print(L_reject)
