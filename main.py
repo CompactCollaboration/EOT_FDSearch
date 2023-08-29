@@ -91,10 +91,10 @@ def constructions(
     num_gens = get_num_of_generators(manifold)
 
     if num_gens == 2:
-        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_2_generators(Manifold, L_scale, angles)
+        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_2_generators(manifold, L_scale, angles)
         translation_list = find_all_translations_center(pure_translations, num_gens)
     elif num_gens == 3:
-        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_3_generators(Manifold, L_scale, angles)
+        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_3_generators(manifold, L_scale, angles)
         if center == True:
             translation_list = find_all_translations_center(pure_translations, num_gens)
         else:
@@ -241,9 +241,9 @@ class Manifold(ABC):
     def __init__(self):
         pass
 
-    def construct_3_generators(self, name, L_scale, angles):
+    def construct_3_generators(name, L_scale, angles):
         L1, L2, L3 = L_scale
-
+        
         match name:
             case "E1":
                 M1 = M2 = M3 = np.eye(3)
@@ -365,6 +365,11 @@ class Manifold(ABC):
                 
                 center = True
             
+            # case _:
+            #     TA1 = None
+            #     TA2 = None
+            #     TB = None
+            
         translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
         # Probably an iffy way to solve this problem, needs to figure out if 
         # theres a better way to do this
@@ -375,7 +380,7 @@ class Manifold(ABC):
         
         return M, translations, pureTranslations, associatedE1Dict, center, x0
 
-    def construct_2_generators(self, name, L_scale, angles):
+    def construct_2_generators(name, L_scale, angles):
         L1, L2 = L_scale
 
         match name:
@@ -410,3 +415,24 @@ class Manifold(ABC):
         x0 = np.array([0, 0, 0])
 
         return M, translations, pureTranslations, associatedE1Dict, center, x0
+
+
+if __name__ == "__main__":
+    manifold = "E2"
+    precision = 2000
+    param_precision = 1000
+    alpha = beta = gamma = np.pi / 2
+    angles = np.array([alpha, beta, gamma])
+
+    L1 = np.array([np.random.uniform(low = 1, high = 2, size = param_precision)])
+    L2 = np.array([np.random.uniform(low = L1[0], high = 2, size = param_precision)])
+    L3 = np.array([np.random.uniform(low = 0.5, high = 1.1, size = param_precision)])
+    
+    random_L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
+
+    L_accept = []
+    L_reject = []
+
+    for i in range(param_precision): 
+        percents, excludedPoints, allowedPoints = sample_points(manifold, angles, precision, random_L_sample[i])
+        print(percents)
