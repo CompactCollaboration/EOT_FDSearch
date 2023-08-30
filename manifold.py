@@ -189,3 +189,36 @@ class Manifold(ABC):
         
         self.pure_translations = np.round(self.pure_translations, 5)
         self.translations = np.round(self.translations, 5)
+
+    def find_all_translations(self):
+        if self.center is True:
+            translations = self._find_all_translations_center()
+        else:
+            translations = self._find_all_translations_corner()
+        self.all_translations = translations
+
+    def _find_all_translations_center(self):
+        layer_translations = [
+            pure_translations[0],
+            pure_translations[1],
+            -pure_translations[0],
+            -pure_translations[1],
+            -2 * pure_translations[0],
+            -2 * pure_translations[1],
+            2 * pure_translations[0],
+            2 * pure_translations[1],
+            pure_translations[0] + pure_translations[1],
+            pure_translations[0] - pure_translations[1], 
+            -pure_translations[0] + pure_translations[1],
+            -pure_translations[0] - pure_translations[1],
+        ]
+
+        if self.num_gens == 3:
+            layer_translations.extend(layer_translations + self.pure_translations[2])
+            layer_translations.append(self.pure_translations[2])
+
+        return layer_translations
+
+    def _find_all_translations_corner(self):
+        # to be implemented
+        return None
