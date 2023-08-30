@@ -5,14 +5,17 @@ import itertools
 from scipy.spatial import distance
 
 from numbers import Integral
+from typing import Type
 
 
 def scatter_points(
+    manifold: Type[Manifold],
     points,
-    translations,
-    num_gens,
-    L3,
 ):
+    translations = manifold.translations
+    num_gens = manifold.num_gens
+    L3 = manifold.L3
+
     if num_gens == 2:
         scatter = (
             np.outer(points[:, 0], translations[0])
@@ -25,8 +28,6 @@ def scatter_points(
             + np.outer(points[:, 1], translations[1])
             - np.outer(points[:, 2], translations[2])
         )
-    else:
-        raise Exception("num_gens can be 2 or 3 only")
     
     return scatter
 
@@ -186,21 +187,28 @@ def sample_topology(
     return distance
 
 def sample_points(
-    manifold,
+    manifold: Type[Manifold],
     precision: int,
 ):
     num_gens = manifold.num_gens
+    pure_translations = manifold.pure_translations
+    L_scale = manifold.L
+
     points = np.random.rand(precision, 3)
+
+    L_scatter = scatter_points(manifold, points)
     
     match num_gens:
         case 2:
-            _, _, pure_translations, _, _, _ = Manifold.construct_2_generators(manifold, L_scale, angles)
-            L_scatter = scatter_points(points, pure_translations, num_gens, L_scale[2])
-            pos = L_scatter - 0.5 * ((pure_translations[0] + pure_translations[1]))
+            positions = (
+                L_scatter
+                - 0.5 * (pure_translations[0] + pure_translations[1])
+            )
         case 3:
-            _, _, pure_translations, _, _, _ = Manifold.construct_3_generators(manifold, L_scale, angles)
-            L_scatter = scatter_points(points, pure_translations, num_gens, L_scale[2])
-            pos = L_scatter - 0.5 * ((pure_translations[0] + pure_translations[1] - pure_translations[2]))
+            positions = (
+                L_scatter
+                - 0.5 * (pure_translations[0] + pure_translations[1] - pure_translations[2])
+            )
 
     count = 0
     allowed_points = []
@@ -432,7 +440,7 @@ if __name__ == "__main__":
     random_L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
     manifold.construct_generators(random_L_sample[0], angles)
 
-    print(manifold.translations)
+    print(manifold.pure_translations)
     exit()
 
     L_accept = []
