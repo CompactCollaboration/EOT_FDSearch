@@ -187,11 +187,9 @@ def sample_topology(
 
 def sample_points(
     manifold,
-    angles,
-    precision,
-    L_scale,
+    precision: int,
 ):
-    num_gens = get_num_of_generators(manifold)
+    num_gens = manifold.num_gens
     points = np.random.rand(precision, 3)
     
     match num_gens:
@@ -232,6 +230,7 @@ def sample_points(
 class Manifold(ABC):
     def __init__(self, name: str) -> None:
         self.name = name
+        self.num_gens = None
         self.L = None
         self.L1 = self.L2 = self.L3 = None
         self.angles = None
@@ -255,10 +254,10 @@ class Manifold(ABC):
         match self.num_gens:
             case 2:
                 self.L1, self.L2 = self.L = L_scale
-                self.α = self.β = self.angles = angles
+                self.α, self.β = self.angles = angles
             case 3:
                 self.L1, self.L2, self.L3 = self.L = L_scale
-                self.α = self.β = self.γ = self.angles = angles
+                self.α, self.β, self.γ = self.angles = angles
         
         self._construct_generators()
 
@@ -402,32 +401,39 @@ class Manifold(ABC):
                 self.TA2 = np.array([0, L2, 0])
                 self.center = True
 
-        if num_gens == 2:
-            self.M = [M1, M2]
-            self.g = [g1, g2]
-            self.pure_translations = np.array([T1, T2])
-            self.translations = np.array([TA1, TA2])
-        elif num_gens == 3:
-            self.M = [M1, M2, M3]
-            self.g = [g1, g2, g3]
-            self.pure_translations = np.array([T1, T2, -T3])
-            self.translations = np.array([TA1, TA2, TB])
+        if self.num_gens == 2:
+            self.M = [self.M1, self.M2]
+            self.g = [self.g1, self.g2]
+            self.pure_translations = np.array([self.T1, self.T2])
+            self.translations = np.array([self.TA1, self.TA2])
+        elif self.num_gens == 3:
+            self.M = [self.M1, self.M2, self.M3]
+            self.g = [self.g1, self.g2, self.g3]
+            self.pure_translations = np.array([self.T1, self.T2, -self.T3])
+            self.translations = np.array([self.TA1, self.TA2, self.TB])
 
 
 if __name__ == "__main__":
     np.random.seed(1234)
 
-    manifold = "E2"
-    precision = 20
-    param_precision = 10
+    manifold_name = "E2"
+    manifold = Manifold(manifold_name)
+
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
-
+    
+    precision = 20
+    param_precision = 10
+    
     L1 = np.array([np.random.uniform(low = 1, high = 2, size = param_precision)])
     L2 = np.array([np.random.uniform(low = L1[0], high = 2, size = param_precision)])
     L3 = np.array([np.random.uniform(low = 0.5, high = 1.1, size = param_precision)])
     
     random_L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
+    manifold.construct_generators(random_L_sample[0], angles)
+
+    print(manifold.translations)
+    exit()
 
     L_accept = []
     L_reject = []
