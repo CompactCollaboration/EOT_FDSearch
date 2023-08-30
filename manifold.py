@@ -172,8 +172,8 @@ class Manifold(ABC):
                 self.T1 = self.TA1 = self.L1 * np.array([
                     np.cos(self.α), 0, np.sin(self.α),
                 ])
-                self.T2 = np.array([0, 2 * L2, 0])
-                self.TA2 = np.array([0, L2, 0])
+                self.T2 = np.array([0, 2 * self.L2, 0])
+                self.TA2 = np.array([0, self.L2, 0])
                 self.center = True
 
         if self.num_gens == 2:
