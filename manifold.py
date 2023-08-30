@@ -199,18 +199,18 @@ class Manifold(ABC):
 
     def _find_all_translations_center(self):
         layer_translations = [
-            pure_translations[0],
-            pure_translations[1],
-            -pure_translations[0],
-            -pure_translations[1],
-            -2 * pure_translations[0],
-            -2 * pure_translations[1],
-            2 * pure_translations[0],
-            2 * pure_translations[1],
-            pure_translations[0] + pure_translations[1],
-            pure_translations[0] - pure_translations[1], 
-            -pure_translations[0] + pure_translations[1],
-            -pure_translations[0] - pure_translations[1],
+            self.pure_translations[0],
+            self.pure_translations[1],
+            -self.pure_translations[0],
+            -self.pure_translations[1],
+            -2 * self.pure_translations[0],
+            -2 * self.pure_translations[1],
+            2 * self.pure_translations[0],
+            2 * self.pure_translations[1],
+            self.pure_translations[0] + self.pure_translations[1],
+            self.pure_translations[0] - self.pure_translations[1], 
+            -self.pure_translations[0] + self.pure_translations[1],
+            -self.pure_translations[0] - self.pure_translations[1],
         ]
 
         if self.num_gens == 3:
