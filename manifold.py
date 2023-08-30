@@ -179,13 +179,13 @@ class Manifold(ABC):
         if self.num_gens == 2:
             self.M = [self.M1, self.M2]
             self.g = [self.g1, self.g2]
-            self.pure_translations = np.array([self.T1, self.T2])
-            self.translations = np.array([self.TA1, self.TA2])
+            self.pure_translations = [self.T1, self.T2]
+            self.translations = [self.TA1, self.TA2]
         elif self.num_gens == 3:
             self.M = [self.M1, self.M2, self.M3]
             self.g = [self.g1, self.g2, self.g3]
-            self.pure_translations = np.array([self.T1, self.T2, -self.T3])
-            self.translations = np.array([self.TA1, self.TA2, self.TB])
+            self.pure_translations = [self.T1, self.T2, -self.T3]
+            self.translations = [self.TA1, self.TA2, self.TB]
         
         self.pure_translations = np.round(self.pure_translations, 5)
         self.translations = np.round(self.translations, 5)
