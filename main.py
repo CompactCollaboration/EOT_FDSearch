@@ -1,5 +1,3 @@
-from abc import ABC
-
 import numpy as np
 import itertools
 from scipy.spatial import distance
@@ -7,9 +5,11 @@ from scipy.spatial import distance
 from numbers import Integral
 from typing import Type
 
+from manifold import Manifold
+
 
 def scatter_points(
-    manifold: Type[Manifold],
+    manifold,
     points,
 ):
     translations = manifold.translations
@@ -76,68 +76,40 @@ def find_all_translations_corner(pure_translations):
 
     return all_new_trans
 
-def constructions(
-    manifold,
-    L_scale,
-    angles,
-):
-    num_gens = get_num_of_generators(manifold)
-
-    if num_gens == 2:
-        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_2_generators(manifold, L_scale, angles)
-        translation_list = find_all_translations_center(pure_translations, num_gens)
-    elif num_gens == 3:
-        M, translations, pure_translations, E1_dict, center, x0 = Manifold.construct_3_generators(manifold, L_scale, angles)
-        if center == True:
-            translation_list = find_all_translations_center(pure_translations, num_gens)
-        else:
-            translation_list = find_all_translations_corner(pure_translations)
-    else:
-        raise Exception("num_gens can be 2 or 3 only")
-    
-    return M, translations, pure_translations, E1_dict, translation_list, num_gens, x0
-
-def generator_pos(
+def apply_generator(
     x,
     x0,
     M,
-    translations,
+    translation,
 ):  
-    x_out = M.dot(x - x0) + translations + x0
-    return x_out
+    return M.dot(x - x0) + translation + x0
 
 def find_clones(
-    pos,
-    x0,
-    M,
-    translations,
-    E1_dict,
-    num_gens,
+    manifold,
+    positions,
 ):
-    clone_pos = []
+    g = manifold.g
+    num_gens = manifold.num_gens
+    x0 = manifold.x0
+    M = manifold.M
+    translations = manifold.translations
 
-    for i in range(E1_dict[0]):
-        for j in range(E1_dict[1]):
-            if num_gens == 3:
-                for k in range(E1_dict[2]):
-                    clone_pos.append([i, j, k])
-            elif num_gens == 2:
-                clone_pos.append([i, j])
+    g_ranges = [[x for x in range(1, gi+1)] for gi in g]
+    clone_combs = list(itertools.product(*g_ranges))
     
     full_clone_list = []
 
-    for i in range(len(clone_pos)):
-        if not (all(x == 0 for x in clone_pos[i])):
-            _x = pos
-            for j in range(len(clone_pos[i])):
-                for k in range(clone_pos[i][j]):
-                    _x = generator_pos(_x, x0, M[j], translations[j])
-            full_clone_list.append(_x)
+    for comb in clone_combs:
+        if comb != (1, 1, 1):
+            x = positions
+            for i in range(num_gens):
+                for _ in range(comb[i]):
+                    x = apply_generator(x, x0, M[i], translations[i])
+            full_clone_list.append(x)
 
-    if not full_clone_list:
-        return pos, clone_pos
-    else:
-        return full_clone_list, clone_pos
+    if full_clone_list == []:
+        full_clone_list = positions.copy()
+    return full_clone_list
 
 def translate_clones(clone_pos, translations):
     translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
@@ -160,17 +132,12 @@ def find_closest_clone(
     closest_generated_clone = min(generated_clones, key = lambda x: x[1] if (x[1]> 10e-12) else np.nan, default = closest_translated_clone)
     return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
 
-def E_general_topol(
-    pos,
-    x0,
-    M,
-    translations,
-    pure_translations,
-    E1_dict,
-    num_gens,
-    translation_list,
+def E_general_topology(
+    manifold,
+    positions,
 ):
-    clone_positions, _ = find_clones(pos, x0, M, translations, E1_dict, num_gens)
+    clone_positions = find_clones(manifold, positions)
+    exit()
     translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
     nearest_from_layer = [distances(translated_clone_pos[i], pos) for i in range(len(translated_clone_pos))]
     closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
@@ -178,16 +145,14 @@ def E_general_topol(
 
 def sample_topology(
     manifold,
-    L_scale,
-    pos,
-    angles,
+    positions,
 ):
-    M, translations, pure_translations, E1_dict, translation_list, num_gens, x0 = constructions(manifold, L_scale, angles)
-    distance = E_general_topol(pos, x0, M, translations, pure_translations, E1_dict, num_gens, translation_list)
+    manifold.find_all_translations()
+    distance = E_general_topology(manifold, positions)
     return distance
 
 def sample_points(
-    manifold: Type[Manifold],
+    manifold,
     precision: int,
 ):
     num_gens = manifold.num_gens
@@ -198,7 +163,7 @@ def sample_points(
 
     L_scatter = scatter_points(manifold, points)
     
-    match num_gens:
+    match manifold.num_gens:
         case 2:
             positions = (
                 L_scatter
@@ -215,7 +180,7 @@ def sample_points(
     excluded_points = []
     
     for k in range(precision):
-        distance = sample_topology(manifold, L_scale, pos[k], angles)
+        distance = sample_topology(manifold, positions[k])
         if distance < 1:
             count +=1
             excluded_points.append(pos[k])
@@ -235,197 +200,10 @@ def sample_points(
     return percents, [excluded_points_x, excluded_points_y, excluded_points_z], [L_x, L_y, L_z]
 
 
-class Manifold(ABC):
-    def __init__(self, name: str) -> None:
-        self.name = name
-        self.num_gens = None
-        self.L = None
-        self.L1 = self.L2 = self.L3 = None
-        self.angles = None
-        self.α = self.β = self.γ = None
-        self.M1 = self.M2 = self.M3 = None
-        self.M = None
-        self.g1 = self.g2 = self.g3 = None
-        self.T1 = self.T2 = self.T3 = None
-        self.TA1 = self.TA2 = None
-        self.TB = None
-        self.center = None
-        self.x0 = np.array([0, 0, 0])
-        self.pure_translations = None
-        self.translations = None
-
-        topologies = ["E1", "E2", "E3", "E4", "E5", "E6", "E11", "E12"]
-        assert self.name in topologies, f"Topology {self.name} is not supported."
-
-    def construct_generators(self, L_scale, angles):
-        self._get_num_generators()
-        match self.num_gens:
-            case 2:
-                self.L1, self.L2 = self.L = L_scale
-                self.α, self.β = self.angles = angles
-            case 3:
-                self.L1, self.L2, self.L3 = self.L = L_scale
-                self.α, self.β, self.γ = self.angles = angles
-        
-        self._construct_generators()
-
-    def _get_num_generators(self):
-        match self.name:
-            case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
-                self.num_gens = 3
-            case "E11" | "E12":
-                self.num_gens = 2
-
-    def _construct_generators(self) -> None:
-        match self.name:
-            case "E1":
-                self.M1 = self.M2 = self.M3 = np.eye(3)
-                self.g1 = self.g2 = self.g3 = 1
-                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.T3 = self.TB = self.L3 * np.array([
-                    np.cos(self.β) * np.cos(self.γ),
-                    np.cos(self.β) * np.sin(self.γ),
-                    np.sin(self.β),
-                ])
-                self.center = False
-
-            case "E2":
-                self.M1 = self.M2 = np.eye(3)
-                self.M3 = np.diag([-1, -1, 1])
-                self.g1 = self.g2 = 1
-                self.g3 = 2
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.T3 = np.array([0, 0, 2 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.TB  = np.array([0, 0, self.L3])
-                self.center = True
-
-            case "E3":
-                assert self.L1 == self.L2, "Restriction on E3: L1 = L2"
-                assert self.α == np.pi/2, "Restriction on E3: α = π/2"
-
-                self.M1 = self.M2 = self.MA = np.eye(3)
-                self.M3 = self.MB = np.array([
-                    [0,  1,  0],
-                    [-1, 0,  0],
-                    [0,  0,  1],
-                ])
-                self.g1 = self.g2 = 1
-                self.g3 = 4
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.T3 = np.array([0, 0, 4 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.TB = np.array([0, 0, self.L3])
-                self.center = True
-
-            case "E4":
-                assert self.L1 == self.L2, "Restriction on E4: L1 = L2"
-
-                self.M1 = self.M2 = self.MA = np.eye(3)
-                self.M3 = self.MB = np.array([
-                    [-1/2, np.sqrt(3)/2, 0],
-                    [-np.sqrt(3)/2, -1/2, 0],
-                    [0, 0, 1],
-                ])
-                self.g1 = self.g2 = 1
-                self.g3 = 3
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                self.T3 = np.array([0, 0, 3 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                self.TB = np.array([0, 0, self.L3])
-                self.center = True
-
-            case "E5":
-                assert self.L1 == self.L2, "Restriction on E5: L1 = L2"
-
-                self.M1 = self.M2 = self.MA = np.eye(3)
-                self.M3 = self.MB = np.array([
-                    [1/2, np.sqrt(3)/2, 0],
-                    [-np.sqrt(3)/2, 1/2, 0],
-                    [0, 0, 1],
-                ])
-                self.g1 = self.g2 = 1
-                self.g3 = 6
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                self.T3 = np.array([0, 0, 6 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                self.TB = np.array([0, 0, self.L3])
-                self.center = True
-
-            case "E6":
-                LAx = LCx = self.L1
-                LBy = LAy = self.L2
-                LCz = LBz = self.L3
-                
-                self.M1 = np.diag(([1, -1, -1]))
-                self.M2 = np.diag(([-1, 1, -1]))
-                self.M3 = np.diag(([-1, -1, 1]))
-                self.g1 = self.g2 = self.g3 = 2
-                self.T1 = 2 * LAx * np.array([1, 0, 0])
-                self.T2 = 2 * LBy * np.array([0, 1, 0])
-                self.T3 = 2 * LCz * np.array([0, 0, 1])
-                self.TA1 = np.array([LAx, LAy, 0])
-                self.TA2 = np.array([0, LBy, LBz])
-                self.TB  = np.array([LCx, 0, LCz])
-                self.center = True
-
-            case "E11":
-                self.M1 = self.M2 = np.eye(3)
-                self.g1 = self.g2 = 1
-                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
-                ])
-                self.center = False
-
-            case "E12":
-                self.M1 = np.eye(3)
-                self.M2 = np.diag([-1, 1, -1])
-                self.g1 = 1
-                self.g2 = 2
-                self.T1 = self.TA1 = self.L1 * np.array([
-                    np.cos(self.α), 0, np.sin(self.α),
-                ])
-                self.T2 = np.array([0, 2 * L2, 0])
-                self.TA2 = np.array([0, L2, 0])
-                self.center = True
-
-        if self.num_gens == 2:
-            self.M = [self.M1, self.M2]
-            self.g = [self.g1, self.g2]
-            self.pure_translations = np.array([self.T1, self.T2])
-            self.translations = np.array([self.TA1, self.TA2])
-        elif self.num_gens == 3:
-            self.M = [self.M1, self.M2, self.M3]
-            self.g = [self.g1, self.g2, self.g3]
-            self.pure_translations = np.array([self.T1, self.T2, -self.T3])
-            self.translations = np.array([self.TA1, self.TA2, self.TB])
-
-
 if __name__ == "__main__":
     np.random.seed(1234)
 
     manifold_name = "E2"
-    manifold = Manifold(manifold_name)
 
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
@@ -433,21 +211,24 @@ if __name__ == "__main__":
     precision = 20
     param_precision = 10
     
-    L1 = np.array([np.random.uniform(low = 1, high = 2, size = param_precision)])
-    L2 = np.array([np.random.uniform(low = L1[0], high = 2, size = param_precision)])
-    L3 = np.array([np.random.uniform(low = 0.5, high = 1.1, size = param_precision)])
-    
-    random_L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
-    manifold.construct_generators(random_L_sample[0], angles)
+    L1 = np.random.uniform(low = 1, high = 2, size = param_precision)
+    L2 = np.random.uniform(low = L1[0], high = 2, size = param_precision)
+    L3 = np.random.uniform(low = 0.5, high = 1.1, size = param_precision)
 
-    print(manifold.pure_translations)
-    exit()
+    L_samples = np.stack((L1, L2, L3)).T
+    
+    # L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
+    # manifold.construct_generators(L_sample[0], angles)
 
     L_accept = []
     L_reject = []
 
     for i in range(param_precision):
-        percents, excludedPoints, allowedPoints = sample_points(manifold, angles, precision, random_L_sample[i])
+        manifold = Manifold(manifold_name)
+        manifold.construct_generators(L_samples[i], angles)
+        percents, excludedPoints, allowedPoints = sample_points(
+            manifold, precision,
+        )
         
         if percents > 0.05:
             L_accept.append(random_L_sample[i])
@@ -455,6 +236,8 @@ if __name__ == "__main__":
             L_reject.append(random_L_sample[i])
         if (i%10 == 0):
             print(i)
+
+        exit()
 
     print(L_accept)
     print(L_reject)
