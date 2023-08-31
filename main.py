@@ -94,7 +94,7 @@ def find_clones(
     M = manifold.M
     translations = manifold.translations
 
-    g_ranges = [[x for x in range(1, gi+1)] for gi in g]
+    g_ranges = [[x for x in range(1, gi + 1)] for gi in g]
     clone_combs = list(itertools.product(*g_ranges))
     
     full_clone_list = []
@@ -111,7 +111,17 @@ def find_clones(
         full_clone_list = positions.copy()
     return full_clone_list
 
-def translate_clones(clone_pos, translations):
+def translate_clones(
+    clones,
+    translations,
+):
+    translated_clone_positions = [
+        [clone + translation for translation in translations]
+        for clone in clones
+    ]
+    return translated_clone_pos
+
+def translate_clones_old(clone_pos, translations):
     translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
     return translated_clone_pos
 
@@ -136,9 +146,11 @@ def E_general_topology(
     manifold,
     positions,
 ):
+    translations_list = manifold.all_translations
+
     clone_positions = find_clones(manifold, positions)
-    exit()
-    translated_clone_pos = [translate_clones(clone_positions[i], translation_list) for i in range(len(clone_positions))]
+    translated_clone_positions = translate_clones(clone_positions, translations)
+    translated_clone_pos = [translate_clones_old(clone_positions[i], translation_list) for i in range(len(clone_positions))]
     nearest_from_layer = [distances(translated_clone_pos[i], pos) for i in range(len(translated_clone_pos))]
     closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
     return closest_clone[1]
