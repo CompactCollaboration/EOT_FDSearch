@@ -190,6 +190,15 @@ class Manifold(ABC):
         self.pure_translations = np.round(self.pure_translations, 5)
         self.translations = np.round(self.translations, 5)
 
+    def apply_generator(self, x):
+        return [
+            self.M[i].dot(x - self.x0) + self.translations[i] + self.x0
+            for i in range(self.num_gens)
+        ]
+
+    def get_generator(self):
+        return lambda x: self.apply_generator(x)
+
     def find_all_translations(self):
         if self.center is True:
             translations = self._find_all_translations_center()
