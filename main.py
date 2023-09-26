@@ -31,36 +31,36 @@ def scatter_points(
     
     return scatter
 
-def find_all_translations_center(
-    pure_translations,
-    num_gens,
-):
-    layer_trans = [
-        pure_translations[0],
-        pure_translations[1],
-        -pure_translations[0],
-        -pure_translations[1],
-        -2 * pure_translations[0],
-        -2 * pure_translations[1],
-        2 * pure_translations[0],
-        2 * pure_translations[1],
-        pure_translations[0] + pure_translations[1],
-        pure_translations[0] - pure_translations[1], 
-        -pure_translations[0] + pure_translations[1],
-        -pure_translations[0] - pure_translations[1],
-    ]
+# def find_all_translations_center(
+#     pure_translations,
+#     num_gens,
+# ):
+#     layer_trans = [
+#         pure_translations[0],
+#         pure_translations[1],
+#         -pure_translations[0],
+#         -pure_translations[1],
+#         -2 * pure_translations[0],
+#         -2 * pure_translations[1],
+#         2 * pure_translations[0],
+#         2 * pure_translations[1],
+#         pure_translations[0] + pure_translations[1],
+#         pure_translations[0] - pure_translations[1], 
+#         -pure_translations[0] + pure_translations[1],
+#         -pure_translations[0] - pure_translations[1],
+#     ]
 
-    if num_gens == 2:
-        return layer_trans
-    elif num_gens == 3:
-        all_new_trans = np.concatenate([
-            layer_trans,
-            layer_trans + pure_translations[2],
-            [pure_translations[2]]
-        ])
-        return all_new_trans
-    else:
-        raise Exception("num_gens can be 2 or 3 only")
+#     if num_gens == 2:
+#         return layer_trans
+#     elif num_gens == 3:
+#         all_new_trans = np.concatenate([
+#             layer_trans,
+#             layer_trans + pure_translations[2],
+#             [pure_translations[2]]
+#         ])
+#         return all_new_trans
+#     else:
+#         raise Exception("num_gens can be 2 or 3 only")
 
 def find_all_translations_corner(pure_translations):
     trans1 = [list(itertools.combinations_with_replacement(pure_translations, i)) for i in range(len(pure_translations) + 2)]
@@ -119,7 +119,7 @@ def translate_clones(
         [clone + translation for translation in translations]
         for clone in clones
     ]
-    return translated_clone_pos
+    return translated_clone_positions
 
 def translate_clones_old(clone_pos, translations):
     translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
@@ -146,12 +146,12 @@ def E_general_topology(
     manifold,
     positions,
 ):
-    translations_list = manifold.all_translations
+    translations = manifold.all_translations
 
-    clone_positions = find_clones(manifold, positions)
-    translated_clone_positions = translate_clones(clone_positions, translations)
-    translated_clone_pos = [translate_clones_old(clone_positions[i], translation_list) for i in range(len(clone_positions))]
-    nearest_from_layer = [distances(translated_clone_pos[i], pos) for i in range(len(translated_clone_pos))]
+    clones = find_clones(manifold, positions)
+    translated_clone_positions = translate_clones(clones, translations)
+    ###
+    nearest_from_layer = [distances(translated_clone_positions[i], pos) for i in range(len(translated_clone_pos))]
     closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
     return closest_clone[1]
 
