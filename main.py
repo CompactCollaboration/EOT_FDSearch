@@ -3,7 +3,7 @@ import itertools
 from scipy.spatial import distance
 
 from numbers import Integral
-from typing import Type
+from typing import Type, List
 from numpy.typing import NDArray
 
 from manifold import Manifold
@@ -58,9 +58,9 @@ def apply_generator(
     return M.dot(x - x0) + translation + x0
 
 def find_clones(
-    manifold,
-    positions,
-):
+    manifold: Type[Manifold],
+    positions: NDArray,
+) -> List[NDArray]:
     g = manifold.g
     num_gens = manifold.num_gens
     x0 = manifold.x0
@@ -121,8 +121,6 @@ def E_general_topology(
 ):
     translations = manifold.all_translations
     x0 = manifold.x0
-    print(x0)
-    exit()
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
