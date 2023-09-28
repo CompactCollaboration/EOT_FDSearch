@@ -2,8 +2,12 @@ from abc import ABC
 
 import numpy as np
 
+from typing import Literal, List
+from numpy.typing import NDArray
+
+
 class Manifold(ABC):
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: Literal) -> None:
         self.name = name
         self.num_gens = None
         self.L = None
@@ -229,5 +233,8 @@ class Manifold(ABC):
         return layer_translations
 
     def _find_all_translations_corner(self):
-        # to be implemented
+        """
+        To be implemented
+        """
         return None
+    
