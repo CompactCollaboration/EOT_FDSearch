@@ -124,20 +124,37 @@ def distances(
 
 def find_closest_clone(
     manifold: Type[Manifold],
-    generated_clones,
-    positions,
-):
+    generated_clones: NDArray,
+    positions: NDArray,
+) -> Tuple[NDArray, Real]:
+    generated_clone_points = np.array([gc[0] for gc in generated_clones])
+    generated_clone_distances = np.array([gc[1] for gc in generated_clones])
+
     pure_translations = manifold.pure_translations
     x0 = manifold.x0
     
     translate_clone = [
         [(pt + positions), dist(pt, x0)] for pt in pure_translations
     ]
-    print(translate_clone)
-    exit()
-    closest_translated_clone = min(translate_clone, key = lambda x: x[1] if (x[1] > 10e-12) else np.nan)
-    closest_generated_clone = min(generated_clones, key = lambda x: x[1] if (x[1]> 10e-12) else np.nan, default = closest_translated_clone)
-    return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
+
+    translated_clones = np.empty((3, 3), dtype=np.float64)
+    translated_clone_distances = np.empty(3, dtype=np.float64)
+
+    for i in range(3):
+        pure_translation = pure_translations[i]
+        translated_clones[i] = pure_translation + positions
+        translated_clone_distances[i] = dist(x0, pure_translation)
+
+    all_clone_pts = np.vstack((generated_clone_points, translated_clones))
+    all_clones_dists = np.hstack((generated_clone_distances, translated_clone_distances))
+
+    # closest_translated_clone = min(translate_clone, key = lambda x: x[1] if (x[1] > 10e-12) else np.nan)
+    # closest_generated_clone = min(generated_clones, key = lambda x: x[1] if (x[1]> 10e-12) else np.nan, default = closest_translated_clone)
+
+    min_idx = all_clones_dists.argmin()
+
+    return (all_clone_pts[min_idx], all_clones_dists[min_idx])
+    # return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
 
 def E_general_topology(
     manifold: Type[Manifold],
