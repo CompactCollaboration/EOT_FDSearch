@@ -3,10 +3,12 @@ import numba as nb
 import itertools
 
 from numbers import Integral, Real
-from typing import Type, List, Tuple
+from typing import Type, List, Tuple, Literal
 from numpy.typing import NDArray
 
 from manifold import Manifold
+
+# Vector = NDArray[Literal[3]]
 
 
 def scatter_points(
@@ -96,24 +98,43 @@ def translate_clones(
     translated_clone_positions = clones[:, None] + translations[None, :]
     return translated_clone_positions
 
+# @nb.njit
 def dist(x, y):
     return np.linalg.norm(x - y, axis=-1)
+    # if len(x.shape) == 1:
+    #     N = 1
+    # else:
+    #     N = x.shape[0]
+
+    # res = np.empty(N, dtype=x.dtype)
+    # for i in nb.prange(x.shape[0]):
+    #     acc = 0
+    #     for j in range(x.shape[-1]):
+    #         acc += (x[i, j] - y[j])**2
+    #     res[i] = np.sqrt(acc)
+    # return res
 
 def distances(
     clone_positions: NDArray,
     position: NDArray,
 ) -> Tuple[NDArray, Real]:
-    distances = dist(position, clone_positions)
+    distances = dist(clone_positions, position)
     closest_clone_position = clone_positions[idx := distances.argmin()]
     return closest_clone_position, distances[idx]
 
 def find_closest_clone(
+    manifold: Type[Manifold],
     generated_clones,
-    pure_translations,
-    x0,
-    pos,
+    positions,
 ):
-    translate_clone = [[(pure_translations[x] + pos), distance.euclidean(x0, pure_translations[x])] for x in range(len(pure_translations))]
+    pure_translations = manifold.pure_translations
+    x0 = manifold.x0
+    
+    translate_clone = [
+        [(pt + positions), dist(pt, x0)] for pt in pure_translations
+    ]
+    print(translate_clone)
+    exit()
     closest_translated_clone = min(translate_clone, key = lambda x: x[1] if (x[1] > 10e-12) else np.nan)
     closest_generated_clone = min(generated_clones, key = lambda x: x[1] if (x[1]> 10e-12) else np.nan, default = closest_translated_clone)
     return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
@@ -129,9 +150,12 @@ def E_general_topology(
     translated_clone_positions = translate_clones(clones, translations)
     
     """Rewrite in a better way, split points and distances"""
-    nearest_from_layer = [distances(translated_clone_positions[i], positions) for i in range(len(translated_clone_positions))]
+    nearest_from_layer = [
+        distances(translated_clone_positions[i], positions)
+        for i in range(len(translated_clone_positions))
+    ]
 
-    closest_clone = find_closest_clone(nearest_from_layer, translations, x0, positions)
+    closest_clone = find_closest_clone(manifold, nearest_from_layer, positions)
     return closest_clone[1]
 
 def sample_topology(
