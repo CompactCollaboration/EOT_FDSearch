@@ -11,11 +11,13 @@ from manifold import Manifold
 
 def scatter_points(
     manifold: Type[Manifold],
-    points: int,
+    N: int,
 ) -> NDArray:
     translations = manifold.translations
     num_gens = manifold.num_gens
     L3 = manifold.L3
+
+    points = np.random.rand(N, 3)
 
     match num_gens:
         case 2:
@@ -115,12 +117,12 @@ def find_closest_clone(
 
 def E_general_topology(
     manifold: Type[Manifold],
-    positions,
+    positions: NDArray,
 ):
     translations = manifold.all_translations
     x0 = manifold.x0
     print(x0)
-
+    exit()
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
@@ -130,8 +132,8 @@ def E_general_topology(
     return closest_clone[1]
 
 def sample_topology(
-    manifold,
-    positions,
+    manifold: Type[Manifold],
+    positions: NDArray,
 ):
     manifold.find_all_translations()
     distance = E_general_topology(manifold, positions)
@@ -144,10 +146,7 @@ def sample_points(
     num_gens = manifold.num_gens
     pure_translations = manifold.pure_translations
     L_scale = manifold.L
-
-    points = np.random.rand(precision, 3)
-
-    L_scatter = scatter_points(manifold, points)
+    L_scatter = scatter_points(manifold, precision)
     
     match num_gens:
         case 2:
