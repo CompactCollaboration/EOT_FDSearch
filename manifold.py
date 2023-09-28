@@ -187,8 +187,8 @@ class Manifold(ABC):
             self.pure_translations = [self.T1, self.T2, -self.T3]
             self.translations = [self.TA1, self.TA2, self.TB]
         
-        self.pure_translations = np.round(self.pure_translations, 5)
-        self.translations = np.round(self.translations, 5)
+        self.pure_translations = list(np.round(self.pure_translations, 5))
+        self.translations = list(np.round(self.translations, 5))
 
     def apply_generator(self, x):
         return [
