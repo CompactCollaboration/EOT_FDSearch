@@ -143,16 +143,19 @@ def find_closest_clone(
     return min((closest_generated_clone, closest_translated_clone), key = lambda x: x[1])
 
 def E_general_topology(
-    manifold,
+    manifold: Type[Manifold],
     positions,
 ):
     translations = manifold.all_translations
+    x0 = manifold.x0
+    print(x0)
+
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
-    ###
-    nearest_from_layer = [distances(translated_clone_positions[i], pos) for i in range(len(translated_clone_pos))]
-    closest_clone = find_closest_clone(nearest_from_layer, pure_translations, x0, pos)
+    
+    nearest_from_layer = [distances(translated_clone_positions[i], positions) for i in range(len(translated_clone_positions))]
+    closest_clone = find_closest_clone(nearest_from_layer, translations, x0, positions)
     return closest_clone[1]
 
 def sample_topology(
@@ -175,7 +178,7 @@ def sample_points(
 
     L_scatter = scatter_points(manifold, points)
     
-    match manifold.num_gens:
+    match num_gens:
         case 2:
             positions = (
                 L_scatter
@@ -184,7 +187,10 @@ def sample_points(
         case 3:
             positions = (
                 L_scatter
-                - 0.5 * (pure_translations[0] + pure_translations[1] - pure_translations[2])
+                - 0.5 * (
+                    pure_translations[0] + pure_translations[1]
+                    - pure_translations[2]
+                )
             )
 
     count = 0
@@ -195,9 +201,9 @@ def sample_points(
         distance = sample_topology(manifold, positions[k])
         if distance < 1:
             count +=1
-            excluded_points.append(pos[k])
+            excluded_points.append(positions[k])
         else:
-            allowed_points.append(pos[k])
+            allowed_points.append(positions[k])
 
     percents = 1 - count / precision
 
@@ -211,6 +217,15 @@ def sample_points(
 
     return percents, [excluded_points_x, excluded_points_y, excluded_points_z], [L_x, L_y, L_z]
 
+def sample_assoc_E1(N: int):
+    """
+    Rewrite with a grid in each direction instead of random sampling
+    """
+    L1 = np.random.uniform(low = 1, high = 2, size = N)
+    L2 = np.random.uniform(low = L1[0], high = 2, size = N)
+    L3 = np.random.uniform(low = 0.5, high = 1.1, size = N)
+    L_samples = np.stack((L1, L2, L3)).T
+    return L_samples
 
 if __name__ == "__main__":
     np.random.seed(1234)
@@ -223,11 +238,7 @@ if __name__ == "__main__":
     precision = 20
     param_precision = 10
     
-    L1 = np.random.uniform(low = 1, high = 2, size = param_precision)
-    L2 = np.random.uniform(low = L1[0], high = 2, size = param_precision)
-    L3 = np.random.uniform(low = 0.5, high = 1.1, size = param_precision)
-
-    L_samples = np.stack((L1, L2, L3)).T
+    L_samples = sample_assoc_E1(param_precision)
     
     # L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
     # manifold.construct_generators(L_sample[0], angles)
@@ -243,9 +254,9 @@ if __name__ == "__main__":
         )
         
         if percents > 0.05:
-            L_accept.append(random_L_sample[i])
+            L_accept.append(L_samples[i])
         else:
-            L_reject.append(random_L_sample[i])
+            L_reject.append(L_samples[i])
         if (i%10 == 0):
             print(i)
 
