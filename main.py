@@ -72,8 +72,6 @@ def find_clones(manifold: Type[Manifold], positions: NDArray) -> List[NDArray]:
     
     full_clone_list = []
 
-    print(translations)
-    exit()
     for comb in clone_combs:
         if comb != (1, 1, 1):
             x = positions
@@ -87,13 +85,15 @@ def find_clones(manifold: Type[Manifold], positions: NDArray) -> List[NDArray]:
     return full_clone_list
 
 def translate_clones(
-    clones,
-    translations,
-):
-    translated_clone_positions = [
-        [clone + translation for translation in translations]
-        for clone in clones
-    ]
+    clones: List[NDArray],
+    translations: List[NDArray],
+) -> List[List[NDArray]]:
+    """
+    Apply the set of all translations of a manifold to the set of clones
+    """
+    clones = np.array(clones)
+    translations = np.array(translations)
+    translated_clone_positions = clones[:, None] + translations[None, :]
     return translated_clone_positions
 
 def translate_clones_old(clone_pos, translations):
