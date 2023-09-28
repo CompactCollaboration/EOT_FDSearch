@@ -50,17 +50,17 @@ def find_all_translations_corner(pure_translations):
     return all_new_trans
 
 def apply_generator(
-    x,
-    x0,
-    M,
-    translation,
-):  
+    x: NDArray,
+    x0: NDArray,
+    M: NDArray,
+    translation: NDArray,
+) -> NDArray:
+    """
+    Apply a generator to a vector
+    """
     return M.dot(x - x0) + translation + x0
 
-def find_clones(
-    manifold: Type[Manifold],
-    positions: NDArray,
-) -> List[NDArray]:
+def find_clones(manifold: Type[Manifold], positions: NDArray) -> List[NDArray]:
     g = manifold.g
     num_gens = manifold.num_gens
     x0 = manifold.x0
@@ -72,6 +72,8 @@ def find_clones(
     
     full_clone_list = []
 
+    print(translations)
+    exit()
     for comb in clone_combs:
         if comb != (1, 1, 1):
             x = positions
