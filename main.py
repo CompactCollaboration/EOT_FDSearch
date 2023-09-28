@@ -1,6 +1,5 @@
 import numpy as np
 import itertools
-from scipy.spatial import distance
 
 from numbers import Integral
 from typing import Type, List
@@ -96,15 +95,13 @@ def translate_clones(
     translated_clone_positions = clones[:, None] + translations[None, :]
     return translated_clone_positions
 
-def translate_clones_old(clone_pos, translations):
-    translated_clone_pos = [clone_pos + translations[i] for i in range(len(translations))]
-    return translated_clone_pos
+def dist(x, y):
+    return np.linalg.norm(x - y, axis=-1)
 
-def distances(clone_pos, pos):
-    trans_dist = [distance.euclidean(pos, clone_pos[i]) for i in range(len(clone_pos))]
-    min_trans_dist = min(trans_dist)
-    closest_clone_pos = clone_pos[trans_dist.index(min_trans_dist)]
-    return closest_clone_pos, min_trans_dist
+def distances(clone_positions: NDArray, position: NDArray):
+    distances = dist(position, clone_positions)
+    closest_clone_position = clone_positions[idx := distances.argmin()]
+    return closest_clone_position, distances[idx]
 
 def find_closest_clone(
     generated_clones,
@@ -126,7 +123,7 @@ def E_general_topology(
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
-    
+
     nearest_from_layer = [distances(translated_clone_positions[i], positions) for i in range(len(translated_clone_positions))]
     closest_clone = find_closest_clone(nearest_from_layer, translations, x0, positions)
     return closest_clone[1]
