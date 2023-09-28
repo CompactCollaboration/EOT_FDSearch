@@ -4,63 +4,34 @@ from scipy.spatial import distance
 
 from numbers import Integral
 from typing import Type
+from numpy.typing import NDArray
 
 from manifold import Manifold
 
 
 def scatter_points(
     manifold: Type[Manifold],
-    points,
-):
+    points: int,
+) -> NDArray:
     translations = manifold.translations
     num_gens = manifold.num_gens
     L3 = manifold.L3
 
-    if num_gens == 2:
-        scatter = (
-            np.outer(points[:, 0], translations[0])
-            + np.outer(points[:, 1], translations[1])
-            + np.outer((points[:, 2] - 0.5), np.array([0, 0, 2 * L3]))
-        )
-    elif num_gens == 3:
-        scatter = (
-            np.outer(points[:, 0], translations[0])
-            + np.outer(points[:, 1], translations[1])
-            - np.outer(points[:, 2], translations[2])
-        )
+    match num_gens:
+        case 2:
+            scatter = (
+                np.outer(points[:, 0], translations[0])
+                + np.outer(points[:, 1], translations[1])
+                + np.outer((points[:, 2] - 0.5), np.array([0, 0, 2 * L3]))
+            )
+        case 3:
+            scatter = (
+                np.outer(points[:, 0], translations[0])
+                + np.outer(points[:, 1], translations[1])
+                - np.outer(points[:, 2], translations[2])
+            )
     
     return scatter
-
-# def find_all_translations_center(
-#     pure_translations,
-#     num_gens,
-# ):
-#     layer_trans = [
-#         pure_translations[0],
-#         pure_translations[1],
-#         -pure_translations[0],
-#         -pure_translations[1],
-#         -2 * pure_translations[0],
-#         -2 * pure_translations[1],
-#         2 * pure_translations[0],
-#         2 * pure_translations[1],
-#         pure_translations[0] + pure_translations[1],
-#         pure_translations[0] - pure_translations[1], 
-#         -pure_translations[0] + pure_translations[1],
-#         -pure_translations[0] - pure_translations[1],
-#     ]
-
-#     if num_gens == 2:
-#         return layer_trans
-#     elif num_gens == 3:
-#         all_new_trans = np.concatenate([
-#             layer_trans,
-#             layer_trans + pure_translations[2],
-#             [pure_translations[2]]
-#         ])
-#         return all_new_trans
-#     else:
-#         raise Exception("num_gens can be 2 or 3 only")
 
 def find_all_translations_corner(pure_translations):
     trans1 = [list(itertools.combinations_with_replacement(pure_translations, i)) for i in range(len(pure_translations) + 2)]
