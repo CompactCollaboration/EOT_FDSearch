@@ -9,7 +9,7 @@ from manifold import Manifold
 
 
 def scatter_points(
-    manifold,
+    manifold: Type[Manifold],
     points,
 ):
     translations = manifold.translations
@@ -239,16 +239,13 @@ if __name__ == "__main__":
     param_precision = 10
     
     L_samples = sample_assoc_E1(param_precision)
-    
-    # L_sample = np.dstack((L1[0], L1[0], L3[0]))[0]
-    # manifold.construct_generators(L_sample[0], angles)
 
     L_accept = []
     L_reject = []
 
     for i in range(param_precision):
-        manifold = Manifold(manifold_name)
-        manifold.construct_generators(L_samples[i], angles)
+        manifold = Manifold(manifold_name) #
+        manifold.construct_generators(L_samples[i], angles) #
         percents, excludedPoints, allowedPoints = sample_points(
             manifold, precision,
         )
