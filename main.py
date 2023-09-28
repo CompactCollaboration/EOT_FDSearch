@@ -1,8 +1,9 @@
 import numpy as np
+import numba as nb
 import itertools
 
-from numbers import Integral
-from typing import Type, List
+from numbers import Integral, Real
+from typing import Type, List, Tuple
 from numpy.typing import NDArray
 
 from manifold import Manifold
@@ -98,7 +99,10 @@ def translate_clones(
 def dist(x, y):
     return np.linalg.norm(x - y, axis=-1)
 
-def distances(clone_positions: NDArray, position: NDArray):
+def distances(
+    clone_positions: NDArray,
+    position: NDArray,
+) -> Tuple[NDArray, Real]:
     distances = dist(position, clone_positions)
     closest_clone_position = clone_positions[idx := distances.argmin()]
     return closest_clone_position, distances[idx]
@@ -123,8 +127,10 @@ def E_general_topology(
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
-
+    
+    """Rewrite in a better way, split points and distances"""
     nearest_from_layer = [distances(translated_clone_positions[i], positions) for i in range(len(translated_clone_positions))]
+
     closest_clone = find_closest_clone(nearest_from_layer, translations, x0, positions)
     return closest_clone[1]
 
