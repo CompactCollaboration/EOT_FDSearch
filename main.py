@@ -164,7 +164,7 @@ def sample_topology(
     return distance
 
 def sample_points(
-    manifold,
+    manifold: Type[Manifold],
     precision: int,
 ):
     num_gens = manifold.num_gens
