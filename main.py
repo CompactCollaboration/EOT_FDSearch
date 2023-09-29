@@ -133,9 +133,9 @@ def find_closest_clone(
     pure_translations = manifold.pure_translations
     x0 = manifold.x0
     
-    translate_clone = [
-        [(pt + positions), dist(pt, x0)] for pt in pure_translations
-    ]
+    # translate_clone = [
+    #     [(pt + positions), dist(pt, x0)] for pt in pure_translations
+    # ]
 
     translated_clones = np.empty((3, 3), dtype=np.float64)
     translated_clone_distances = np.empty(3, dtype=np.float64)
@@ -160,8 +160,8 @@ def E_general_topology(
     manifold: Type[Manifold],
     positions: NDArray,
 ):
-    translations = manifold.all_translations
-    x0 = manifold.x0
+    translations = manifold.translations
+    # x0 = manifold.x0
 
     clones = find_clones(manifold, positions)
     translated_clone_positions = translate_clones(clones, translations)
@@ -173,6 +173,7 @@ def E_general_topology(
     ]
 
     closest_clone = find_closest_clone(manifold, nearest_from_layer, positions)
+
     return closest_clone[1]
 
 def sample_topology(
@@ -181,6 +182,7 @@ def sample_topology(
 ):
     manifold.find_all_translations()
     distance = E_general_topology(manifold, positions)
+    print(distance)
     return distance
 
 def sample_points(
@@ -210,26 +212,34 @@ def sample_points(
     count = 0
     allowed_points = []
     excluded_points = []
+
+    allowed_pts_idx = []
+    excluded_pts_idx = []
     
     for k in range(precision):
         distance = sample_topology(manifold, positions[k])
         if distance < 1:
             count +=1
-            excluded_points.append(positions[k])
+            excluded_pts_idx.append(k)
         else:
-            allowed_points.append(positions[k])
+            allowed_pts_idx.append(k)
 
     percents = 1 - count / precision
 
-    L_x = [allowed_points[i][0] for i in range(len(allowed_points))]
-    L_y = [allowed_points[i][1] for i in range(len(allowed_points))]
-    L_z = [allowed_points[i][2] for i in range(len(allowed_points))]
+    allowed_pts = np.array(positions[allowed_pts_idx])
+    excluded_pts = np.array(positions[excluded_pts_idx])
 
-    excluded_points_x = [excluded_points[i][0] for i in range(len(excluded_points))]
-    excluded_points_y = [excluded_points[i][1] for i in range(len(excluded_points))]
-    excluded_points_z = [excluded_points[i][2] for i in range(len(excluded_points))]
+    return percents, excluded_pts, allowed_pts
 
-    return percents, [excluded_points_x, excluded_points_y, excluded_points_z], [L_x, L_y, L_z]
+    # L_x = [allowed_points[i][0] for i in range(len(allowed_points))]
+    # L_y = [allowed_points[i][1] for i in range(len(allowed_points))]
+    # L_z = [allowed_points[i][2] for i in range(len(allowed_points))]
+
+    # excluded_points_x = [excluded_points[i][0] for i in range(len(excluded_points))]
+    # excluded_points_y = [excluded_points[i][1] for i in range(len(excluded_points))]
+    # excluded_points_z = [excluded_points[i][2] for i in range(len(excluded_points))]
+
+    # return percents, [excluded_points_x, excluded_points_y, excluded_points_z], [L_x, L_y, L_z]
 
 def sample_assoc_E1(N: int):
     """
@@ -263,7 +273,10 @@ if __name__ == "__main__":
         percents, excludedPoints, allowedPoints = sample_points(
             manifold, precision,
         )
+        print(percents, excludedPoints, allowedPoints)
         
+        exit()
+
         if percents > 0.05:
             L_accept.append(L_samples[i])
         else:
@@ -271,7 +284,7 @@ if __name__ == "__main__":
         if (i%10 == 0):
             print(i)
 
-        exit()
+        # exit()
 
     print(L_accept)
     print(L_reject)
