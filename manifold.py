@@ -3,10 +3,11 @@ from abc import ABC
 import numpy as np
 from numba.experimental import jitclass
 from numba.types import (
-    string, uint8, float64, boolean, ListType, Array
+    string, uint8, float64, boolean, ListType, Array, List
 )
+# from numba.typed import List
 
-from typing import Literal, List
+from typing import Literal
 from numpy.typing import NDArray
 
 
@@ -19,16 +20,16 @@ from numpy.typing import NDArray
     ("α", float64), ("β", float64), ("γ", float64),
     ("M1", float64[:, :]), ("M2", float64[:, :]), ("M3", float64[:, :]),
     ("MA", float64[:, :]), ("MB", float64[:, :]),
-    ("M", ListType(float64[:, :])),
+    ("M", List(float64[:, :])),
     ("g1", uint8), ("g2", uint8), ("g3", uint8),
-    ("g", ListType(uint8)),
+    ("g", List(uint8)),
     ("T1", float64[:]), ("T2", float64[:]), ("T3", float64[:]),
     ("TA1", float64[:]), ("TA2", float64[:]),
     ("TB", float64[:]),
     ("center", boolean),
     ("x0", float64[:]),
-    ("pure_translations", ListType(float64[:])),
-    ("translations", ListType(float64[:])),
+    ("pure_translations", List(float64[:])),
+    ("translations", List(float64[:])),
 ])
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
@@ -229,6 +230,14 @@ class Manifold(object):
                 self.TA2 = np.array([0., self.L2, 0.])
                 self.center = True
 
+        self.T1 = self._round(self.T1, 5)
+        self.T2 = self._round(self.T2, 5)
+        if self.num_gens == 3: self.T3 = self._round(self.T3, 5)
+
+        self.TA1 = self._round(self.TA1, 5)
+        self.TA2 = self._round(self.TA2, 5)
+        if self.num_gens == 3: self.TB = self._round(self.TB, 5)
+
         if self.num_gens == 2:
             self.M = [self.M1, self.M2]
             self.g = [self.g1, self.g2]
@@ -240,8 +249,9 @@ class Manifold(object):
             self.pure_translations = [self.T1, self.T2, -self.T3]
             self.translations = [self.TA1, self.TA2, self.TB]
         
-        self.pure_translations = [np.round(pt, 5) for pt in self.pure_translations]
-        self.translations = [np.round(t, 5) for t in self.translations]
+    @staticmethod
+    def _round(x, n):
+        return np.round(x, n, np.zeros_like(x))
 
     def apply_generator(self, x):
         return [
