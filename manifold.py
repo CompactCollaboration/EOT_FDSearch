@@ -4,9 +4,16 @@ from numba.types import (
     string, uint8, float64, boolean, ListType, List
 )
 
-from typing import Literal
+from typing import Annotated, Literal, TypeVar, List as ListType
+from numbers import Real, Integral
 from numpy.typing import NDArray
 
+DType = TypeVar("DType", bound=np.generic)
+Array3 = Annotated[NDArray[DType], Literal[3]]
+Array3x3 = Annotated[NDArray[DType], Literal[3, 3]]
+List3 = Annotated[ListType[DType], Literal[3]]
+List3x3 = Annotated[ListType[Array3], Literal[3]]
+List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
 
 @jitclass({
     "name": string,
@@ -33,46 +40,18 @@ class Manifold(object):
         self.name = name
         self.num_gens = self._get_num_generators()
 
-        self.L: float64[:]
-        self.angles: float64[:]
-        
-        self.L1: float64
-        self.L2: float64
-        self.L3: float64
-
-        self.α: float64
-        self.β: float64
-        self.γ: float64
-
-        self.M1: float64[:]
-        self.M2: float64[:]
-        self.M3: float64[:]
-
-        self.MA: float64[:]
-        self.MB: float64[:]
-
-        self.M: ListType[float64[:]]
-
-        self.g1: uint8
-        self.g2: uint8
-        self.g3: uint8
-
-        self.g: ListType[uint8]
-
-        self.T1: float64[:]
-        self.T2: float64[:]
-        self.T3: float64[:]
-
-        self.TA1: float64[:]
-        self.TA2: float64[:]
-        self.TB: float64[:]
-
+        self.L: Array3; self.L1: Real; self.L2: Real; self.L3: Real
+        self.angles: Array3; self.α: Real; self.β: Real; self.γ: Real
+        self.M: List3x3x3; self.M1: Array3; self.M2: Array3; self.M3: Array3
+        self.MA: Array3; self.MB: Array3
+        self.g: List3; self.g1: Integral; self.g2: Integral; self.g3: Integral
+        self.pure_translations: List3x3
+        self.T1: Array3; self.T2: Array3; self.T3: Array3
+        self.translations: List3x3
+        self.TA1: Array3; self.TA2: Array3; self.TB: Array3
         self.center: boolean
 
         self.x0 = np.array([0., 0., 0.])
-
-        self.pure_translations: ListType[float64[:]]
-        self.translations: ListType[float64[:]]
 
         topologies = ["E1", "E2", "E3", "E4", "E5", "E6", "E11", "E12"]
         assert self.name in topologies, f"Topology {self.name} is not supported."
