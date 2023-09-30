@@ -259,23 +259,23 @@ def sample_associated_E1_topology(
     manifold_name: str,
     size: Integral,
 ) -> NDArray:
+    L = np.zeros((size**3, 3), dtype=np.float64)
     L1 = np.linspace(1, 2, size)
+    L3 = np.linspace(0.5, 1.1, size)
 
     if manifold_name in ["E3", "E4", "E5"]:
         L2 = L1.copy()
     else:
         L2 = np.linspace(1, 2, size)
 
-    L3 = np.linspace(0.5, 1.1, size)
-
-    L = np.zeros((size**3, 3), dtype=np.float64)
-
+    size2 = size**2
     for i in range(size):
         for j in range(size):
             for k in range(size):
-                L[i*size**2 + j*size + k, 0] = L1[k]
-                L[i*size**2 + j*size + k, 1] = L2[j]
-                L[i*size**2 + j*size + k, 2] = L3[i]
+                idx = i * size2 + j * size + k
+                L[idx, 0] = L1[k]
+                L[idx, 1] = L2[j]
+                L[idx, 2] = L3[i]
 
     return L
 
@@ -291,19 +291,18 @@ if __name__ == "__main__":
     precision = 20
     param_precision = 10
     
-    L_sample = sample_associated_E1_topology(manifold_name, 4)
-    print(L_sample)
+    L_samples = sample_associated_E1_topology(manifold_name, param_precision)
 
-    exit()
 
-    L_samples = sample_assoc_E1(param_precision)
+    # L_samples = sample_assoc_E1(param_precision)
 
     L_accept = []
     L_reject = []
 
     for i in range(param_precision):
-        manifold = Manifold(manifold_name) #
-        manifold.construct_generators(L_samples[i], angles) #
+        manifold = Manifold(manifold_name)
+        manifold.construct_generators(L_samples[i], angles)
+        exit()
         percents, excludedPoints, allowedPoints = sample_points(
             manifold, precision,
         )
