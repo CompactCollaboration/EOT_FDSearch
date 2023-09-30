@@ -17,9 +17,11 @@ from numpy.typing import NDArray
     ("L1", float64), ("L2", float64), ("L3", float64),
     ("angles", float64[:]),
     ("α", float64), ("β", float64), ("γ", float64),
-    ("M1", float64[:,:]), ("M2", float64[:,:]), ("M3", float64[:,:]),
-    ("M", float64[:,:]),
+    ("M1", float64[:, :]), ("M2", float64[:, :]), ("M3", float64[:, :]),
+    ("MA", float64[:, :]), ("MB", float64[:, :]),
+    ("M", ListType(float64[:, :])),
     ("g1", uint8), ("g2", uint8), ("g3", uint8),
+    ("g", ListType(uint8)),
     ("T1", float64[:]), ("T2", float64[:]), ("T3", float64[:]),
     ("TA1", float64[:]), ("TA2", float64[:]),
     ("TB", float64[:]),
@@ -48,11 +50,16 @@ class Manifold(object):
         self.M2: float64[:]
         self.M3: float64[:]
 
+        self.MA: float64[:]
+        self.MB: float64[:]
+
         self.M: ListType[float64[:]]
 
         self.g1: uint8
         self.g2: uint8
         self.g3: uint8
+
+        self.g: ListType[uint8]
 
         self.T1: float64[:]
         self.T2: float64[:]
@@ -87,7 +94,6 @@ class Manifold(object):
             case 3:
                 self.L1, self.L2, self.L3 = self.L = L_scale
                 self.α, self.β, self.γ = self.angles = angles
-        
         self._construct_generators()
 
     def _construct_generators(self) -> None:
@@ -95,9 +101,9 @@ class Manifold(object):
             case "E1":
                 self.M1 = self.M2 = self.M3 = np.eye(3)
                 self.g1 = self.g2 = self.g3 = 1
-                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T1 = self.TA1 = self.L1 * np.array([1., 0., 0.])
                 self.T2 = self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
                 self.T3 = self.TB = self.L3 * np.array([
                     np.cos(self.β) * np.cos(self.γ),
@@ -108,19 +114,19 @@ class Manifold(object):
 
             case "E2":
                 self.M1 = self.M2 = np.eye(3)
-                self.M3 = np.diag([-1, -1, 1])
+                self.M3 = np.diag(np.array([-1., -1., 1.]))
                 self.g1 = self.g2 = 1
                 self.g3 = 2
-                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T1 = self.L1 * np.array([1., 0., 0.])
                 self.T2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
-                self.T3 = np.array([0, 0, 2 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T3 = np.array([0., 0., 2 * self.L3])
+                self.TA1 = self.L1 * np.array([1., 0., 0.])
                 self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
-                self.TB  = np.array([0, 0, self.L3])
+                self.TB  = np.array([0., 0., self.L3])
                 self.center = True
 
             case "E3":
@@ -129,22 +135,22 @@ class Manifold(object):
 
                 self.M1 = self.M2 = self.MA = np.eye(3)
                 self.M3 = self.MB = np.array([
-                    [0,  1,  0],
-                    [-1, 0,  0],
-                    [0,  0,  1],
+                    [0.,  1.,  0.],
+                    [-1., 0.,  0.],
+                    [0.,  0.,  1.],
                 ])
                 self.g1 = self.g2 = 1
                 self.g3 = 4
-                self.T1 = self.L1 * np.array([1, 0, 0])
+                self.T1 = self.L1 * np.array([1., 0., 0.])
                 self.T2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
-                self.T3 = np.array([0, 0, 4 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T3 = np.array([0., 0., 4 * self.L3])
+                self.TA1 = self.L1 * np.array([1., 0., 0.])
                 self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
-                self.TB = np.array([0, 0, self.L3])
+                self.TB = np.array([0., 0., self.L3])
                 self.center = True
 
             case "E4":
@@ -152,18 +158,18 @@ class Manifold(object):
 
                 self.M1 = self.M2 = self.MA = np.eye(3)
                 self.M3 = self.MB = np.array([
-                    [-1/2, np.sqrt(3)/2, 0],
-                    [-np.sqrt(3)/2, -1/2, 0],
-                    [0, 0, 1],
+                    [-1/2,          np.sqrt(3)/2, 0.],
+                    [-np.sqrt(3)/2, -1/2,         0.],
+                    [0.,            0.,           1.],
                 ])
                 self.g1 = self.g2 = 1
                 self.g3 = 3
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                self.T3 = np.array([0, 0, 3 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0])
-                self.TB = np.array([0, 0, self.L3])
+                self.T1 = self.L1 * np.array([1., 0., 0.])
+                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0.])
+                self.T3 = np.array([0., 0., 3 * self.L3])
+                self.TA1 = self.L1 * np.array([1., 0., 0.])
+                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3) / 2, 0.])
+                self.TB = np.array([0., 0., self.L3])
                 self.center = True
 
             case "E5":
@@ -171,18 +177,18 @@ class Manifold(object):
 
                 self.M1 = self.M2 = self.MA = np.eye(3)
                 self.M3 = self.MB = np.array([
-                    [1/2, np.sqrt(3)/2, 0],
-                    [-np.sqrt(3)/2, 1/2, 0],
-                    [0, 0, 1],
+                    [1/2,           np.sqrt(3)/2, 0.],
+                    [-np.sqrt(3)/2, 1/2,          0.],
+                    [0.,            0.,           1.],
                 ])
                 self.g1 = self.g2 = 1
                 self.g3 = 6
-                self.T1 = self.L1 * np.array([1, 0, 0])
-                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                self.T3 = np.array([0, 0, 6 * self.L3])
-                self.TA1 = self.L1 * np.array([1, 0, 0])
-                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0])
-                self.TB = np.array([0, 0, self.L3])
+                self.T1 = self.L1 * np.array([1., 0., 0.])
+                self.T2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0.])
+                self.T3 = np.array([0., 0., 6 * self.L3])
+                self.TA1 = self.L1 * np.array([1., 0., 0.])
+                self.TA2 = self.L2 * np.array([-1/2, np.sqrt(3)/2, 0.])
+                self.TB = np.array([0., 0., self.L3])
                 self.center = True
 
             case "E6":
@@ -190,37 +196,37 @@ class Manifold(object):
                 LBy = LAy = self.L2
                 LCz = LBz = self.L3
                 
-                self.M1 = np.diag(([1, -1, -1]))
-                self.M2 = np.diag(([-1, 1, -1]))
-                self.M3 = np.diag(([-1, -1, 1]))
+                self.M1 = np.diag(np.array([1., -1., -1.]))
+                self.M2 = np.diag(np.array([-1., 1., -1.]))
+                self.M3 = np.diag(np.array([-1., -1., 1.]))
                 self.g1 = self.g2 = self.g3 = 2
-                self.T1 = 2 * LAx * np.array([1, 0, 0])
-                self.T2 = 2 * LBy * np.array([0, 1, 0])
-                self.T3 = 2 * LCz * np.array([0, 0, 1])
-                self.TA1 = np.array([LAx, LAy, 0])
-                self.TA2 = np.array([0, LBy, LBz])
-                self.TB  = np.array([LCx, 0, LCz])
+                self.T1 = 2 * LAx * np.array([1., 0., 0.])
+                self.T2 = 2 * LBy * np.array([0., 1., 0.])
+                self.T3 = 2 * LCz * np.array([0., 0., 1.])
+                self.TA1 = np.array([LAx, LAy, 0.])
+                self.TA2 = np.array([0., LBy, LBz])
+                self.TB  = np.array([LCx, 0., LCz])
                 self.center = True
 
             case "E11":
                 self.M1 = self.M2 = np.eye(3)
                 self.g1 = self.g2 = 1
-                self.T1 = self.TA1 = self.L1 * np.array([1, 0, 0])
+                self.T1 = self.TA1 = self.L1 * np.array([1., 0., 0.])
                 self.T2 = self.TA2 = self.L2 * np.array([
-                    np.cos(self.α), np.sin(self.α), 0,
+                    np.cos(self.α), np.sin(self.α), 0.,
                 ])
                 self.center = False
 
             case "E12":
                 self.M1 = np.eye(3)
-                self.M2 = np.diag([-1, 1, -1])
+                self.M2 = np.diag(np.array([-1., 1., -1.]))
                 self.g1 = 1
                 self.g2 = 2
                 self.T1 = self.TA1 = self.L1 * np.array([
-                    np.cos(self.α), 0, np.sin(self.α),
+                    np.cos(self.α), 0., np.sin(self.α),
                 ])
-                self.T2 = np.array([0, 2 * self.L2, 0])
-                self.TA2 = np.array([0, self.L2, 0])
+                self.T2 = np.array([0., 2 * self.L2, 0.])
+                self.TA2 = np.array([0., self.L2, 0.])
                 self.center = True
 
         if self.num_gens == 2:
@@ -234,8 +240,8 @@ class Manifold(object):
             self.pure_translations = [self.T1, self.T2, -self.T3]
             self.translations = [self.TA1, self.TA2, self.TB]
         
-        self.pure_translations = list(np.round(self.pure_translations, 5))
-        self.translations = list(np.round(self.translations, 5))
+        self.pure_translations = [np.round(pt, 5) for pt in self.pure_translations]
+        self.translations = [np.round(t, 5) for t in self.translations]
 
     def apply_generator(self, x):
         return [
