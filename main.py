@@ -251,6 +251,35 @@ def sample_assoc_E1(N: int):
     L_samples = np.stack((L1, L2, L3)).T
     return L_samples
 
+@nb.njit(
+    nb.float64[:, :](nb.types.unicode_type, nb.int32),
+    parallel=True,
+)
+def sample_associated_E1_topology(
+    manifold_name: str,
+    size: Integral,
+) -> NDArray:
+    L1 = np.linspace(1, 2, size)
+
+    if manifold_name in ["E3", "E4", "E5"]:
+        L2 = L1.copy()
+    else:
+        L2 = np.linspace(1, 2, size)
+
+    L3 = np.linspace(0.5, 1.1, size)
+
+    L = np.zeros((size**3, 3), dtype=np.float64)
+
+    for i in range(size):
+        for j in range(size):
+            for k in range(size):
+                L[i*size**2 + j*size + k, 0] = L1[k]
+                L[i*size**2 + j*size + k, 1] = L2[j]
+                L[i*size**2 + j*size + k, 2] = L3[i]
+
+    return L
+
+
 if __name__ == "__main__":
     np.random.seed(1234)
 
@@ -262,6 +291,11 @@ if __name__ == "__main__":
     precision = 20
     param_precision = 10
     
+    L_sample = sample_associated_E1_topology(manifold_name, 4)
+    print(L_sample)
+
+    exit()
+
     L_samples = sample_assoc_E1(param_precision)
 
     L_accept = []
