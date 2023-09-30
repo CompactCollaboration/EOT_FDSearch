@@ -15,6 +15,7 @@ List3 = Annotated[ListType[DType], Literal[3]]
 List3x3 = Annotated[ListType[Array3], Literal[3]]
 List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
 
+
 @jitclass({
     "name": string,
     "num_gens": uint8,
