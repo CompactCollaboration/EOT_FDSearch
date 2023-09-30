@@ -3,9 +3,8 @@ from abc import ABC
 import numpy as np
 from numba.experimental import jitclass
 from numba.types import (
-    string, uint8, float64, boolean, ListType, Array, List
+    string, uint8, float64, boolean, ListType, List
 )
-# from numba.typed import List
 
 from typing import Literal
 from numpy.typing import NDArray
