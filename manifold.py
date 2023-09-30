@@ -1,38 +1,85 @@
 from abc import ABC
 
 import numpy as np
-import numba as nb
 from numba.experimental import jitclass
+from numba.types import (
+    string, uint8, float64, boolean, ListType, Array
+)
 
 from typing import Literal, List
 from numpy.typing import NDArray
 
 
-@jitclass([('name', nb.types.unicode_type)])
-class Manifold():
+@jitclass([
+    ("name", string),
+    ("num_gens", uint8),
+    ("L", float64[:]),
+    ("L1", float64), ("L2", float64), ("L3", float64),
+    ("angles", float64[:]),
+    ("α", float64), ("β", float64), ("γ", float64),
+    ("M1", float64[:,:]), ("M2", float64[:,:]), ("M3", float64[:,:]),
+    ("M", float64[:,:]),
+    ("g1", uint8), ("g2", uint8), ("g3", uint8),
+    ("T1", float64[:]), ("T2", float64[:]), ("T3", float64[:]),
+    ("TA1", float64[:]), ("TA2", float64[:]),
+    ("TB", float64[:]),
+    ("center", boolean),
+    ("x0", float64[:]),
+    ("pure_translations", ListType(float64[:])),
+    ("translations", ListType(float64[:])),
+])
+class Manifold(object):
     def __init__(self, name: Literal) -> None:
         self.name = name
-        self.num_gens = None
-        self.L = None
-        self.L1 = self.L2 = self.L3 = None
-        self.angles = None
-        self.α = self.β = self.γ = None
-        self.M1 = self.M2 = self.M3 = None
-        self.M = None
-        self.g1 = self.g2 = self.g3 = None
-        self.T1 = self.T2 = self.T3 = None
-        self.TA1 = self.TA2 = None
-        self.TB = None
-        self.center = None
-        self.x0 = np.array([0, 0, 0])
-        self.pure_translations = None
-        self.translations = None
+        self.num_gens = self._get_num_generators()
+
+        self.L: float64[:]
+        self.angles: float64[:]
+        
+        self.L1: float64
+        self.L2: float64
+        self.L3: float64
+
+        self.α: float64
+        self.β: float64
+        self.γ: float64
+
+        self.M1: float64[:]
+        self.M2: float64[:]
+        self.M3: float64[:]
+
+        self.M: ListType[float64[:]]
+
+        self.g1: uint8
+        self.g2: uint8
+        self.g3: uint8
+
+        self.T1: float64[:]
+        self.T2: float64[:]
+        self.T3: float64[:]
+
+        self.TA1: float64[:]
+        self.TA2: float64[:]
+        self.TB: float64[:]
+
+        self.center: boolean
+
+        self.x0 = np.array([0., 0., 0.])
+
+        self.pure_translations: ListType[float64[:]]
+        self.translations: ListType[float64[:]]
 
         topologies = ["E1", "E2", "E3", "E4", "E5", "E6", "E11", "E12"]
         assert self.name in topologies, f"Topology {self.name} is not supported."
 
+    def _get_num_generators(self):
+        match self.name:
+            case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
+                return 3
+            case "E11" | "E12":
+                return 2
+
     def construct_generators(self, L_scale, angles):
-        self._get_num_generators()
         match self.num_gens:
             case 2:
                 self.L1, self.L2 = self.L = L_scale
@@ -42,13 +89,6 @@ class Manifold():
                 self.α, self.β, self.γ = self.angles = angles
         
         self._construct_generators()
-
-    def _get_num_generators(self):
-        match self.name:
-            case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
-                self.num_gens = 3
-            case "E11" | "E12":
-                self.num_gens = 2
 
     def _construct_generators(self) -> None:
         match self.name:
