@@ -11,26 +11,26 @@ from typing import Literal
 from numpy.typing import NDArray
 
 
-@jitclass([
-    ("name", string),
-    ("num_gens", uint8),
-    ("L", float64[:]),
-    ("L1", float64), ("L2", float64), ("L3", float64),
-    ("angles", float64[:]),
-    ("α", float64), ("β", float64), ("γ", float64),
-    ("M1", float64[:, :]), ("M2", float64[:, :]), ("M3", float64[:, :]),
-    ("MA", float64[:, :]), ("MB", float64[:, :]),
-    ("M", List(float64[:, :])),
-    ("g1", uint8), ("g2", uint8), ("g3", uint8),
-    ("g", List(uint8)),
-    ("T1", float64[:]), ("T2", float64[:]), ("T3", float64[:]),
-    ("TA1", float64[:]), ("TA2", float64[:]),
-    ("TB", float64[:]),
-    ("center", boolean),
-    ("x0", float64[:]),
-    ("pure_translations", List(float64[:])),
-    ("translations", List(float64[:])),
-])
+@jitclass({
+    "name": string,
+    "num_gens": uint8,
+    "L": float64[:],
+    "L1": float64, "L2": float64, "L3": float64,
+    "angles": float64[:],
+    "α": float64, "β": float64, "γ": float64,
+    "M1": float64[:, :], "M2": float64[:, :], "M3": float64[:, :],
+    "MA": float64[:, :], "MB": float64[:, :],
+    "M": List(float64[:, :]),
+    "g1": uint8, "g2": uint8, "g3": uint8,
+    "g": List(uint8),
+    "T1": float64[:], "T2": float64[:], "T3": float64[:],
+    "TA1": float64[:], "TA2": float64[:],
+    "TB": float64[:],
+    "center": boolean,
+    "x0": float64[:],
+    "pure_translations": List(float64[:]),
+    "translations": List(float64[:]),
+})
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
         self.name = name
@@ -87,7 +87,7 @@ class Manifold(object):
             case "E11" | "E12":
                 return 2
 
-    def construct_generators(self, L_scale, angles):
+    def construct_generators(self, L_scale, angles) -> None:
         match self.num_gens:
             case 2:
                 self.L1, self.L2 = self.L = L_scale
