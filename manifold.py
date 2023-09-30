@@ -1,12 +1,15 @@
 from abc import ABC
 
 import numpy as np
+import numba as nb
+from numba.experimental import jitclass
 
 from typing import Literal, List
 from numpy.typing import NDArray
 
 
-class Manifold(ABC):
+@jitclass([('name', nb.types.unicode_type)])
+class Manifold():
     def __init__(self, name: Literal) -> None:
         self.name = name
         self.num_gens = None
