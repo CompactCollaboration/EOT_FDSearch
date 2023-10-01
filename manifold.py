@@ -64,7 +64,7 @@ class Manifold(object):
             case "E11" | "E12":
                 return 2
 
-    def construct_generators(self, L_scale, angles) -> None:
+    def construct_generators(self, L_scale: Array3, angles: Array3) -> None:
         match self.num_gens:
             case 2:
                 self.L1, self.L2 = self.L = L_scale
@@ -227,10 +227,10 @@ class Manifold(object):
             self.translations = [self.TA1, self.TA2, self.TB]
         
     @staticmethod
-    def _round(x, n):
+    def _round(x: Array3, n: Integral) -> Array3:
         return np.round(x, n, np.zeros_like(x))
 
-    def apply_generator(self, x):
+    def apply_generator(self, x: Array3) -> Array3:
         return [
             self.M[i].dot(x - self.x0) + self.translations[i] + self.x0
             for i in range(self.num_gens)
