@@ -35,6 +35,7 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
     "x0": float64[:],
     "pure_translations": List(float64[:]),
     "translations": List(float64[:]),
+    "all_translations": List(float64[:]),
 })
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
@@ -50,6 +51,7 @@ class Manifold(object):
         self.T1: Array3; self.T2: Array3; self.T3: Array3
         self.translations: List3x3
         self.TA1: Array3; self.TA2: Array3; self.TB: Array3
+        self.all_translations: List3x3
         self.center: boolean
 
         self.x0 = np.array([0., 0., 0.])
@@ -257,13 +259,15 @@ class Manifold(object):
             2 * self.pure_translations[0],
             2 * self.pure_translations[1],
             self.pure_translations[0] + self.pure_translations[1],
-            self.pure_translations[0] - self.pure_translations[1], 
+            self.pure_translations[0] - self.pure_translations[1],
             -self.pure_translations[0] + self.pure_translations[1],
             -self.pure_translations[0] - self.pure_translations[1],
         ]
 
         if self.num_gens == 3:
-            layer_translations.extend(layer_translations + self.pure_translations[2])
+            layer_translations.extend([
+                tr + self.pure_translations[2] for tr in layer_translations
+            ])
             layer_translations.append(self.pure_translations[2])
 
         return layer_translations
