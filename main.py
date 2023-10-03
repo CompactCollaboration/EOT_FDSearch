@@ -125,7 +125,7 @@ def compute_topology_distance(
     )
     return distance
 
-@nb.njit(parallel=True)
+@nb.njit
 def find_point_clones(
     manifold: Type[Manifold],
     point: NDArray,
