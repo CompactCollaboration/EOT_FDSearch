@@ -1,5 +1,6 @@
 import numpy as np
 from numba.experimental import jitclass
+from numba.typed import List as TypedList
 from numba.types import (
     string, uint8, float64, boolean, ListType, List
 )
@@ -7,6 +8,8 @@ from numba.types import (
 from typing import Annotated, Literal, TypeVar, List as ListType
 from numbers import Real, Integral
 from numpy.typing import NDArray
+
+from tools import product, equal
 
 DType = TypeVar("DType", bound=np.generic)
 Array3 = Annotated[NDArray[DType], Literal[3]]
@@ -33,6 +36,8 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
     "TB": float64[:],
     "center": boolean,
     "x0": float64[:],
+    "g_seqs": List(uint8[:]),
+    "nontriv_g_seqs": List(uint8[:]),
     "pure_translations": List(float64[:]),
     "translations": List(float64[:]),
     "all_translations": List(float64[:]),
@@ -53,6 +58,8 @@ class Manifold(object):
         self.TA1: Array3; self.TA2: Array3; self.TB: Array3
         self.all_translations: List3x3
         self.center: boolean
+        self.g_seqs: List3
+        self.nontriv_g_seqs: List3
 
         self.x0 = np.array([0., 0., 0.])
 
@@ -227,10 +234,22 @@ class Manifold(object):
             self.g = [self.g1, self.g2, self.g3]
             self.pure_translations = [self.T1, self.T2, -self.T3]
             self.translations = [self.TA1, self.TA2, self.TB]
+
+        self._find_generator_seqs()
         
     @staticmethod
     def _round(x: Array3, n: Integral) -> Array3:
         return np.round(x, n, np.zeros_like(x))
+    
+    def _find_generator_seqs(self) -> None:
+        g_ranges = [
+            np.array([x for x in range(1, gi + 1)], dtype=np.uint8)
+            for gi in self.g
+        ]
+        self.g_seqs = list(product(g_ranges))
+        self.nontriv_g_seqs = [
+            seq for seq in self.g_seqs if not equal(seq, np.ones(3))
+        ]
 
     def apply_generator(self, x: Array3) -> Array3:
         return [
