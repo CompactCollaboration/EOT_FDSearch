@@ -10,10 +10,10 @@ from time import process_time
 from manifold import Manifold
 
 
-@nb.njit(
-    nb.float64[:, :](nb.types.unicode_type, nb.int32),
-    parallel=True,
-)
+# @nb.njit(
+#     nb.float64[:, :](nb.types.unicode_type, nb.int32),
+#     parallel=True,
+# )
 def sample_associated_E1_topology(
     manifold_name: str,
     size: Integral,
@@ -64,7 +64,6 @@ def find_circles(
     excluded_pts_idx = []
     for i in range(precision):
         distance = compute_topology_distance(manifold, positions[i])
-        exit()
         if distance < 1:
             excluded_pts_idx.append(i)
         else:
@@ -108,15 +107,13 @@ def compute_topology_distance(
     manifold: Type[Manifold],
     point: NDArray,
 ):
-    translations = manifold.translations
+    all_translations = manifold.all_translations
     clones = find_point_clones(manifold, point)
-    translated_clone_positions = find_translated_clones(clones, translations)
-    
+    translated_clone_positions = find_translated_clones(clones, all_translations)
     nearest_pt_from_layer = np.zeros((translated_clone_positions.shape[0], 3), dtype=np.float64)
     nearest_distances = np.zeros(translated_clone_positions.shape[0], dtype=np.float64)
     for i in range(translated_clone_positions.shape[0]):
         nearest_pt_from_layer[i], nearest_distances[i] = find_distances(translated_clone_positions[i], point)
-    
     closest_clone, distance = find_closest_clone(
         manifold,
         nearest_pt_from_layer,
@@ -147,7 +144,7 @@ def find_point_clones(
     if len(full_clone_list) == 0: full_clone_list = [point]
     return full_clone_list
 
-@nb.njit()
+@nb.njit
 def apply_gen(
     x: NDArray,
     x0: NDArray,
@@ -159,7 +156,7 @@ def apply_gen(
     """
     return M.dot(x - x0) + translation + x0
 
-@nb.njit()
+@nb.njit
 def find_translated_clones(
     clones: List[NDArray],
     translations: List[NDArray],
@@ -218,33 +215,31 @@ def find_closest_clone(
 if __name__ == "__main__":
     np.random.seed(1234)
 
-    manifold_name = "E2"
+    manifold_name = "E5"
     manifold = Manifold(manifold_name)
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
     
-    precision = 10
+    precision = 1000000
     param_precision = 2
     
     L_samples = sample_associated_E1_topology(manifold_name, param_precision)
-    # L_samples = np.array([[2.1, 2.1, 0.546*3]])
-    L_samples = np.array([[1.62210877, 1.94390309, 0.92723427]])
+    L_samples = np.array([[2.1, 2.1, 0.30706016]])
+    # L_samples = np.array([[1.62210877, 1.94390309, 0.92723427]])
 
     L_accept = []
     L_reject = []
 
     for i in range(L_samples.shape[0]):
         manifold.construct_generators(L_samples[i], angles)
-        # manifold.generator_seqs()
-
-        manifold.find_all_translations()
+        
         
         allowed_frac, excluded_frac, allowed_pts, excluded_pts = find_circles(
             manifold, precision,
         )
 
         print(allowed_frac, excluded_frac)
-        # exit()
+        exit()
 
         if excluded_frac > 0.05:
             L_accept.append(L_samples[i])
