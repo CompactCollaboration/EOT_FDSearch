@@ -22,3 +22,7 @@ def product(arrays):
         for j in range(1, p):
             out[j*m:(j+1)*m, k+1:] = out[0:m, k+1:]
     return out
+
+@nb.njit(cache=True)
+def equal(a, b):
+    return np.all(a == b)
