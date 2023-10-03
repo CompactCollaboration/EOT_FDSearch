@@ -35,7 +35,7 @@ def sample_associated_E1_topology(
 
     return L
 
-@nb.njit
+# @nb.njit
 def find_circles(
     manifold: Type[Manifold],
     precision: Integral,
@@ -63,7 +63,10 @@ def find_circles(
     allowed_pts_idx = []
     excluded_pts_idx = []
     for i in range(precision):
+        print(positions[i])
         distance = compute_topology_distance(manifold, positions[i])
+        print(distance)
+        exit()
         if distance < 1:
             excluded_pts_idx.append(i)
         else:
@@ -77,12 +80,12 @@ def find_circles(
 
     return allowed_frac, excluded_frac, excluded_pts, allowed_pts
 
-@nb.njit(parallel=True)
+# @nb.njit(parallel=True)
 def sample_topology_box(
     manifold: Type[Manifold],
     size: Integral,
 ) -> NDArray:
-    translations = manifold.translations
+    pure_translations = manifold.pure_translations
     num_gens = manifold.num_gens
     L3 = manifold.L3
     points = np.random.rand(size, 3)
@@ -90,17 +93,18 @@ def sample_topology_box(
     match num_gens:
         case 2:
             scatter = (
-                np.outer(points[:, 0], translations[0])
-                + np.outer(points[:, 1], translations[1])
+                np.outer(points[:, 0], pure_translations[0])
+                + np.outer(points[:, 1], pure_translations[1])
                 + np.outer((points[:, 2] - 0.5), np.array([0, 0, 2 * L3]))
             )
         case 3:
             scatter = (
-                np.outer(points[:, 0], translations[0])
-                + np.outer(points[:, 1], translations[1])
-                - np.outer(points[:, 2], translations[2])
+                np.outer(points[:, 0], pure_translations[0])
+                + np.outer(points[:, 1], pure_translations[1])
+                - np.outer(points[:, 2], pure_translations[2])
             )
-    
+    print(pure_translations)
+    print("====")
     return scatter
 
 @nb.njit
@@ -223,13 +227,12 @@ if __name__ == "__main__":
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
     
-    precision = 100
+    precision = 10
     param_precision = 2
     
     L_samples = sample_associated_E1_topology(manifold_name, param_precision)
     # L_samples = np.array([[2.1, 2.1, 0.546*3]])
-
-    # L_samples = sample_assoc_E1(param_precision)
+    L_samples = np.array([[1.62210877, 1.94390309, 0.92723427]])
 
     L_accept = []
     L_reject = []
