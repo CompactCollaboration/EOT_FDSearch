@@ -236,6 +236,7 @@ class Manifold(object):
             self.translations = [self.TA1, self.TA2, self.TB]
 
         self._find_generator_seqs()
+        self._find_all_translations()
         
     @staticmethod
     def _round(x: Array3, n: Integral) -> Array3:
@@ -260,7 +261,7 @@ class Manifold(object):
     def get_generator(self):
         return lambda x: self.apply_generator(x)
 
-    def find_all_translations(self):
+    def _find_all_translations(self):
         if self.center is True:
             translations = self._find_all_translations_center()
         else:
