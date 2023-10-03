@@ -66,7 +66,7 @@ class Manifold(object):
         topologies = ["E1", "E2", "E3", "E4", "E5", "E6", "E11", "E12"]
         assert self.name in topologies, f"Topology {self.name} is not supported."
 
-    def _get_num_generators(self):
+    def _get_num_generators(self) -> Integral:
         match self.name:
             case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
                 return 3
@@ -258,17 +258,17 @@ class Manifold(object):
             for i in range(self.num_gens)
         ]
 
-    def get_generator(self):
+    def get_generator(self) -> None:
         return lambda x: self.apply_generator(x)
 
-    def _find_all_translations(self):
+    def _find_all_translations(self) -> None:
         if self.center is True:
             translations = self._find_all_translations_center()
         else:
             translations = self._find_all_translations_corner()
         self.all_translations = translations
 
-    def _find_all_translations_center(self):
+    def _find_all_translations_center(self) -> None:
         layer_translations = [
             self.pure_translations[0],
             self.pure_translations[1],
@@ -292,7 +292,7 @@ class Manifold(object):
 
         return layer_translations
 
-    def _find_all_translations_corner(self):
+    def _find_all_translations_corner(self) -> None:
         """
         To be implemented
         """
