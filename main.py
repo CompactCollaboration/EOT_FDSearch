@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 from time import process_time
 
 from manifold import Manifold
-from tools import product
+from tools import product, equal
 
 
 def scatter_points(
@@ -376,7 +376,7 @@ def compute_topology_distance(
     )
     return distance
 
-@nb.njit(parallel=True)
+@nb.njit
 def find_point_clones(
     manifold: Type[Manifold],
     point: NDArray,
@@ -387,18 +387,13 @@ def find_point_clones(
     M = manifold.M
     translations = manifold.translations
     full_clone_list = []
-
-    g_ranges = [np.array([x for x in range(1, gi + 1)]) for gi in g]
-    clone_combs = list(product(g_ranges))
     
-    for comb in clone_combs:
-        # if comb != np.array([1, 1, 1]):
-        if np.all(np.logical_not(comb == np.array([1, 1, 1]))):
-            x = point
-            for i in range(num_gens):
-                for _ in range(comb[i]):
-                    x = apply_gen(x, x0, M[i], translations[i])
-            full_clone_list.append(x)
+    for comb in manifold.nontriv_g_seqs:
+        x = point
+        for i in range(num_gens):
+            for _ in range(comb[i]):
+                x = apply_gen(x, x0, M[i], translations[i])
+        full_clone_list.append(x)
 
     if len(full_clone_list) == 0: full_clone_list = [point]
     return full_clone_list
@@ -479,11 +474,11 @@ if __name__ == "__main__":
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
     
-    precision = 10000
+    precision = 1000
     param_precision = 2
     
     L_samples = sample_associated_E1_topology(manifold_name, param_precision)
-
+    L_samples = np.array([[2.1, 2.1, 0.546]])
 
     # L_samples = sample_assoc_E1(param_precision)
 
@@ -492,14 +487,9 @@ if __name__ == "__main__":
 
     for i in range(L_samples.shape[0]):
         manifold.construct_generators(L_samples[i], angles)
-        manifold.find_all_translations()
+        # manifold.generator_seqs()
 
-        # find_circles(manifold, precision)
-        
-        # percents, excludedPoints, allowedPoints = sample_points(
-        #     manifold, precision,
-        # )
-        # print(percents, excludedPoints, allowedPoints)
+        manifold.find_all_translations()
         
         allowed_frac, excluded_frac, allowed_pts, excluded_pts = find_circles(
             manifold, precision,
