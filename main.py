@@ -63,9 +63,7 @@ def find_circles(
     allowed_pts_idx = []
     excluded_pts_idx = []
     for i in range(precision):
-        print(positions[i])
         distance = compute_topology_distance(manifold, positions[i])
-        print(distance)
         exit()
         if distance < 1:
             excluded_pts_idx.append(i)
@@ -103,8 +101,6 @@ def sample_topology_box(
                 + np.outer(points[:, 1], pure_translations[1])
                 - np.outer(points[:, 2], pure_translations[2])
             )
-    print(pure_translations)
-    print("====")
     return scatter
 
 @nb.njit
@@ -144,7 +140,7 @@ def find_point_clones(
     for comb in manifold.nontriv_g_seqs:
         x = point
         for i in range(num_gens):
-            for _ in range(comb[i]):
+            for _ in range(1, comb[i]):
                 x = apply_gen(x, x0, M[i], translations[i])
         full_clone_list.append(x)
 
