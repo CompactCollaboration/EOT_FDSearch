@@ -282,14 +282,117 @@ class Manifold(object):
             self.pure_translations[0] - self.pure_translations[1],
             -self.pure_translations[0] + self.pure_translations[1],
             -self.pure_translations[0] - self.pure_translations[1],
+            # extra
+            self.pure_translations[2],
+            -self.pure_translations[2],
+            2 * self.pure_translations[2],
+            - 2 * self.pure_translations[2],
+            self.pure_translations[0] + self.pure_translations[2],
+            self.pure_translations[0] - self.pure_translations[2],
+            self.pure_translations[1] + self.pure_translations[2],
+            self.pure_translations[1] - self.pure_translations[2],
+            - self.pure_translations[0] + self.pure_translations[2],
+            - self.pure_translations[0] - self.pure_translations[2],
+            - self.pure_translations[1] + self.pure_translations[2],
+            - self.pure_translations[1] - self.pure_translations[2],
+            self.pure_translations[0] + self.pure_translations[1] + self.pure_translations[2],
+            - self.pure_translations[0] + self.pure_translations[1] + self.pure_translations[2],
+            self.pure_translations[0] - self.pure_translations[1] + self.pure_translations[2],
+            self.pure_translations[0] + self.pure_translations[1] - self.pure_translations[2],
+            - self.pure_translations[0] - self.pure_translations[1] + self.pure_translations[2],
+            - self.pure_translations[0] + self.pure_translations[1] - self.pure_translations[2],
+            self.pure_translations[0] - self.pure_translations[1] - self.pure_translations[2],
+            - self.pure_translations[0] - self.pure_translations[1] - self.pure_translations[2],
         ]
 
         if self.num_gens == 3:
             layer_translations.extend([
-                tr + self.pure_translations[2] for tr in layer_translations
+                tr + self.translations[2] for tr in layer_translations
             ])
-            layer_translations.append(self.pure_translations[2])
+            layer_translations.append(self.translations[2])
 
+            new_layer_tr = [layer_tr + self.translations[2] for layer_tr in layer_translations]
+            new_layer_tr.extend([
+                layer_tr + 2 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr + 3 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr + 4 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr + 5 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr + 6 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.append(2 * self.translations[2])
+            new_layer_tr.append(3 * self.translations[2])
+            new_layer_tr.append(4 * self.translations[2])
+            new_layer_tr.append(5 * self.translations[2])
+            new_layer_tr.append(6 * self.translations[2])
+
+            new_layer_tr.extend([
+                layer_tr - self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr - 2 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr - 3 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr - 4 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr - 5 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.extend([
+                layer_tr - 6 * self.translations[2] for layer_tr in layer_translations
+            ])
+            new_layer_tr.append(- self.translations[2])
+            new_layer_tr.append(- 2 * self.translations[2])
+            new_layer_tr.append(- 3 * self.translations[2])
+            new_layer_tr.append(- 4 * self.translations[2])
+            new_layer_tr.append(- 5 * self.translations[2])
+            new_layer_tr.append(- 6 * self.translations[2])
+            layer_translations.extend(new_layer_tr)
+            # layer_translations.extend([
+            #     tr - self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.append(- self.pure_translations[2])
+
+            # layer_translations.extend([
+            #     tr + 2 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr + 3 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr + 4 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr + 5 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr + 6 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr - 2 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr - 3 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr - 4 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr - 5 * self.pure_translations[2] for tr in layer_translations
+            # ])
+            # layer_translations.extend([
+            #     tr - 6 * self.pure_translations[2] for tr in layer_translations
+            # ])
         return layer_translations
 
     def _find_all_translations_corner(self) -> None:

@@ -59,21 +59,30 @@ def find_circles(
                     - pure_translations[2]
                 )
             )
-    
+    # ax.scatter(positions[:, 0], positions[:, 1], positions[:, 2], s=0.5, c='r')
     allowed_pts_idx = []
     excluded_pts_idx = []
     for i in range(precision):
+        # ax.scatter(positions[i, 0], positions[i, 1], positions[i, 2], s=20, c='k')
         distance = compute_topology_distance(manifold, positions[i])
+        # break
         if distance < 1:
             excluded_pts_idx.append(i)
         else:
             allowed_pts_idx.append(i)
-    
+
     allowed_frac = len(allowed_pts_idx) / precision
     excluded_frac = len(excluded_pts_idx) / precision
 
-    allowed_pts = positions[np.array(allowed_pts_idx)]
-    excluded_pts = positions[np.array(excluded_pts_idx)]
+    if len(allowed_pts_idx) > 0:
+        allowed_pts = positions[np.array(allowed_pts_idx)]
+    else:
+        allowed_pts = []
+
+    if len(excluded_pts_idx) > 0:
+        excluded_pts = positions[np.array(excluded_pts_idx)]
+    else:
+        excluded_pts = []
 
     return allowed_frac, excluded_frac, excluded_pts, allowed_pts
 
@@ -100,20 +109,28 @@ def sample_topology_box(
                 + np.outer(points[:, 1], pure_translations[1])
                 - np.outer(points[:, 2], pure_translations[2])
             )
+
+    # ax.scatter(scatter[:, 0], scatter[:, 1], scatter[:, 2], s=0.5, c='b')
     return scatter
 
-@nb.njit
+# @nb.njit
 def compute_topology_distance(
     manifold: Type[Manifold],
     point: NDArray,
 ):
     all_translations = manifold.all_translations
     clones = find_point_clones(manifold, point)
+    # ax.scatter(np.array(clones)[:, 0], np.array(clones)[:, 1], np.array(clones)[:, 2], s=20, c='g')
     translated_clone_positions = find_translated_clones(clones, all_translations)
+    # print(translated_clone_positions.shape)
+    # ax.scatter(translated_clone_positions[:, :, 0], translated_clone_positions[:, :, 1], translated_clone_positions[:, :, 2], s=20, c='r')
     nearest_pt_from_layer = np.zeros((translated_clone_positions.shape[0], 3), dtype=np.float64)
     nearest_distances = np.zeros(translated_clone_positions.shape[0], dtype=np.float64)
     for i in range(translated_clone_positions.shape[0]):
-        nearest_pt_from_layer[i], nearest_distances[i] = find_distances(translated_clone_positions[i], point)
+        nearest_pt_from_layer[i], nearest_distances[i] = find_distances(
+            translated_clone_positions[i],
+            point,
+        )
     closest_clone, distance = find_closest_clone(
         manifold,
         nearest_pt_from_layer,
@@ -122,7 +139,7 @@ def compute_topology_distance(
     )
     return distance
 
-@nb.njit
+# @nb.njit
 def find_point_clones(
     manifold: Type[Manifold],
     point: NDArray,
@@ -144,7 +161,7 @@ def find_point_clones(
     if len(full_clone_list) == 0: full_clone_list = [point]
     return full_clone_list
 
-@nb.njit
+# @nb.njit
 def apply_gen(
     x: NDArray,
     x0: NDArray,
@@ -156,7 +173,7 @@ def apply_gen(
     """
     return M.dot(x - x0) + translation + x0
 
-@nb.njit
+# @nb.njit
 def find_translated_clones(
     clones: List[NDArray],
     translations: List[NDArray],
@@ -171,7 +188,7 @@ def find_translated_clones(
     translated_clone_positions = clones_arr[:, None] + translations_arr[None, :]
     return translated_clone_positions
 
-@nb.njit
+# @nb.njit
 def find_distances(
     clone_positions: NDArray,
     point: NDArray,
@@ -180,7 +197,7 @@ def find_distances(
     idx = distances.argmin()
     return clone_positions[idx], distances[idx]
 
-@nb.njit
+# @nb.njit
 def dist(x, y):
     N = len(x)
     result = np.zeros(N, dtype=np.float64)
@@ -188,7 +205,7 @@ def dist(x, y):
         result[i] = np.linalg.norm(x[i] - y)
     return result
 
-@nb.njit
+# @nb.njit
 def find_closest_clone(
     manifold: Type[Manifold],
     generated_clones: NDArray,
@@ -220,23 +237,46 @@ if __name__ == "__main__":
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
     
-    precision = 1000000
+    precision = 10000
     param_precision = 2
     
     L_samples = sample_associated_E1_topology(manifold_name, param_precision)
-    L_samples = np.array([[2.1, 2.1, 0.30706016]])
+    L_samples = np.array([[2.1, 2.1, 0.32564806]])
     # L_samples = np.array([[1.62210877, 1.94390309, 0.92723427]])
 
     L_accept = []
     L_reject = []
 
+    import matplotlib.pyplot as plt
+    from plot import Arrow3D
+
     for i in range(L_samples.shape[0]):
         manifold.construct_generators(L_samples[i], angles)
         
+        # fig = plt.figure(figsize=(10, 10))
+        # ax = fig.add_subplot(111, projection='3d')
+
+        # colors = ["r", "g", "b"]
         
+        # for i, tr in enumerate(manifold.translations):
+        #     arw = Arrow3D([0, tr[0]], [0, tr[1]], [0, tr[2]], arrowstyle="->", color=colors[i], lw = 2, mutation_scale=25)
+        #     ax.add_artist(arw)
+
+        # for i, ptr in enumerate(manifold.pure_translations):
+        #     arw = Arrow3D([0, ptr[0]], [0, ptr[1]], [0, ptr[2]], ls="--", arrowstyle="->", color=colors[i], lw = 2, mutation_scale=25)
+        #     ax.add_artist(arw)
+
+        # ax.set_xlim(-8, 8)
+        # ax.set_ylim(-8, 8)
+        # ax.set_zlim(-8, 8)
+
+        
+
         allowed_frac, excluded_frac, allowed_pts, excluded_pts = find_circles(
             manifold, precision,
         )
+
+        # plt.show()
 
         print(allowed_frac, excluded_frac)
         exit()
