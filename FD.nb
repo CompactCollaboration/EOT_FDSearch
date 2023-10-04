@@ -1,0 +1,2272 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     81605,       2264]
+NotebookOptionsPosition[     73826,       2124]
+NotebookOutlinePosition[     74218,       2140]
+CellTagsIndexPosition[     74175,       2137]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"MB", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       FractionBox["1", "2"], ",", 
+       FractionBox[
+        SqrtBox["3"], "2"], ",", "0"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        FractionBox[
+         SqrtBox["3"], "2"]}], ",", 
+       FractionBox["1", "2"], ",", "0"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.9053563810671883`*^9, 3.905356385497115*^9}, {
+  3.905356499905175*^9, 3.905356551238103*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"005b782e-182d-4aee-9dfb-5fe100ffd21a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"TB", "=", 
+   RowBox[{"LB", "*", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "1"}], "}"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.905356557742527*^9, 3.905356573130574*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"c6f50768-a854-4bc7-be19-c8125816c254"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"p", "=", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y", ",", "z"}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.90535657964748*^9, 3.905356584322175*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"8193586e-b810-4364-a57b-84a9398bb6e6"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.905356610532157*^9, 3.905356619844631*^9}, {
+  3.905356662629673*^9, 3.905356775963212*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"7d8fe03c-f408-473e-95b2-92559c82c008"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellChangeTimes->{{3.905356784286776*^9, 3.9053568220951*^9}, {
+  3.9053569478808403`*^9, 3.905357000119667*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"5c11cd00-0c6e-4fcc-983e-73bc3a0279e3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", "1"}], "&&", 
+  RowBox[{"0", "<", "r", "<", 
+   SqrtBox[
+    RowBox[{"1", "-", 
+     SuperscriptBox["LB", "2"]}]]}]}]], "Output",
+ CellChangeTimes->{{3.9053567854057407`*^9, 3.90535680493017*^9}, 
+   3.905356952294224*^9, 3.9053570024474373`*^9},
+ CellLabel->"Out[17]=",ExpressionUUID->"53d6a73b-d3f9-474e-8d1a-a06f970659da"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"p2", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"M", ".", "p"}], "+", "TB"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.9053570235587*^9, 3.905357040827359*^9}, {
+  3.905357072328959*^9, 3.905357105496025*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"313b918b-82cb-429a-a433-8a95ba958200"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{"x", "+", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", 
+        SqrtBox["3"]}], " ", "x"}], "+", "y"}], ")"}]}], ",", 
+   RowBox[{"LB", "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.905357036735928*^9, 3.905357111220518*^9}},
+ CellLabel->"Out[26]=",ExpressionUUID->"931d0d3d-7db3-4005-93b9-4696987cb444"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p2"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.905357118913825*^9, 3.905357136881378*^9}},
+ CellLabel->"In[29]:=",ExpressionUUID->"08ee94b0-ee95-4d8a-834f-def0daf31d3f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellChangeTimes->{{3.905357124093534*^9, 3.905357147195387*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"bfbdbc65-6b91-4c7d-a009-0f40c98b5276"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", 
+   FractionBox["1", "2"]}], "&&", 
+  RowBox[{"0", "<", "r", "<", 
+   FractionBox[
+    SqrtBox[
+     RowBox[{"1", "-", 
+      RowBox[{"4", " ", 
+       SuperscriptBox["LB", "2"]}]}]], 
+    SqrtBox["3"]]}]}]], "Output",
+ CellChangeTimes->{{3.90535712491809*^9, 3.905357147827248*^9}},
+ CellLabel->"Out[31]=",ExpressionUUID->"9338fe65-24b3-4fa7-8730-f05f86dca68f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"p3", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"M", ".", "p2"}], "+", "TB"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905357170454047*^9, 3.905357171614011*^9}},
+ CellLabel->"In[32]:=",ExpressionUUID->"92b0969f-76d4-4ca9-9d14-6f6530d93b77"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "x"}], "+", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", 
+        SqrtBox["3"]}], " ", "x"}], "-", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"2", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.90535717218116*^9},
+ CellLabel->"Out[32]=",ExpressionUUID->"5116892c-000c-4846-acd1-be09d5bf94ea"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p3"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.90535718828862*^9, 3.905357188368627*^9}},
+ CellLabel->"In[33]:=",ExpressionUUID->"b89ea41c-3cdd-4cdc-b174-82085b3fcf92"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellLabel->"In[34]:=",ExpressionUUID->"be72a991-c479-4b4f-b1c0-c183fa359637"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", 
+   FractionBox["1", "3"]}], "&&", 
+  RowBox[{"0", "<", "r", "<", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    SqrtBox[
+     RowBox[{"1", "-", 
+      RowBox[{"9", " ", 
+       SuperscriptBox["LB", "2"]}]}]]}]}]}]], "Output",
+ CellChangeTimes->{3.9053572185848293`*^9},
+ CellLabel->"Out[34]=",ExpressionUUID->"7f18b5d4-821c-4d29-819e-25fdf8871a2c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"p4", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"M", ".", "p3"}], "+", "TB"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905357789488488*^9, 3.905357791652746*^9}},
+ CellLabel->"In[35]:=",ExpressionUUID->"49dfaa99-1cbd-420b-8c0e-d075a82b3eb3"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"-", "x"}], ",", 
+   RowBox[{"-", "y"}], ",", 
+   RowBox[{
+    RowBox[{"3", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.905357793473679*^9},
+ CellLabel->"Out[35]=",ExpressionUUID->"f2d6530c-20d1-4ba8-8177-b7b13c0282db"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p4"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.9053578090866413`*^9, 3.905357809169819*^9}},
+ CellLabel->"In[36]:=",ExpressionUUID->"a96484f0-d177-4c1c-b391-13054a760844"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellLabel->"In[37]:=",ExpressionUUID->"364b1cb0-b070-4bc9-be9a-8683173626df"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", 
+   FractionBox["1", "4"]}], "&&", 
+  RowBox[{"0", "<", "r", "<", 
+   FractionBox[
+    SqrtBox[
+     RowBox[{"1", "-", 
+      RowBox[{"16", " ", 
+       SuperscriptBox["LB", "2"]}]}]], 
+    SqrtBox["3"]]}]}]], "Output",
+ CellChangeTimes->{3.9053578236990023`*^9},
+ CellLabel->"Out[37]=",ExpressionUUID->"acc90078-236f-4e03-8eec-8c83ed064870"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"p5", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"M", ".", "p4"}], "+", "TB"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.90535785109098*^9, 3.9053578528185997`*^9}},
+ CellLabel->"In[38]:=",ExpressionUUID->"58f80401-3a4b-4d74-82fb-f4bd2469f7b2"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "x"}], "-", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       SqrtBox["3"], " ", "x"}], "-", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"4", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.9053578544353*^9},
+ CellLabel->"Out[38]=",ExpressionUUID->"936a451c-8786-4287-a3f9-6c093b227e40"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p5"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.9053578671840687`*^9, 3.9053578673043137`*^9}},
+ CellLabel->"In[39]:=",ExpressionUUID->"3a803dc4-a8a8-4200-97fa-a5de41d29aba"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellLabel->"In[40]:=",ExpressionUUID->"ffef9159-2769-4d30-ac61-6af595039ad2"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", 
+   FractionBox["1", "5"]}], "&&", 
+  RowBox[{"0", "<", "r", "<", 
+   SqrtBox[
+    RowBox[{"1", "-", 
+     RowBox[{"25", " ", 
+      SuperscriptBox["LB", "2"]}]}]]}]}]], "Output",
+ CellChangeTimes->{3.905357875040107*^9},
+ CellLabel->"Out[40]=",ExpressionUUID->"fe2f0af6-fd1f-4711-a0fc-41650d4c8024"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"p6", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"M", ".", "p5"}], "+", "TB"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.9053579135286827`*^9, 3.905357915187228*^9}},
+ CellLabel->"In[41]:=",ExpressionUUID->"742d3a5f-8d7c-4e46-be26-976b06450b2a"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{"x", "-", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       SqrtBox["3"], " ", "x"}], "+", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"5", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.905357916190819*^9},
+ CellLabel->"Out[41]=",ExpressionUUID->"e6b65d86-f19b-4ce2-b2dc-1f49e42af452"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", "r_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Norm", "[", 
+      RowBox[{
+       RowBox[{"M", ".", "p6"}], "+", "TB", "-", "p"}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"x", "\[Element]", "Reals"}], ",", 
+        RowBox[{"y", "\[Element]", "Reals"}], ",", 
+        RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["x", "2"], "+", 
+      SuperscriptBox["y", "2"]}], "\[Rule]", 
+     SuperscriptBox["r", "2"]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.905357932881896*^9, 3.905357932987835*^9}},
+ CellLabel->"In[42]:=",ExpressionUUID->"12f80be3-ab89-4cd2-b35c-4c9bbcb3e20e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", "r", "]"}], "<", "1"}], ",", 
+     RowBox[{"LB", ">", "0"}], ",", 
+     RowBox[{"r", ">", "0"}]}], "}"}], ",", "r"}], "]"}]], "Input",
+ CellLabel->"In[43]:=",ExpressionUUID->"50d2431e-a92f-447e-845b-a5927f09852f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"0", "<", "LB", "<", 
+   FractionBox["1", "6"]}], "&&", 
+  RowBox[{"r", ">", "0"}]}]], "Output",
+ CellChangeTimes->{3.9053579424080973`*^9},
+ CellLabel->"Out[43]=",ExpressionUUID->"76bd4047-bc73-46f3-a75e-eb31788f127a"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"M1", "=", 
+   RowBox[{"IdentityMatrix", "[", "3", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"M2", "=", 
+   RowBox[{"IdentityMatrix", "[", "3", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"M3", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       FractionBox["1", "2"], ",", 
+       FractionBox[
+        SqrtBox["3"], "2"], ",", "0"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        FractionBox[
+         SqrtBox["3"], "2"]}], ",", 
+       FractionBox["1", "2"], ",", "0"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.905358286692964*^9, 3.90535829476578*^9}, {
+  3.90535836147038*^9, 3.905358401759861*^9}},
+ CellLabel->"In[46]:=",ExpressionUUID->"f24619b2-26c8-4cb1-9cba-6e0977d64574"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"T1", "=", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0", ",", "0"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"T2", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["1", "2"]}], ",", 
+     FractionBox[
+      SqrtBox["3"], "2"], ",", "0"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"T3", "=", 
+   RowBox[{"6", "*", "LB", "*", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "1"}], "}"}]}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.9053584274824467`*^9, 3.905358466232451*^9}, {
+  3.905358566312285*^9, 3.9053585748416862`*^9}},
+ CellLabel->"In[51]:=",ExpressionUUID->"6cd70f2b-3cae-4ac2-8d31-e659f3bfb7a4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1", "=", 
+  RowBox[{
+   RowBox[{"M1", ".", "p"}], "+", "T1"}]}]], "Input",
+ CellChangeTimes->{{3.9053584124457483`*^9, 3.90535842167315*^9}, {
+  3.905358818808264*^9, 3.905358820624588*^9}, {3.905358871082692*^9, 
+  3.905358872118829*^9}, {3.905362788599944*^9, 3.905362789348119*^9}},
+ CellLabel->"In[64]:=",ExpressionUUID->"3edbba53-a677-4cb8-a304-48213c4dd9a6"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"1", "+", "x"}], ",", "y", ",", "z"}], "}"}]], "Output",
+ CellChangeTimes->{{3.905358418125115*^9, 3.905358422740305*^9}, 
+   3.905358837915251*^9, 3.905358874725379*^9, 3.9053628413589773`*^9},
+ CellLabel->"Out[64]=",ExpressionUUID->"aff573a5-14a2-4dfe-9fae-56bdee763241"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt2", "=", 
+  RowBox[{
+   RowBox[{"M2", ".", "p"}], "+", "T2"}]}]], "Input",
+ CellChangeTimes->{{3.905358938388341*^9, 3.9053589503309526`*^9}, {
+  3.9053627814022427`*^9, 3.905362791108633*^9}},
+ CellLabel->"In[65]:=",ExpressionUUID->"622b7967-3049-4586-8cb1-50c4fe7410a7"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", 
+     FractionBox["1", "2"]}], "+", "x"}], ",", 
+   RowBox[{
+    FractionBox[
+     SqrtBox["3"], "2"], "+", "y"}], ",", "z"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.9053589515838633`*^9, {3.905362784432691*^9, 3.905362796533181*^9}, 
+   3.905362844393579*^9},
+ CellLabel->"Out[65]=",ExpressionUUID->"1664fc46-ffbd-4695-b540-189e489309cd"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt3", "=", 
+  RowBox[{
+   RowBox[{"M2", ".", "pt1"}], "+", "T2"}]}]], "Input",
+ CellChangeTimes->{{3.9053627979077053`*^9, 3.905362821729969*^9}},
+ CellLabel->"In[66]:=",ExpressionUUID->"687092a5-2e2f-478d-929f-3447f9b6fdc2"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], "+", "x"}], ",", 
+   RowBox[{
+    FractionBox[
+     SqrtBox["3"], "2"], "+", "y"}], ",", "z"}], "}"}]], "Output",
+ CellChangeTimes->{{3.905362807018655*^9, 3.905362846949663*^9}},
+ CellLabel->"Out[66]=",ExpressionUUID->"46610fcc-2310-48ea-8ed0-0c915c0c83ac"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1r1", "=", 
+  RowBox[{
+   RowBox[{"M3", ".", "pt1"}], "+", "TB"}]}]], "Input",
+ CellChangeTimes->{{3.905362857627404*^9, 3.905362879665182*^9}},
+ CellLabel->"In[68]:=",ExpressionUUID->"0bc928e7-d39d-4d7b-a6c8-b52c1db47272"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox[
+     RowBox[{"1", "+", "x"}], "2"], "+", 
+    FractionBox[
+     RowBox[{
+      SqrtBox["3"], " ", "y"}], "2"]}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["1", "2"]}], " ", 
+     SqrtBox["3"], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "x"}], ")"}]}], "+", 
+    FractionBox["y", "2"]}], ",", 
+   RowBox[{"LB", "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.9053628820018177`*^9},
+ CellLabel->"Out[68]=",ExpressionUUID->"52d3a967-9969-425f-a8c7-354350e9ec35"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"f", "[", "r_", "]"}], ":="}], "*)"}], 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"Norm", "[", 
+     RowBox[{"pt1r1", "-", "p"}], "]"}], ",", 
+    RowBox[{"Assumptions", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x", "\[Element]", "Reals"}], ",", 
+       RowBox[{"y", "\[Element]", "Reals"}], ",", 
+       RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.9053588880874662`*^9, 3.905358890633792*^9}, {
+   3.905358924143825*^9, 3.9053589243435717`*^9}, {3.905358954979705*^9, 
+   3.90535895523995*^9}, 3.9053628867352123`*^9, {3.90537990879617*^9, 
+   3.905379971899988*^9}, {3.905380342639573*^9, 
+   3.905380343358429*^9}},ExpressionUUID->"c90072aa-170b-40d9-974d-\
+7e01c8f701d0"],
+
+Cell[BoxData[
+ SqrtBox[
+  RowBox[{"1", "+", 
+   SuperscriptBox["LB", "2"], "+", "x", "+", 
+   SuperscriptBox["x", "2"], "+", 
+   RowBox[{"y", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      SqrtBox["3"], "+", "y"}], ")"}]}]}]]], "Output",
+ CellChangeTimes->{
+  3.905358925122805*^9, 3.9053589560293407`*^9, 3.9053628893525047`*^9, {
+   3.905379918717106*^9, 3.90537997225988*^9}},
+ CellLabel->"Out[74]=",ExpressionUUID->"2121c75a-3ee1-47af-8af9-35062577a08d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ResourceFunction", "[", "\"\<CompleteTheSquare\>\"", "]"}]], "Input",\
+
+ CellChangeTimes->{{3.905380012299859*^9, 3.90538001230249*^9}, {
+  3.905380211743558*^9, 3.905380211981761*^9}},
+ CellLabel->"In[85]:=",ExpressionUUID->"50136561-3b5a-4cba-bbce-4e7762e20674"],
+
+Cell[BoxData[
+ InterpretationBox[
+  TagBox[
+   DynamicModuleBox[{Typeset`open = False}, 
+    FrameBox[
+     PaneSelectorBox[{False->GridBox[{
+        {
+         PaneBox[GridBox[{
+            {
+             StyleBox[
+              StyleBox[
+               AdjustmentBox["\<\"[\[FilledSmallSquare]]\"\>",
+                BoxBaselineShift->-0.25,
+                BoxMargins->{{0, 0}, {-1, -1}}], "ResourceFunctionIcon",
+               
+               FontColor->RGBColor[
+                0.8745098039215686, 0.2784313725490196, 0.03137254901960784]],
+              
+              ShowStringCharacters->False,
+              FontFamily->"Source Sans Pro Black",
+              FontSize->0.6538461538461539 Inherited,
+              FontWeight->"Heavy",
+              PrivateFontOptions->{"OperatorSubstitution"->False}], 
+             StyleBox[
+              RowBox[{
+               StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], " "}],
+              ShowAutoStyles->False,
+              ShowStringCharacters->False,
+              FontSize->Rational[12, 13] Inherited,
+              FontColor->GrayLevel[0.1]]}
+           },
+           GridBoxSpacings->{"Columns" -> {{0.25}}}],
+          Alignment->Left,
+          BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+          BaselinePosition->Baseline,
+          FrameMargins->{{3, 0}, {0, 0}}], 
+         ItemBox[
+          PaneBox[
+           TogglerBox[Dynamic[Typeset`open], {True->
+            
+            DynamicBox[FEPrivate`FrontEndResource[
+             "FEBitmaps", "IconizeCloser"],
+             ImageSizeCache->{11., {1., 10.}}], False->
+            
+            DynamicBox[FEPrivate`FrontEndResource[
+             "FEBitmaps", "IconizeOpener"],
+             ImageSizeCache->{11., {1., 10.}}]},
+            Appearance->None,
+            BaselinePosition->Baseline,
+            ContentPadding->False,
+            FrameMargins->0],
+           Alignment->Left,
+           BaselinePosition->Baseline,
+           FrameMargins->{{1, 1}, {0, 0}}],
+          Frame->{{
+             RGBColor[
+             0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 0.5],
+              False}, {False, False}}]}
+       },
+       BaselinePosition->{1, 1},
+       GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+       GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+       
+       GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}], True->GridBox[{
+        {GridBox[{
+           {
+            PaneBox[GridBox[{
+               {
+                StyleBox[
+                 AdjustmentBox[
+                  
+                  StyleBox["\<\"[\[FilledSmallSquare]]\"\>", 
+                   "ResourceFunctionIcon",
+                   
+                   FontColor->RGBColor[
+                    0.8745098039215686, 0.2784313725490196, 
+                    0.03137254901960784]],
+                  BoxBaselineShift->-0.25,
+                  BoxMargins->{{0, 0}, {-1, -1}}],
+                 ShowStringCharacters->False,
+                 FontFamily->"Source Sans Pro Black",
+                 FontSize->0.6538461538461539 Inherited,
+                 FontWeight->"Heavy",
+                 PrivateFontOptions->{"OperatorSubstitution"->False}], 
+                StyleBox[
+                 RowBox[{
+                  StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], 
+                  " "}],
+                 ShowAutoStyles->False,
+                 ShowStringCharacters->False,
+                 FontSize->Rational[12, 13] Inherited,
+                 FontColor->GrayLevel[0.1]]}
+              },
+              GridBoxSpacings->{"Columns" -> {{0.25}}}],
+             Alignment->Left,
+             BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+             BaselinePosition->Baseline,
+             FrameMargins->{{3, 0}, {0, 0}}], 
+            ItemBox[
+             PaneBox[
+              TogglerBox[Dynamic[Typeset`open], {True->
+               
+               DynamicBox[FEPrivate`FrontEndResource[
+                "FEBitmaps", "IconizeCloser"]], False->
+               
+               DynamicBox[FEPrivate`FrontEndResource[
+                "FEBitmaps", "IconizeOpener"]]},
+               Appearance->None,
+               BaselinePosition->Baseline,
+               ContentPadding->False,
+               FrameMargins->0],
+              Alignment->Left,
+              BaselinePosition->Baseline,
+              FrameMargins->{{1, 1}, {0, 0}}],
+             Frame->{{
+                RGBColor[
+                0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+                 0.5], False}, {False, False}}]}
+          },
+          BaselinePosition->{1, 1},
+          GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+          
+          GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+          GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}]},
+        {
+         StyleBox[
+          PaneBox[GridBox[{
+             {
+              RowBox[{
+               TagBox["\<\"Version (latest): \"\>",
+                "IconizedLabel"], " ", 
+               TagBox["\<\"1.0.0\"\>",
+                "IconizedItem"]}]},
+             {
+              TagBox[
+               
+               TemplateBox[{
+                "\"Documentation \[RightGuillemet]\"", 
+                 "https://resources.wolframcloud.com/FunctionRepository/\
+resources/94da9163-90e6-4826-aea2-5d70abd674f0/"},
+                "HyperlinkURL"],
+               "IconizedItem"]}
+            },
+            DefaultBaseStyle->"Column",
+            GridBoxAlignment->{"Columns" -> {{Left}}},
+            
+            GridBoxItemSize->{
+             "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+           Alignment->Left,
+           BaselinePosition->Baseline,
+           FrameMargins->{{5, 4}, {0, 4}}], "DialogStyle",
+          FontFamily->"Roboto",
+          FontSize->11]}
+       },
+       BaselinePosition->{1, 1},
+       GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+       GridBoxDividers->{"Columns" -> {{None}}, "Rows" -> {False, {
+            GrayLevel[0.8]}, False}},
+       GridBoxItemSize->{
+        "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+      Typeset`open],
+      BaselinePosition->Baseline,
+      ImageSize->Automatic],
+     Background->RGBColor[
+      0.9686274509803922, 0.9764705882352941, 0.984313725490196],
+     BaselinePosition->Baseline,
+     DefaultBaseStyle->{},
+     FrameMargins->{{0, 0}, {1, 0}},
+     FrameStyle->RGBColor[
+      0.8313725490196079, 0.8470588235294118, 0.8509803921568627],
+     RoundingRadius->4]],
+   {"FunctionResourceBox", 
+    RGBColor[0.8745098039215686, 0.2784313725490196, 0.03137254901960784], 
+    "CompleteTheSquare"},
+   TagBoxNote->"FunctionResourceBox"],
+  ResourceFunction[
+   ResourceObject[
+    Association[
+    "Name" -> "CompleteTheSquare", "ShortName" -> "CompleteTheSquare", "UUID" -> 
+     "94da9163-90e6-4826-aea2-5d70abd674f0", "ResourceType" -> "Function", 
+     "Version" -> "1.0.0", "Description" -> 
+     "Complete the square of a quadratic polynomial having any number of \
+variables but with no mixed terms", "RepositoryLocation" -> 
+     URL["https://www.wolframcloud.com/objects/resourcesystem/api/1.0"], 
+     "SymbolName" -> 
+     "FunctionRepository`$454b1901f7a3472fa3d3715b1c243ee3`CompleteTheSquare",
+      "FunctionLocation" -> 
+     CloudObject[
+      "https://www.wolframcloud.com/obj/65490386-399e-4ae8-9202-5cc0bc819b19"]\
+], {ResourceSystemBase -> 
+     "https://www.wolframcloud.com/objects/resourcesystem/api/1.0"}]],
+  Selectable->False]], "Output",
+ CellChangeTimes->{{3.9053800192867393`*^9, 3.90538003738542*^9}, 
+   3.905380214834051*^9},
+ CellLabel->"Out[85]=",ExpressionUUID->"7ea96557-b91b-4a41-a953-3bd41662dca3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  InterpretationBox[
+   TagBox[
+    DynamicModuleBox[{Typeset`open = False}, 
+     FrameBox[
+      PaneSelectorBox[{False->GridBox[{
+         {
+          PaneBox[GridBox[{
+             {
+              StyleBox[
+               StyleBox[
+                AdjustmentBox["\<\"[\[FilledSmallSquare]]\"\>",
+                 BoxBaselineShift->-0.25,
+                 BoxMargins->{{0, 0}, {-1, -1}}], "ResourceFunctionIcon",
+                
+                FontColor->RGBColor[
+                 0.8745098039215686, 0.2784313725490196, 0.03137254901960784]],
+               
+               ShowStringCharacters->False,
+               FontFamily->"Source Sans Pro Black",
+               FontSize->0.6538461538461539 Inherited,
+               FontWeight->"Heavy",
+               PrivateFontOptions->{"OperatorSubstitution"->False}], 
+              StyleBox[
+               RowBox[{
+                StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], " "}],
+               
+               ShowAutoStyles->False,
+               ShowStringCharacters->False,
+               FontSize->Rational[12, 13] Inherited,
+               FontColor->GrayLevel[0.1]]}
+            },
+            GridBoxSpacings->{"Columns" -> {{0.25}}}],
+           Alignment->Left,
+           BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+           BaselinePosition->Baseline,
+           FrameMargins->{{3, 0}, {0, 0}}], 
+          ItemBox[
+           PaneBox[
+            TogglerBox[Dynamic[Typeset`open], {True->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeCloser"],
+              ImageSizeCache->{11., {1., 10.}}], False->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeOpener"],
+              ImageSizeCache->{11., {1., 10.}}]},
+             Appearance->None,
+             BaselinePosition->Baseline,
+             ContentPadding->False,
+             FrameMargins->0],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{1, 1}, {0, 0}}],
+           Frame->{{
+              RGBColor[
+              0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+               0.5], False}, {False, False}}]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}], True->
+       GridBox[{
+         {GridBox[{
+            {
+             PaneBox[GridBox[{
+                {
+                 StyleBox[
+                  AdjustmentBox[
+                   
+                   StyleBox["\<\"[\[FilledSmallSquare]]\"\>", 
+                    "ResourceFunctionIcon",
+                    
+                    FontColor->RGBColor[
+                    0.8745098039215686, 0.2784313725490196, 
+                    0.03137254901960784]],
+                   BoxBaselineShift->-0.25,
+                   BoxMargins->{{0, 0}, {-1, -1}}],
+                  ShowStringCharacters->False,
+                  FontFamily->"Source Sans Pro Black",
+                  FontSize->0.6538461538461539 Inherited,
+                  FontWeight->"Heavy",
+                  PrivateFontOptions->{"OperatorSubstitution"->False}], 
+                 StyleBox[
+                  RowBox[{
+                   StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], 
+                   " "}],
+                  ShowAutoStyles->False,
+                  ShowStringCharacters->False,
+                  FontSize->Rational[12, 13] Inherited,
+                  FontColor->GrayLevel[0.1]]}
+               },
+               GridBoxSpacings->{"Columns" -> {{0.25}}}],
+              Alignment->Left,
+              BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+              BaselinePosition->Baseline,
+              FrameMargins->{{3, 0}, {0, 0}}], 
+             ItemBox[
+              PaneBox[
+               TogglerBox[Dynamic[Typeset`open], {True->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeCloser"]], False->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeOpener"]]},
+                Appearance->None,
+                BaselinePosition->Baseline,
+                ContentPadding->False,
+                FrameMargins->0],
+               Alignment->Left,
+               BaselinePosition->Baseline,
+               FrameMargins->{{1, 1}, {0, 0}}],
+              Frame->{{
+                 RGBColor[
+                 0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+                  0.5], False}, {False, False}}]}
+           },
+           BaselinePosition->{1, 1},
+           GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+           
+           GridBoxItemSize->{
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+           GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}]},
+         {
+          StyleBox[
+           PaneBox[GridBox[{
+              {
+               RowBox[{
+                TagBox["\<\"Version (latest): \"\>",
+                 "IconizedLabel"], " ", 
+                TagBox["\<\"1.0.0\"\>",
+                 "IconizedItem"]}]},
+              {
+               TagBox[
+                
+                TemplateBox[{
+                 "\"Documentation \[RightGuillemet]\"", 
+                  "https://resources.wolframcloud.com/FunctionRepository/\
+resources/94da9163-90e6-4826-aea2-5d70abd674f0/"},
+                 "HyperlinkURL"],
+                "IconizedItem"]}
+             },
+             DefaultBaseStyle->"Column",
+             GridBoxAlignment->{"Columns" -> {{Left}}},
+             
+             GridBoxItemSize->{
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{5, 4}, {0, 4}}], "DialogStyle",
+           FontFamily->"Roboto",
+           FontSize->11]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxDividers->{"Columns" -> {{None}}, "Rows" -> {False, {
+             GrayLevel[0.8]}, False}},
+        GridBoxItemSize->{
+         "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+       Typeset`open],
+       BaselinePosition->Baseline,
+       ImageSize->Automatic],
+      Background->RGBColor[
+       0.9686274509803922, 0.9764705882352941, 0.984313725490196],
+      BaselinePosition->Baseline,
+      DefaultBaseStyle->{},
+      FrameMargins->{{0, 0}, {1, 0}},
+      FrameStyle->RGBColor[
+       0.8313725490196079, 0.8470588235294118, 0.8509803921568627],
+      RoundingRadius->4]],
+    {"FunctionResourceBox", 
+     RGBColor[0.8745098039215686, 0.2784313725490196, 0.03137254901960784], 
+     "CompleteTheSquare"},
+    TagBoxNote->"FunctionResourceBox"],
+   ResourceFunction[
+    ResourceObject[
+     Association[
+     "Name" -> "CompleteTheSquare", "ShortName" -> "CompleteTheSquare", 
+      "UUID" -> "94da9163-90e6-4826-aea2-5d70abd674f0", "ResourceType" -> 
+      "Function", "Version" -> "1.0.0", "Description" -> 
+      "Complete the square of a quadratic polynomial having any number of \
+variables but with no mixed terms", "RepositoryLocation" -> 
+      URL["https://www.wolframcloud.com/objects/resourcesystem/api/1.0"], 
+      "SymbolName" -> 
+      "FunctionRepository`$454b1901f7a3472fa3d3715b1c243ee3`\
+CompleteTheSquare", "FunctionLocation" -> 
+      CloudObject[
+       "https://www.wolframcloud.com/obj/65490386-399e-4ae8-9202-\
+5cc0bc819b19"]], {
+     ResourceSystemBase -> 
+      "https://www.wolframcloud.com/objects/resourcesystem/api/1.0"}]],
+   Selectable->False], "[", 
+  RowBox[{
+   RowBox[{"1", "+", 
+    SuperscriptBox["LB", "2"], "+", "x", "+", 
+    SuperscriptBox["x", "2"], "+", 
+    RowBox[{"y", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       SqrtBox["3"], "+", "y"}], ")"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.905380026481495*^9, 3.905380119377667*^9}, {
+  3.9053802186604967`*^9, 3.905380222633094*^9}},
+ CellLabel->"In[86]:=",ExpressionUUID->"6bc80f87-8062-4cb6-a888-27773d691f97"],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox["LB", "2"], "+", 
+  SuperscriptBox[
+   RowBox[{"(", 
+    RowBox[{
+     FractionBox["1", "2"], "+", "x"}], ")"}], "2"], "+", 
+  SuperscriptBox[
+   RowBox[{"(", 
+    RowBox[{
+     FractionBox[
+      SqrtBox["3"], "2"], "+", "y"}], ")"}], "2"]}]], "Output",
+ CellChangeTimes->{3.905380227742927*^9},
+ CellLabel->"Out[86]=",ExpressionUUID->"4c5b72fd-2625-4af5-87dd-beeb2e0767bb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1r2", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"M3", ".", "pt1r1"}], "+", "TB"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905380305836608*^9, 3.9053803294574137`*^9}},
+ CellLabel->"In[88]:=",ExpressionUUID->"0a6d3f12-1d4b-4f8e-a9f9-a6296f61c3b8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "-", "x", "+", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", 
+       SqrtBox["3"]}], "-", 
+      RowBox[{
+       SqrtBox["3"], " ", "x"}], "-", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"2", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.905380316931404*^9, 3.905380329903884*^9}},
+ CellLabel->"Out[88]=",ExpressionUUID->"10e86423-7044-4861-b957-0e7cb673e29e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"Norm", "[", 
+    RowBox[{"pt1r2", "-", "p"}], "]"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"x", "\[Element]", "Reals"}], ",", 
+      RowBox[{"y", "\[Element]", "Reals"}], ",", 
+      RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{3.905380349375999*^9},
+ CellLabel->"In[89]:=",ExpressionUUID->"58a6de75-2b3f-4e00-9a8b-2711f56681e1"],
+
+Cell[BoxData[
+ SqrtBox[
+  RowBox[{"1", "+", 
+   RowBox[{"4", " ", 
+    SuperscriptBox["LB", "2"]}], "+", 
+   RowBox[{"3", " ", "x", " ", 
+    RowBox[{"(", 
+     RowBox[{"1", "+", "x"}], ")"}]}], "+", 
+   RowBox[{"y", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      SqrtBox["3"], "+", 
+      RowBox[{"3", " ", "y"}]}], ")"}]}]}]]], "Output",
+ CellChangeTimes->{3.905380352122218*^9},
+ CellLabel->"Out[89]=",ExpressionUUID->"93e96ff5-20f7-4e8f-860b-d739dfd82ca7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  InterpretationBox[
+   TagBox[
+    DynamicModuleBox[{Typeset`open = False}, 
+     FrameBox[
+      PaneSelectorBox[{False->GridBox[{
+         {
+          PaneBox[GridBox[{
+             {
+              StyleBox[
+               StyleBox[
+                AdjustmentBox["\<\"[\[FilledSmallSquare]]\"\>",
+                 BoxBaselineShift->-0.25,
+                 BoxMargins->{{0, 0}, {-1, -1}}], "ResourceFunctionIcon",
+                
+                FontColor->RGBColor[
+                 0.8745098039215686, 0.2784313725490196, 0.03137254901960784]],
+               
+               ShowStringCharacters->False,
+               FontFamily->"Source Sans Pro Black",
+               FontSize->0.6538461538461539 Inherited,
+               FontWeight->"Heavy",
+               PrivateFontOptions->{"OperatorSubstitution"->False}], 
+              StyleBox[
+               RowBox[{
+                StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], " "}],
+               
+               ShowAutoStyles->False,
+               ShowStringCharacters->False,
+               FontSize->Rational[12, 13] Inherited,
+               FontColor->GrayLevel[0.1]]}
+            },
+            GridBoxSpacings->{"Columns" -> {{0.25}}}],
+           Alignment->Left,
+           BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+           BaselinePosition->Baseline,
+           FrameMargins->{{3, 0}, {0, 0}}], 
+          ItemBox[
+           PaneBox[
+            TogglerBox[Dynamic[Typeset`open], {True->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeCloser"],
+              ImageSizeCache->{11., {1., 10.}}], False->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeOpener"],
+              ImageSizeCache->{11., {1., 10.}}]},
+             Appearance->None,
+             BaselinePosition->Baseline,
+             ContentPadding->False,
+             FrameMargins->0],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{1, 1}, {0, 0}}],
+           Frame->{{
+              RGBColor[
+              0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+               0.5], False}, {False, False}}]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}], True->
+       GridBox[{
+         {GridBox[{
+            {
+             PaneBox[GridBox[{
+                {
+                 StyleBox[
+                  AdjustmentBox[
+                   
+                   StyleBox["\<\"[\[FilledSmallSquare]]\"\>", 
+                    "ResourceFunctionIcon",
+                    
+                    FontColor->RGBColor[
+                    0.8745098039215686, 0.2784313725490196, 
+                    0.03137254901960784]],
+                   BoxBaselineShift->-0.25,
+                   BoxMargins->{{0, 0}, {-1, -1}}],
+                  ShowStringCharacters->False,
+                  FontFamily->"Source Sans Pro Black",
+                  FontSize->0.6538461538461539 Inherited,
+                  FontWeight->"Heavy",
+                  PrivateFontOptions->{"OperatorSubstitution"->False}], 
+                 StyleBox[
+                  RowBox[{
+                   StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], 
+                   " "}],
+                  ShowAutoStyles->False,
+                  ShowStringCharacters->False,
+                  FontSize->Rational[12, 13] Inherited,
+                  FontColor->GrayLevel[0.1]]}
+               },
+               GridBoxSpacings->{"Columns" -> {{0.25}}}],
+              Alignment->Left,
+              BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+              BaselinePosition->Baseline,
+              FrameMargins->{{3, 0}, {0, 0}}], 
+             ItemBox[
+              PaneBox[
+               TogglerBox[Dynamic[Typeset`open], {True->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeCloser"]], False->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeOpener"]]},
+                Appearance->None,
+                BaselinePosition->Baseline,
+                ContentPadding->False,
+                FrameMargins->0],
+               Alignment->Left,
+               BaselinePosition->Baseline,
+               FrameMargins->{{1, 1}, {0, 0}}],
+              Frame->{{
+                 RGBColor[
+                 0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+                  0.5], False}, {False, False}}]}
+           },
+           BaselinePosition->{1, 1},
+           GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+           
+           GridBoxItemSize->{
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+           GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}]},
+         {
+          StyleBox[
+           PaneBox[GridBox[{
+              {
+               RowBox[{
+                TagBox["\<\"Version (latest): \"\>",
+                 "IconizedLabel"], " ", 
+                TagBox["\<\"1.0.0\"\>",
+                 "IconizedItem"]}]},
+              {
+               TagBox[
+                
+                TemplateBox[{
+                 "\"Documentation \[RightGuillemet]\"", 
+                  "https://resources.wolframcloud.com/FunctionRepository/\
+resources/94da9163-90e6-4826-aea2-5d70abd674f0/"},
+                 "HyperlinkURL"],
+                "IconizedItem"]}
+             },
+             DefaultBaseStyle->"Column",
+             GridBoxAlignment->{"Columns" -> {{Left}}},
+             
+             GridBoxItemSize->{
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{5, 4}, {0, 4}}], "DialogStyle",
+           FontFamily->"Roboto",
+           FontSize->11]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxDividers->{"Columns" -> {{None}}, "Rows" -> {False, {
+             GrayLevel[0.8]}, False}},
+        GridBoxItemSize->{
+         "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+       Typeset`open],
+       BaselinePosition->Baseline,
+       ImageSize->Automatic],
+      Background->RGBColor[
+       0.9686274509803922, 0.9764705882352941, 0.984313725490196],
+      BaselinePosition->Baseline,
+      DefaultBaseStyle->{},
+      FrameMargins->{{0, 0}, {1, 0}},
+      FrameStyle->RGBColor[
+       0.8313725490196079, 0.8470588235294118, 0.8509803921568627],
+      RoundingRadius->4]],
+    {"FunctionResourceBox", 
+     RGBColor[0.8745098039215686, 0.2784313725490196, 0.03137254901960784], 
+     "CompleteTheSquare"},
+    TagBoxNote->"FunctionResourceBox"],
+   ResourceFunction[
+    ResourceObject[
+     Association[
+     "Name" -> "CompleteTheSquare", "ShortName" -> "CompleteTheSquare", 
+      "UUID" -> "94da9163-90e6-4826-aea2-5d70abd674f0", "ResourceType" -> 
+      "Function", "Version" -> "1.0.0", "Description" -> 
+      "Complete the square of a quadratic polynomial having any number of \
+variables but with no mixed terms", "RepositoryLocation" -> 
+      URL["https://www.wolframcloud.com/objects/resourcesystem/api/1.0"], 
+      "SymbolName" -> 
+      "FunctionRepository`$454b1901f7a3472fa3d3715b1c243ee3`\
+CompleteTheSquare", "FunctionLocation" -> 
+      CloudObject[
+       "https://www.wolframcloud.com/obj/65490386-399e-4ae8-9202-\
+5cc0bc819b19"]], {
+     ResourceSystemBase -> 
+      "https://www.wolframcloud.com/objects/resourcesystem/api/1.0"}]],
+   Selectable->False], "[", 
+  RowBox[{
+   RowBox[{"1", "+", 
+    RowBox[{"4", " ", 
+     SuperscriptBox["LB", "2"]}], "+", 
+    RowBox[{"3", " ", "x", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "x"}], ")"}]}], "+", 
+    RowBox[{"y", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       SqrtBox["3"], "+", 
+       RowBox[{"3", " ", "y"}]}], ")"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.9053803661699057`*^9, 3.905380375213717*^9}},
+ CellLabel->"In[92]:=",ExpressionUUID->"56f8cb8a-9989-4508-a5cf-37e8cfd10a98"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"4", " ", 
+   SuperscriptBox["LB", "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox["1", "2"], "+", "x"}], ")"}], "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox["1", 
+       RowBox[{"2", " ", 
+        SqrtBox["3"]}]], "+", "y"}], ")"}], "2"]}]}]], "Output",
+ CellChangeTimes->{3.9053803756441393`*^9},
+ CellLabel->"Out[92]=",ExpressionUUID->"a6d7c916-8a5d-4132-b370-a7a0f25e31ac"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1r3", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"M3", ".", "pt1r2"}], "+", "TB"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905380465664222*^9, 3.9053804675706863`*^9}},
+ CellLabel->"In[93]:=",ExpressionUUID->"98520895-7e10-4085-a5b6-30c66b47b08c"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "1"}], "-", "x"}], ",", 
+   RowBox[{"-", "y"}], ",", 
+   RowBox[{
+    RowBox[{"3", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.905380468008685*^9},
+ CellLabel->"Out[93]=",ExpressionUUID->"176f0de0-be74-4d4a-abc4-1b132104f6b2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"Norm", "[", 
+    RowBox[{"pt1r3", "-", "p"}], "]"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"x", "\[Element]", "Reals"}], ",", 
+      RowBox[{"y", "\[Element]", "Reals"}], ",", 
+      RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{3.9053804812801943`*^9},
+ CellLabel->"In[94]:=",ExpressionUUID->"dd85eac2-f1ae-44e8-b5c2-db1bb93b570e"],
+
+Cell[BoxData[
+ SqrtBox[
+  RowBox[{
+   RowBox[{"9", " ", 
+    SuperscriptBox["LB", "2"]}], "+", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"1", "+", 
+      RowBox[{"2", " ", "x"}]}], ")"}], "2"], "+", 
+   RowBox[{"4", " ", 
+    SuperscriptBox["y", "2"]}]}]]], "Output",
+ CellChangeTimes->{3.9053804827279778`*^9},
+ CellLabel->"Out[94]=",ExpressionUUID->"5597f07f-89b9-4e09-9145-7f3a2dca4f1f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1r4", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"M3", ".", "pt1r3"}], "+", "TB"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905380497836*^9, 3.905380500865547*^9}},
+ CellLabel->"In[95]:=",ExpressionUUID->"afd6874d-84eb-4240-b6de-d2a0deff898d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "-", "x", "-", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      SqrtBox["3"], "+", 
+      RowBox[{
+       SqrtBox["3"], " ", "x"}], "-", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"4", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.9053805015997257`*^9},
+ CellLabel->"Out[95]=",ExpressionUUID->"ea9ca9a9-a84b-4aa8-b386-bf61fd4e84c2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"Norm", "[", 
+    RowBox[{"pt1r4", "-", "p"}], "]"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"x", "\[Element]", "Reals"}], ",", 
+      RowBox[{"y", "\[Element]", "Reals"}], ",", 
+      RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{3.905380511195243*^9},
+ CellLabel->"In[96]:=",ExpressionUUID->"f2551171-e210-40fc-8181-672cc9548ff3"],
+
+Cell[BoxData[
+ SqrtBox[
+  RowBox[{"1", "+", 
+   RowBox[{"16", " ", 
+    SuperscriptBox["LB", "2"]}], "+", 
+   RowBox[{"3", " ", "x", " ", 
+    RowBox[{"(", 
+     RowBox[{"1", "+", "x"}], ")"}]}], "-", 
+   RowBox[{
+    SqrtBox["3"], " ", "y"}], "+", 
+   RowBox[{"3", " ", 
+    SuperscriptBox["y", "2"]}]}]]], "Output",
+ CellChangeTimes->{3.905380511700054*^9},
+ CellLabel->"Out[96]=",ExpressionUUID->"0f4cb987-b0e5-4081-b239-e8cece7d4791"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  InterpretationBox[
+   TagBox[
+    DynamicModuleBox[{Typeset`open = False}, 
+     FrameBox[
+      PaneSelectorBox[{False->GridBox[{
+         {
+          PaneBox[GridBox[{
+             {
+              StyleBox[
+               StyleBox[
+                AdjustmentBox["\<\"[\[FilledSmallSquare]]\"\>",
+                 BoxBaselineShift->-0.25,
+                 BoxMargins->{{0, 0}, {-1, -1}}], "ResourceFunctionIcon",
+                
+                FontColor->RGBColor[
+                 0.8745098039215686, 0.2784313725490196, 0.03137254901960784]],
+               
+               ShowStringCharacters->False,
+               FontFamily->"Source Sans Pro Black",
+               FontSize->0.6538461538461539 Inherited,
+               FontWeight->"Heavy",
+               PrivateFontOptions->{"OperatorSubstitution"->False}], 
+              StyleBox[
+               RowBox[{
+                StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], " "}],
+               
+               ShowAutoStyles->False,
+               ShowStringCharacters->False,
+               FontSize->Rational[12, 13] Inherited,
+               FontColor->GrayLevel[0.1]]}
+            },
+            GridBoxSpacings->{"Columns" -> {{0.25}}}],
+           Alignment->Left,
+           BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+           BaselinePosition->Baseline,
+           FrameMargins->{{3, 0}, {0, 0}}], 
+          ItemBox[
+           PaneBox[
+            TogglerBox[Dynamic[Typeset`open], {True->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeCloser"],
+              ImageSizeCache->{11., {1., 10.}}], False->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeOpener"],
+              ImageSizeCache->{11., {1., 10.}}]},
+             Appearance->None,
+             BaselinePosition->Baseline,
+             ContentPadding->False,
+             FrameMargins->0],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{1, 1}, {0, 0}}],
+           Frame->{{
+              RGBColor[
+              0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+               0.5], False}, {False, False}}]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}], True->
+       GridBox[{
+         {GridBox[{
+            {
+             PaneBox[GridBox[{
+                {
+                 StyleBox[
+                  AdjustmentBox[
+                   
+                   StyleBox["\<\"[\[FilledSmallSquare]]\"\>", 
+                    "ResourceFunctionIcon",
+                    
+                    FontColor->RGBColor[
+                    0.8745098039215686, 0.2784313725490196, 
+                    0.03137254901960784]],
+                   BoxBaselineShift->-0.25,
+                   BoxMargins->{{0, 0}, {-1, -1}}],
+                  ShowStringCharacters->False,
+                  FontFamily->"Source Sans Pro Black",
+                  FontSize->0.6538461538461539 Inherited,
+                  FontWeight->"Heavy",
+                  PrivateFontOptions->{"OperatorSubstitution"->False}], 
+                 StyleBox[
+                  RowBox[{
+                   StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], 
+                   " "}],
+                  ShowAutoStyles->False,
+                  ShowStringCharacters->False,
+                  FontSize->Rational[12, 13] Inherited,
+                  FontColor->GrayLevel[0.1]]}
+               },
+               GridBoxSpacings->{"Columns" -> {{0.25}}}],
+              Alignment->Left,
+              BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+              BaselinePosition->Baseline,
+              FrameMargins->{{3, 0}, {0, 0}}], 
+             ItemBox[
+              PaneBox[
+               TogglerBox[Dynamic[Typeset`open], {True->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeCloser"]], False->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeOpener"]]},
+                Appearance->None,
+                BaselinePosition->Baseline,
+                ContentPadding->False,
+                FrameMargins->0],
+               Alignment->Left,
+               BaselinePosition->Baseline,
+               FrameMargins->{{1, 1}, {0, 0}}],
+              Frame->{{
+                 RGBColor[
+                 0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+                  0.5], False}, {False, False}}]}
+           },
+           BaselinePosition->{1, 1},
+           GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+           
+           GridBoxItemSize->{
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+           GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}]},
+         {
+          StyleBox[
+           PaneBox[GridBox[{
+              {
+               RowBox[{
+                TagBox["\<\"Version (latest): \"\>",
+                 "IconizedLabel"], " ", 
+                TagBox["\<\"1.0.0\"\>",
+                 "IconizedItem"]}]},
+              {
+               TagBox[
+                
+                TemplateBox[{
+                 "\"Documentation \[RightGuillemet]\"", 
+                  "https://resources.wolframcloud.com/FunctionRepository/\
+resources/94da9163-90e6-4826-aea2-5d70abd674f0/"},
+                 "HyperlinkURL"],
+                "IconizedItem"]}
+             },
+             DefaultBaseStyle->"Column",
+             GridBoxAlignment->{"Columns" -> {{Left}}},
+             
+             GridBoxItemSize->{
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{5, 4}, {0, 4}}], "DialogStyle",
+           FontFamily->"Roboto",
+           FontSize->11]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxDividers->{"Columns" -> {{None}}, "Rows" -> {False, {
+             GrayLevel[0.8]}, False}},
+        GridBoxItemSize->{
+         "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+       Typeset`open],
+       BaselinePosition->Baseline,
+       ImageSize->Automatic],
+      Background->RGBColor[
+       0.9686274509803922, 0.9764705882352941, 0.984313725490196],
+      BaselinePosition->Baseline,
+      DefaultBaseStyle->{},
+      FrameMargins->{{0, 0}, {1, 0}},
+      FrameStyle->RGBColor[
+       0.8313725490196079, 0.8470588235294118, 0.8509803921568627],
+      RoundingRadius->4]],
+    {"FunctionResourceBox", 
+     RGBColor[0.8745098039215686, 0.2784313725490196, 0.03137254901960784], 
+     "CompleteTheSquare"},
+    TagBoxNote->"FunctionResourceBox"],
+   ResourceFunction[
+    ResourceObject[
+     Association[
+     "Name" -> "CompleteTheSquare", "ShortName" -> "CompleteTheSquare", 
+      "UUID" -> "94da9163-90e6-4826-aea2-5d70abd674f0", "ResourceType" -> 
+      "Function", "Version" -> "1.0.0", "Description" -> 
+      "Complete the square of a quadratic polynomial having any number of \
+variables but with no mixed terms", "RepositoryLocation" -> 
+      URL["https://www.wolframcloud.com/objects/resourcesystem/api/1.0"], 
+      "SymbolName" -> 
+      "FunctionRepository`$454b1901f7a3472fa3d3715b1c243ee3`\
+CompleteTheSquare", "FunctionLocation" -> 
+      CloudObject[
+       "https://www.wolframcloud.com/obj/65490386-399e-4ae8-9202-\
+5cc0bc819b19"]], {
+     ResourceSystemBase -> 
+      "https://www.wolframcloud.com/objects/resourcesystem/api/1.0"}]],
+   Selectable->False], "[", 
+  RowBox[{
+   RowBox[{"1", "+", 
+    RowBox[{"16", " ", 
+     SuperscriptBox["LB", "2"]}], "+", 
+    RowBox[{"3", " ", "x", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "x"}], ")"}]}], "-", 
+    RowBox[{
+     SqrtBox["3"], " ", "y"}], "+", 
+    RowBox[{"3", " ", 
+     SuperscriptBox["y", "2"]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.905380529865078*^9, 3.905380534078998*^9}},
+ CellLabel->"In[97]:=",ExpressionUUID->"3992f98a-ce53-43de-8317-63df35f9e167"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"16", " ", 
+   SuperscriptBox["LB", "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox["1", "2"], "+", "x"}], ")"}], "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", 
+       FractionBox["1", 
+        RowBox[{"2", " ", 
+         SqrtBox["3"]}]]}], "+", "y"}], ")"}], "2"]}]}]], "Output",
+ CellChangeTimes->{3.9053805345524273`*^9},
+ CellLabel->"Out[97]=",ExpressionUUID->"4c24c482-63bb-4da3-ad82-382a2ca32e0c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pt1r5", "=", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"M3", ".", "pt1r4"}], "+", "TB"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.905380615329898*^9, 3.90538061736835*^9}},
+ CellLabel->"In[98]:=",ExpressionUUID->"a7c00fb0-541d-409e-9797-71ddbf1daed3"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{"1", "+", "x", "-", 
+      RowBox[{
+       SqrtBox["3"], " ", "y"}]}], ")"}]}], ",", 
+   RowBox[{
+    FractionBox["1", "2"], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      SqrtBox["3"], "+", 
+      RowBox[{
+       SqrtBox["3"], " ", "x"}], "+", "y"}], ")"}]}], ",", 
+   RowBox[{
+    RowBox[{"5", " ", "LB"}], "+", "z"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.905380617666791*^9},
+ CellLabel->"Out[98]=",ExpressionUUID->"906f99b3-7c4c-429c-b78f-a17176d5119b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"Norm", "[", 
+    RowBox[{"pt1r5", "-", "p"}], "]"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"x", "\[Element]", "Reals"}], ",", 
+      RowBox[{"y", "\[Element]", "Reals"}], ",", 
+      RowBox[{"LB", "\[Element]", "Reals"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{3.905380625546249*^9},
+ CellLabel->"In[99]:=",ExpressionUUID->"bd63efde-1e00-425f-a9d3-cc91134462e1"],
+
+Cell[BoxData[
+ SqrtBox[
+  RowBox[{"1", "+", 
+   RowBox[{"25", " ", 
+    SuperscriptBox["LB", "2"]}], "+", "x", "+", 
+   SuperscriptBox["x", "2"], "-", 
+   RowBox[{
+    SqrtBox["3"], " ", "y"}], "+", 
+   SuperscriptBox["y", "2"]}]]], "Output",
+ CellChangeTimes->{3.905380627092589*^9},
+ CellLabel->"Out[99]=",ExpressionUUID->"ab03619c-2da3-4bc8-a810-4027eddeb55e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  InterpretationBox[
+   TagBox[
+    DynamicModuleBox[{Typeset`open = False}, 
+     FrameBox[
+      PaneSelectorBox[{False->GridBox[{
+         {
+          PaneBox[GridBox[{
+             {
+              StyleBox[
+               StyleBox[
+                AdjustmentBox["\<\"[\[FilledSmallSquare]]\"\>",
+                 BoxBaselineShift->-0.25,
+                 BoxMargins->{{0, 0}, {-1, -1}}], "ResourceFunctionIcon",
+                
+                FontColor->RGBColor[
+                 0.8745098039215686, 0.2784313725490196, 0.03137254901960784]],
+               
+               ShowStringCharacters->False,
+               FontFamily->"Source Sans Pro Black",
+               FontSize->0.6538461538461539 Inherited,
+               FontWeight->"Heavy",
+               PrivateFontOptions->{"OperatorSubstitution"->False}], 
+              StyleBox[
+               RowBox[{
+                StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], " "}],
+               
+               ShowAutoStyles->False,
+               ShowStringCharacters->False,
+               FontSize->Rational[12, 13] Inherited,
+               FontColor->GrayLevel[0.1]]}
+            },
+            GridBoxSpacings->{"Columns" -> {{0.25}}}],
+           Alignment->Left,
+           BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+           BaselinePosition->Baseline,
+           FrameMargins->{{3, 0}, {0, 0}}], 
+          ItemBox[
+           PaneBox[
+            TogglerBox[Dynamic[Typeset`open], {True->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeCloser"],
+              ImageSizeCache->{11., {1., 10.}}], False->
+             
+             DynamicBox[FEPrivate`FrontEndResource[
+              "FEBitmaps", "IconizeOpener"],
+              ImageSizeCache->{11., {1., 10.}}]},
+             Appearance->None,
+             BaselinePosition->Baseline,
+             ContentPadding->False,
+             FrameMargins->0],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{1, 1}, {0, 0}}],
+           Frame->{{
+              RGBColor[
+              0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+               0.5], False}, {False, False}}]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}], True->
+       GridBox[{
+         {GridBox[{
+            {
+             PaneBox[GridBox[{
+                {
+                 StyleBox[
+                  AdjustmentBox[
+                   
+                   StyleBox["\<\"[\[FilledSmallSquare]]\"\>", 
+                    "ResourceFunctionIcon",
+                    
+                    FontColor->RGBColor[
+                    0.8745098039215686, 0.2784313725490196, 
+                    0.03137254901960784]],
+                   BoxBaselineShift->-0.25,
+                   BoxMargins->{{0, 0}, {-1, -1}}],
+                  ShowStringCharacters->False,
+                  FontFamily->"Source Sans Pro Black",
+                  FontSize->0.6538461538461539 Inherited,
+                  FontWeight->"Heavy",
+                  PrivateFontOptions->{"OperatorSubstitution"->False}], 
+                 StyleBox[
+                  RowBox[{
+                   StyleBox["CompleteTheSquare", "ResourceFunctionLabel"], 
+                   " "}],
+                  ShowAutoStyles->False,
+                  ShowStringCharacters->False,
+                  FontSize->Rational[12, 13] Inherited,
+                  FontColor->GrayLevel[0.1]]}
+               },
+               GridBoxSpacings->{"Columns" -> {{0.25}}}],
+              Alignment->Left,
+              BaseStyle->{LineSpacing -> {0, 0}, LineBreakWithin -> False},
+              BaselinePosition->Baseline,
+              FrameMargins->{{3, 0}, {0, 0}}], 
+             ItemBox[
+              PaneBox[
+               TogglerBox[Dynamic[Typeset`open], {True->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeCloser"]], False->
+                
+                DynamicBox[FEPrivate`FrontEndResource[
+                 "FEBitmaps", "IconizeOpener"]]},
+                Appearance->None,
+                BaselinePosition->Baseline,
+                ContentPadding->False,
+                FrameMargins->0],
+               Alignment->Left,
+               BaselinePosition->Baseline,
+               FrameMargins->{{1, 1}, {0, 0}}],
+              Frame->{{
+                 RGBColor[
+                 0.8313725490196079, 0.8470588235294118, 0.8509803921568627, 
+                  0.5], False}, {False, False}}]}
+           },
+           BaselinePosition->{1, 1},
+           GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+           
+           GridBoxItemSize->{
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+           GridBoxSpacings->{"Columns" -> {{0}}, "Rows" -> {{0}}}]},
+         {
+          StyleBox[
+           PaneBox[GridBox[{
+              {
+               RowBox[{
+                TagBox["\<\"Version (latest): \"\>",
+                 "IconizedLabel"], " ", 
+                TagBox["\<\"1.0.0\"\>",
+                 "IconizedItem"]}]},
+              {
+               TagBox[
+                
+                TemplateBox[{
+                 "\"Documentation \[RightGuillemet]\"", 
+                  "https://resources.wolframcloud.com/FunctionRepository/\
+resources/94da9163-90e6-4826-aea2-5d70abd674f0/"},
+                 "HyperlinkURL"],
+                "IconizedItem"]}
+             },
+             DefaultBaseStyle->"Column",
+             GridBoxAlignment->{"Columns" -> {{Left}}},
+             
+             GridBoxItemSize->{
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+            Alignment->Left,
+            BaselinePosition->Baseline,
+            FrameMargins->{{5, 4}, {0, 4}}], "DialogStyle",
+           FontFamily->"Roboto",
+           FontSize->11]}
+        },
+        BaselinePosition->{1, 1},
+        GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+        GridBoxDividers->{"Columns" -> {{None}}, "Rows" -> {False, {
+             GrayLevel[0.8]}, False}},
+        GridBoxItemSize->{
+         "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+       Typeset`open],
+       BaselinePosition->Baseline,
+       ImageSize->Automatic],
+      Background->RGBColor[
+       0.9686274509803922, 0.9764705882352941, 0.984313725490196],
+      BaselinePosition->Baseline,
+      DefaultBaseStyle->{},
+      FrameMargins->{{0, 0}, {1, 0}},
+      FrameStyle->RGBColor[
+       0.8313725490196079, 0.8470588235294118, 0.8509803921568627],
+      RoundingRadius->4]],
+    {"FunctionResourceBox", 
+     RGBColor[0.8745098039215686, 0.2784313725490196, 0.03137254901960784], 
+     "CompleteTheSquare"},
+    TagBoxNote->"FunctionResourceBox"],
+   ResourceFunction[
+    ResourceObject[
+     Association[
+     "Name" -> "CompleteTheSquare", "ShortName" -> "CompleteTheSquare", 
+      "UUID" -> "94da9163-90e6-4826-aea2-5d70abd674f0", "ResourceType" -> 
+      "Function", "Version" -> "1.0.0", "Description" -> 
+      "Complete the square of a quadratic polynomial having any number of \
+variables but with no mixed terms", "RepositoryLocation" -> 
+      URL["https://www.wolframcloud.com/objects/resourcesystem/api/1.0"], 
+      "SymbolName" -> 
+      "FunctionRepository`$454b1901f7a3472fa3d3715b1c243ee3`\
+CompleteTheSquare", "FunctionLocation" -> 
+      CloudObject[
+       "https://www.wolframcloud.com/obj/65490386-399e-4ae8-9202-\
+5cc0bc819b19"]], {
+     ResourceSystemBase -> 
+      "https://www.wolframcloud.com/objects/resourcesystem/api/1.0"}]],
+   Selectable->False], "[", 
+  RowBox[{
+   RowBox[{"1", "+", 
+    RowBox[{"16", " ", 
+     SuperscriptBox["LB", "2"]}], "+", 
+    RowBox[{"3", " ", "x", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "x"}], ")"}]}], "-", 
+    RowBox[{
+     SqrtBox["3"], " ", "y"}], "+", 
+    RowBox[{"3", " ", 
+     SuperscriptBox["y", "2"]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y"}], "}"}]}], "]"}]], "Input",
+ CellLabel->
+  "In[100]:=",ExpressionUUID->"a0a8e61e-e051-4bdb-b587-54d164d005ad"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"16", " ", 
+   SuperscriptBox["LB", "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox["1", "2"], "+", "x"}], ")"}], "2"]}], "+", 
+  RowBox[{"3", " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", 
+       FractionBox["1", 
+        RowBox[{"2", " ", 
+         SqrtBox["3"]}]]}], "+", "y"}], ")"}], "2"]}]}]], "Output",
+ CellChangeTimes->{3.905380716365891*^9},
+ CellLabel->
+  "Out[100]=",ExpressionUUID->"1c5fed20-9742-427a-94fb-6ddd76317134"]
+}, Open  ]]
+},
+WindowSize->{1440, 783},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (June 19, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"28706cd0-11f4-4811-aa9b-a75ed579bbea"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 676, 20, 52, "Input",ExpressionUUID->"005b782e-182d-4aee-9dfb-5fe100ffd21a"],
+Cell[1237, 42, 298, 7, 30, "Input",ExpressionUUID->"c6f50768-a854-4bc7-be19-c8125816c254"],
+Cell[1538, 51, 270, 6, 30, "Input",ExpressionUUID->"8193586e-b810-4364-a57b-84a9398bb6e6"],
+Cell[1811, 59, 860, 23, 33, "Input",ExpressionUUID->"7d8fe03c-f408-473e-95b2-92559c82c008"],
+Cell[CellGroupData[{
+Cell[2696, 86, 446, 11, 30, "Input",ExpressionUUID->"5c11cd00-0c6e-4fcc-983e-73bc3a0279e3"],
+Cell[3145, 99, 380, 9, 36, "Output",ExpressionUUID->"53d6a73b-d3f9-474e-8d1a-a06f970659da"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3562, 113, 585, 14, 30, "Input",ExpressionUUID->"313b918b-82cb-429a-a433-8a95ba958200"],
+Cell[4150, 129, 561, 18, 50, "Output",ExpressionUUID->"931d0d3d-7db3-4005-93b9-4696987cb444"]
+}, Open  ]],
+Cell[4726, 150, 812, 22, 33, "Input",ExpressionUUID->"08ee94b0-ee95-4d8a-834f-def0daf31d3f"],
+Cell[CellGroupData[{
+Cell[5563, 176, 397, 10, 30, "Input",ExpressionUUID->"bfbdbc65-6b91-4c7d-a009-0f40c98b5276"],
+Cell[5963, 188, 417, 12, 59, "Output",ExpressionUUID->"9338fe65-24b3-4fa7-8730-f05f86dca68f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6417, 205, 539, 13, 30, "Input",ExpressionUUID->"92b0969f-76d4-4ca9-9d14-6f6530d93b77"],
+Cell[6959, 220, 583, 20, 50, "Output",ExpressionUUID->"5116892c-000c-4846-acd1-be09d5bf94ea"]
+}, Open  ]],
+Cell[7557, 243, 811, 22, 33, "Input",ExpressionUUID->"b89ea41c-3cdd-4cdc-b174-82085b3fcf92"],
+Cell[CellGroupData[{
+Cell[8393, 269, 331, 9, 30, "Input",ExpressionUUID->"be72a991-c479-4b4f-b1c0-c183fa359637"],
+Cell[8727, 280, 407, 12, 51, "Output",ExpressionUUID->"7f18b5d4-821c-4d29-819e-25fdf8871a2c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9171, 297, 539, 13, 30, "Input",ExpressionUUID->"49dfaa99-1cbd-420b-8c0e-d075a82b3eb3"],
+Cell[9713, 312, 292, 8, 34, "Output",ExpressionUUID->"f2d6530c-20d1-4ba8-8177-b7b13c0282db"]
+}, Open  ]],
+Cell[10020, 323, 814, 22, 33, "Input",ExpressionUUID->"a96484f0-d177-4c1c-b391-13054a760844"],
+Cell[CellGroupData[{
+Cell[10859, 349, 331, 9, 30, "Input",ExpressionUUID->"364b1cb0-b070-4bc9-be9a-8683173626df"],
+Cell[11193, 360, 397, 12, 59, "Output",ExpressionUUID->"acc90078-236f-4e03-8eec-8c83ed064870"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11627, 377, 540, 13, 30, "Input",ExpressionUUID->"58f80401-3a4b-4d74-82fb-f4bd2469f7b2"],
+Cell[12170, 392, 558, 19, 50, "Output",ExpressionUUID->"936a451c-8786-4287-a3f9-6c093b227e40"]
+}, Open  ]],
+Cell[12743, 414, 816, 22, 33, "Input",ExpressionUUID->"3a803dc4-a8a8-4200-97fa-a5de41d29aba"],
+Cell[CellGroupData[{
+Cell[13584, 440, 331, 9, 30, "Input",ExpressionUUID->"ffef9159-2769-4d30-ac61-6af595039ad2"],
+Cell[13918, 451, 355, 10, 51, "Output",ExpressionUUID->"fe2f0af6-fd1f-4711-a0fc-41650d4c8024"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14310, 466, 541, 13, 30, "Input",ExpressionUUID->"742d3a5f-8d7c-4e46-be26-976b06450b2a"],
+Cell[14854, 481, 538, 18, 50, "Output",ExpressionUUID->"e6b65d86-f19b-4ce2-b2dc-1f49e42af452"]
+}, Open  ]],
+Cell[15407, 502, 812, 22, 33, "Input",ExpressionUUID->"12f80be3-ab89-4cd2-b35c-4c9bbcb3e20e"],
+Cell[CellGroupData[{
+Cell[16244, 528, 331, 9, 30, "Input",ExpressionUUID->"50d2431e-a92f-447e-845b-a5927f09852f"],
+Cell[16578, 539, 253, 6, 51, "Output",ExpressionUUID->"76bd4047-bc73-46f3-a75e-eb31788f127a"]
+}, Open  ]],
+Cell[16846, 548, 903, 28, 95, "Input",ExpressionUUID->"f24619b2-26c8-4cb1-9cba-6e0977d64574"],
+Cell[17752, 578, 709, 21, 97, "Input",ExpressionUUID->"6cd70f2b-3cae-4ac2-8d31-e659f3bfb7a4"],
+Cell[CellGroupData[{
+Cell[18486, 603, 390, 7, 30, "Input",ExpressionUUID->"3edbba53-a677-4cb8-a304-48213c4dd9a6"],
+Cell[18879, 612, 324, 6, 34, "Output",ExpressionUUID->"aff573a5-14a2-4dfe-9fae-56bdee763241"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19240, 623, 298, 6, 30, "Input",ExpressionUUID->"622b7967-3049-4586-8cb1-50c4fe7410a7"],
+Cell[19541, 631, 411, 12, 54, "Output",ExpressionUUID->"1664fc46-ffbd-4695-b540-189e489309cd"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19989, 648, 249, 5, 30, "Input",ExpressionUUID->"687092a5-2e2f-478d-929f-3447f9b6fdc2"],
+Cell[20241, 655, 337, 9, 54, "Output",ExpressionUUID->"46610fcc-2310-48ea-8ed0-0c915c0c83ac"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20615, 669, 249, 5, 30, "Input",ExpressionUUID->"0bc928e7-d39d-4d7b-a6c8-b52c1db47272"],
+Cell[20867, 676, 565, 19, 54, "Output",ExpressionUUID->"52d3a967-9969-425f-a8c7-354350e9ec35"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21469, 700, 823, 20, 30, "Input",ExpressionUUID->"c90072aa-170b-40d9-974d-7e01c8f701d0"],
+Cell[22295, 722, 455, 12, 41, "Output",ExpressionUUID->"2121c75a-3ee1-47af-8af9-35062577a08d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22787, 739, 288, 5, 30, "Input",ExpressionUUID->"50136561-3b5a-4cba-bbce-4e7762e20674"],
+Cell[23078, 746, 7820, 195, 39, "Output",ExpressionUUID->"7ea96557-b91b-4a41-a953-3bd41662dca3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30935, 946, 8348, 208, 38, "Input",ExpressionUUID->"6bc80f87-8062-4cb6-a888-27773d691f97"],
+Cell[39286, 1156, 416, 13, 57, "Output",ExpressionUUID->"4c5b72fd-2625-4af5-87dd-beeb2e0767bb"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[39739, 1174, 294, 6, 30, "Input",ExpressionUUID->"0a6d3f12-1d4b-4f8e-a9f9-a6296f61c3b8"],
+Cell[40036, 1182, 643, 21, 50, "Output",ExpressionUUID->"10e86423-7044-4861-b957-0e7cb673e29e"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[40716, 1208, 492, 12, 30, "Input",ExpressionUUID->"58a6de75-2b3f-4e00-9a8b-2711f56681e1"],
+Cell[41211, 1222, 457, 14, 41, "Output",ExpressionUUID->"93e96ff5-20f7-4e8f-860b-d739dfd82ca7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[41705, 1241, 8405, 211, 38, "Input",ExpressionUUID->"56f8cb8a-9989-4508-a5cf-37e8cfd10a98"],
+Cell[50113, 1454, 526, 17, 55, "Output",ExpressionUUID->"a6d7c916-8a5d-4132-b370-a7a0f25e31ac"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[50676, 1476, 294, 6, 30, "Input",ExpressionUUID->"98520895-7e10-4085-a5b6-30c66b47b08c"],
+Cell[50973, 1484, 317, 9, 34, "Output",ExpressionUUID->"176f0de0-be74-4d4a-abc4-1b132104f6b2"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[51327, 1498, 494, 12, 30, "Input",ExpressionUUID->"dd85eac2-f1ae-44e8-b5c2-db1bb93b570e"],
+Cell[51824, 1512, 399, 12, 37, "Output",ExpressionUUID->"5597f07f-89b9-4e09-9145-7f3a2dca4f1f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[52260, 1529, 289, 6, 30, "Input",ExpressionUUID->"afd6874d-84eb-4240-b6de-d2a0deff898d"],
+Cell[52552, 1537, 598, 20, 50, "Output",ExpressionUUID->"ea9ca9a9-a84b-4aa8-b386-bf61fd4e84c2"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[53187, 1562, 492, 12, 30, "Input",ExpressionUUID->"f2551171-e210-40fc-8181-672cc9548ff3"],
+Cell[53682, 1576, 438, 13, 38, "Output",ExpressionUUID->"0f4cb987-b0e5-4081-b239-e8cece7d4791"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[54157, 1594, 8383, 210, 38, "Input",ExpressionUUID->"3992f98a-ce53-43de-8317-63df35f9e167"],
+Cell[62543, 1806, 552, 18, 55, "Output",ExpressionUUID->"4c24c482-63bb-4da3-ad82-382a2ca32e0c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[63132, 1829, 291, 6, 30, "Input",ExpressionUUID->"a7c00fb0-541d-409e-9797-71ddbf1daed3"],
+Cell[63426, 1837, 574, 19, 50, "Output",ExpressionUUID->"906f99b3-7c4c-429c-b78f-a17176d5119b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64037, 1861, 492, 12, 30, "Input",ExpressionUUID->"bd63efde-1e00-425f-a9d3-cc91134462e1"],
+Cell[64532, 1875, 363, 10, 38, "Output",ExpressionUUID->"ab03619c-2da3-4bc8-a810-4027eddeb55e"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64932, 1890, 8321, 210, 38, "Input",ExpressionUUID->"a0a8e61e-e051-4bdb-b587-54d164d005ad"],
+Cell[73256, 2102, 554, 19, 55, "Output",ExpressionUUID->"1c5fed20-9742-427a-94fb-6ddd76317134"]
+}, Open  ]]
+}
+]
+*)
+
