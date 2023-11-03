@@ -11,7 +11,7 @@ from manifold import Manifold
 
 
 @nb.njit(
-    nb.float64[:, :](nb.types.unicode_type, nb.int32),
+    nb.float64[:, :](nb.types.unicode_type, nb.int64),
     parallel=True,
 )
 def sample_associated_E1_topology(
@@ -85,7 +85,10 @@ def find_circles(
 
     return allowed_frac, excluded_frac, excluded_pts, allowed_pts
 
-# @nb.njit(parallel=True)
+@nb.njit(
+    nb.float64[:, :](Manifold.class_type.instance_type, nb.int64),
+    parallel=True,
+)
 def sample_topology_box(
     manifold: Type[Manifold],
     size: Integral,
