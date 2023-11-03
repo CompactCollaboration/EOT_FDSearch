@@ -233,18 +233,27 @@ class Manifold(object):
         if self.num_gens == 3: self.TB = self._round(self.TB, 5)
 
         if self.num_gens == 2:
-            self.M = np.array([self.M1, self.M2])
+            self.M = self._array([self.M1, self.M2])
             self.g = np.array([self.g1, self.g2])
-            self.pure_translations = np.array([self.T1, self.T2])
-            self.translations = np.array([self.TA1, self.TA2])
+            self.pure_translations = self._array([self.T1, self.T2])
+            self.translations = self._array([self.TA1, self.TA2])
         elif self.num_gens == 3:
-            self.M = np.array([self.M1, self.M2, self.M3])
+            self.M = self._array([self.M1, self.M2, self.M3])
             self.g = np.array([self.g1, self.g2, self.g3])
-            self.pure_translations = np.array([self.T1, self.T2, -self.T3])
-            self.translations = np.array([self.TA1, self.TA2, self.TB])
+            self.pure_translations = self._array([self.T1, self.T2, -self.T3])
+            self.translations = self._array([self.TA1, self.TA2, self.TB])
 
         self._find_generator_seqs()
         self._find_all_translations()
+
+    @staticmethod
+    def _array(array_list):
+        n = len(array_list)
+        k = array_list[0].shape
+        _new_array = np.zeros((n, *k), dtype=array_list[0].dtype)
+        for i in range(n):
+            _new_array[i] = array_list[i]
+        return _new_array
         
     @staticmethod
     def _round(x: Array3, n: Integral) -> Array3:
@@ -256,7 +265,7 @@ class Manifold(object):
             for gi in self.g
         ]
         self.g_seqs = product(g_ranges)
-        self.nontriv_g_seqs = np.array([
+        self.nontriv_g_seqs = self._array([
             seq for seq in self.g_seqs if not equal(seq, np.ones(3))
         ])
 
@@ -298,7 +307,7 @@ class Manifold(object):
             ])
             layer_translations.append(self.pure_translations[2])
 
-        return layer_translations
+        return self._array(layer_translations)
 
     def _find_all_translations_corner(self) -> None:
         """
