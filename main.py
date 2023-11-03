@@ -10,10 +10,10 @@ from time import process_time
 from manifold import Manifold
 
 
-# @nb.njit(
-#     nb.float64[:, :](nb.types.unicode_type, nb.int32),
-#     parallel=True,
-# )
+@nb.njit(
+    nb.float64[:, :](nb.types.unicode_type, nb.int32),
+    parallel=True,
+)
 def sample_associated_E1_topology(
     manifold_name: str,
     size: Integral,
@@ -32,7 +32,6 @@ def sample_associated_E1_topology(
                 L[idx, 0] = L1[k]
                 L[idx, 1] = L2[j]
                 L[idx, 2] = L3[i]
-
     return L
 
 # @nb.njit
@@ -158,7 +157,8 @@ def find_point_clones(
                 x = apply_gen(x, x0, M[i], translations[i])
         full_clone_list.append(x)
 
-    if len(full_clone_list) == 0: full_clone_list = [point]
+    # if len(full_clone_list) == 0: full_clone_list = [point]
+    full_clone_list.append(point)
     return full_clone_list
 
 # @nb.njit
