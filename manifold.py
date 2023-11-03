@@ -233,15 +233,15 @@ class Manifold(object):
         if self.num_gens == 3: self.TB = self._round(self.TB, 5)
 
         if self.num_gens == 2:
-            self.M = [self.M1, self.M2]
-            self.g = [self.g1, self.g2]
-            self.pure_translations = [self.T1, self.T2]
-            self.translations = [self.TA1, self.TA2]
+            self.M = np.array([self.M1, self.M2])
+            self.g = np.array([self.g1, self.g2])
+            self.pure_translations = np.array([self.T1, self.T2])
+            self.translations = np.array([self.TA1, self.TA2])
         elif self.num_gens == 3:
-            self.M = [self.M1, self.M2, self.M3]
-            self.g = [self.g1, self.g2, self.g3]
-            self.pure_translations = [self.T1, self.T2, -self.T3]
-            self.translations = [self.TA1, self.TA2, self.TB]
+            self.M = np.array([self.M1, self.M2, self.M3])
+            self.g = np.array([self.g1, self.g2, self.g3])
+            self.pure_translations = np.array([self.T1, self.T2, -self.T3])
+            self.translations = np.array([self.TA1, self.TA2, self.TB])
 
         self._find_generator_seqs()
         self._find_all_translations()
@@ -255,10 +255,10 @@ class Manifold(object):
             np.array([x for x in range(1, gi + 1)], dtype=np.uint8)
             for gi in self.g
         ]
-        self.g_seqs = list(product(g_ranges))
-        self.nontriv_g_seqs = [
+        self.g_seqs = product(g_ranges)
+        self.nontriv_g_seqs = np.array([
             seq for seq in self.g_seqs if not equal(seq, np.ones(3))
-        ]
+        ])
 
     def apply_generator(self, x: Array3) -> Array3:
         return [
