@@ -14,6 +14,7 @@ from tools import product, equal
 DType = TypeVar("DType", bound=np.generic)
 Array3 = Annotated[NDArray[DType], Literal[3]]
 Array3x3 = Annotated[NDArray[DType], Literal[3, 3]]
+Array3x3x3 = Annotated[NDArray[DType], Literal[3, 3, 3]]
 List3 = Annotated[ListType[DType], Literal[3]]
 List3x3 = Annotated[ListType[Array3], Literal[3]]
 List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
@@ -28,19 +29,26 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
     "α": float64, "β": float64, "γ": float64,
     "M1": float64[:, :], "M2": float64[:, :], "M3": float64[:, :],
     "MA": float64[:, :], "MB": float64[:, :],
-    "M": List(float64[:, :]),
+    # "M": List(float64[:, :]),
+    "M": float64[:, :, :],
     "g1": uint8, "g2": uint8, "g3": uint8,
-    "g": List(uint8),
+    # "g": List(uint8),
+    "g": uint8[:],
     "T1": float64[:], "T2": float64[:], "T3": float64[:],
     "TA1": float64[:], "TA2": float64[:],
     "TB": float64[:],
     "center": boolean,
     "x0": float64[:],
-    "g_seqs": List(uint8[:]),
-    "nontriv_g_seqs": List(uint8[:]),
-    "pure_translations": List(float64[:]),
-    "translations": List(float64[:]),
-    "all_translations": List(float64[:]),
+    # "g_seqs": List(uint8[:]),
+    "g_seqs": uint8[:, :],
+    # "nontriv_g_seqs": List(uint8[:]),
+    "nontriv_g_seqs": uint8[:, :],
+    # "pure_translations": List(float64[:]),
+    "pure_translations": float64[:, :],
+    # "translations": List(float64[:]),
+    "translations": float64[:, :],
+    # "all_translations": List(float64[:]),
+    "all_translations": float64[:, :],
 })
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
@@ -282,117 +290,14 @@ class Manifold(object):
             self.pure_translations[0] - self.pure_translations[1],
             -self.pure_translations[0] + self.pure_translations[1],
             -self.pure_translations[0] - self.pure_translations[1],
-            # extra
-            self.pure_translations[2],
-            -self.pure_translations[2],
-            2 * self.pure_translations[2],
-            - 2 * self.pure_translations[2],
-            self.pure_translations[0] + self.pure_translations[2],
-            self.pure_translations[0] - self.pure_translations[2],
-            self.pure_translations[1] + self.pure_translations[2],
-            self.pure_translations[1] - self.pure_translations[2],
-            - self.pure_translations[0] + self.pure_translations[2],
-            - self.pure_translations[0] - self.pure_translations[2],
-            - self.pure_translations[1] + self.pure_translations[2],
-            - self.pure_translations[1] - self.pure_translations[2],
-            self.pure_translations[0] + self.pure_translations[1] + self.pure_translations[2],
-            - self.pure_translations[0] + self.pure_translations[1] + self.pure_translations[2],
-            self.pure_translations[0] - self.pure_translations[1] + self.pure_translations[2],
-            self.pure_translations[0] + self.pure_translations[1] - self.pure_translations[2],
-            - self.pure_translations[0] - self.pure_translations[1] + self.pure_translations[2],
-            - self.pure_translations[0] + self.pure_translations[1] - self.pure_translations[2],
-            self.pure_translations[0] - self.pure_translations[1] - self.pure_translations[2],
-            - self.pure_translations[0] - self.pure_translations[1] - self.pure_translations[2],
         ]
 
         if self.num_gens == 3:
             layer_translations.extend([
-                tr + self.translations[2] for tr in layer_translations
+                tr + self.pure_translations[2] for tr in layer_translations
             ])
-            layer_translations.append(self.translations[2])
+            layer_translations.append(self.pure_translations[2])
 
-            new_layer_tr = [layer_tr + self.translations[2] for layer_tr in layer_translations]
-            new_layer_tr.extend([
-                layer_tr + 2 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr + 3 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr + 4 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr + 5 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr + 6 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.append(2 * self.translations[2])
-            new_layer_tr.append(3 * self.translations[2])
-            new_layer_tr.append(4 * self.translations[2])
-            new_layer_tr.append(5 * self.translations[2])
-            new_layer_tr.append(6 * self.translations[2])
-
-            new_layer_tr.extend([
-                layer_tr - self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr - 2 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr - 3 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr - 4 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr - 5 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.extend([
-                layer_tr - 6 * self.translations[2] for layer_tr in layer_translations
-            ])
-            new_layer_tr.append(- self.translations[2])
-            new_layer_tr.append(- 2 * self.translations[2])
-            new_layer_tr.append(- 3 * self.translations[2])
-            new_layer_tr.append(- 4 * self.translations[2])
-            new_layer_tr.append(- 5 * self.translations[2])
-            new_layer_tr.append(- 6 * self.translations[2])
-            layer_translations.extend(new_layer_tr)
-            # layer_translations.extend([
-            #     tr - self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.append(- self.pure_translations[2])
-
-            # layer_translations.extend([
-            #     tr + 2 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr + 3 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr + 4 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr + 5 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr + 6 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr - 2 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr - 3 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr - 4 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr - 5 * self.pure_translations[2] for tr in layer_translations
-            # ])
-            # layer_translations.extend([
-            #     tr - 6 * self.pure_translations[2] for tr in layer_translations
-            # ])
         return layer_translations
 
     def _find_all_translations_corner(self) -> None:
