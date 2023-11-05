@@ -52,6 +52,15 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
 })
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
+        """Initialize a new Manifold instance with a given topology.
+
+        Args:
+            name (Literal): The name of the topology, which must be one of the
+                predefined topologies in the 'topologies' list.
+
+        Raises:
+            AssertionError: If the given topology name is not supported.
+        """
         self.name = name
         self.num_gens = self._get_num_generators()
 
@@ -75,6 +84,11 @@ class Manifold(object):
         assert self.name in topologies, f"Topology {self.name} is not supported."
 
     def _get_num_generators(self) -> Integral:
+        """Determine the number of generators based on the topology.
+
+        Returns:
+            Integral: The number of generators for the manifold's symmetry.
+        """
         match self.name:
             case "E1" | "E2" | "E3" | "E4" | "E5" | "E6":
                 return 3
@@ -82,6 +96,15 @@ class Manifold(object):
                 return 2
 
     def construct_generators(self, L_scale: Array3, angles: Array3) -> None:
+        """Construct the generators for the manifold based on the provided 
+        scale and angles.
+
+        Args:
+            L_scale (Array3): An array of scales for the lattice vectors.
+            angles (Array3): An array of angles defining the orientation 
+                of the lattice vectors.
+
+        """
         match self.num_gens:
             case 2:
                 self.L1, self.L2 = self.L = L_scale
@@ -92,6 +115,8 @@ class Manifold(object):
         self._construct_generators()
 
     def _construct_generators(self) -> None:
+        """Internal method to construct generator matrices and translation 
+        vectors for the manifold."""
         match self.name:
             case "E1":
                 self.M1 = self.M2 = self.M3 = np.eye(3)
@@ -248,6 +273,16 @@ class Manifold(object):
 
     @staticmethod
     def _array(array_list):
+        """Convert a list of arrays into a single NumPy array with an 
+        additional dimension.
+
+        Args:
+            array_list (list): A list of NumPy arrays to be combined.
+
+        Returns:
+            np.ndarray: A NumPy array with an additional dimension 
+                encompassing all the input arrays.
+        """
         n = len(array_list)
         k = array_list[0].shape
         _new_array = np.zeros((n, *k), dtype=array_list[0].dtype)
@@ -257,9 +292,20 @@ class Manifold(object):
         
     @staticmethod
     def _round(x: Array3, n: Integral) -> Array3:
+        """Round the elements of an array to a specified number of decimals.
+
+        Args:
+            x (Array3): The array to round.
+            n (Integral): The number of decimal places to round to.
+
+        Returns:
+            Array3: The rounded array.
+        """
         return np.round(x, n, np.zeros_like(x))
     
     def _find_generator_seqs(self) -> None:
+        """Find all possible sequences and the nontrivial sequences of 
+        generators for the manifold."""
         g_ranges = [
             np.array([x for x in range(1, gi + 1)], dtype=np.uint8)
             for gi in self.g
@@ -270,15 +316,31 @@ class Manifold(object):
         ])
 
     def apply_generator(self, x: Array3) -> Array3:
+        """Apply the manifold's generators to a given point.
+
+        Args:
+            x (Array3): The point to which the generators will be applied.
+
+        Returns:
+            Array3: The new point after generator application.
+        """
         return [
             self.M[i].dot(x - self.x0) + self.translations[i] + self.x0
             for i in range(self.num_gens)
         ]
 
     def get_generator(self) -> None:
+        """Get a lambda function that applies the manifold's generators 
+        to a point.
+
+        Returns:
+            function: A lambda function that takes a point as input and 
+                applies the manifold's generators to it.
+        """
         return lambda x: self.apply_generator(x)
 
     def _find_all_translations(self) -> None:
+        """Determine all possible translations within the manifold."""
         if self.center is True:
             translations = self._find_all_translations_center()
         else:
@@ -286,6 +348,7 @@ class Manifold(object):
         self.all_translations = translations
 
     def _find_all_translations_center(self) -> None:
+        """Find all translations for manifolds with center symmetry."""
         layer_translations = [
             self.pure_translations[0],
             self.pure_translations[1],
@@ -310,6 +373,7 @@ class Manifold(object):
         return self._array(layer_translations)
 
     def _find_all_translations_corner(self) -> None:
+        """Find all translations for manifolds without corner symmetry."""
         """
         To be implemented
         """
