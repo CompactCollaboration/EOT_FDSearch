@@ -1,6 +1,9 @@
 import numpy as np
 import numba as nb
 
+from numba.types import float64
+
+
 @nb.njit(parallel=True, cache=True)
 def product(arrays):
     """
@@ -83,3 +86,31 @@ def equal(a, b):
           be raised by NumPy.
     """
     return np.all(a == b)
+
+@nb.njit(
+    float64[:, :, :](float64[:, :, :, :]),
+    fastmath=True, parallel=True, cache=True,
+)
+def compute_distances(x):
+    x_sh = x.shape
+    distances = np.zeros((x_sh[0], x_sh[1], x_sh[2]), dtype=np.float64)
+    for i in nb.prange(x_sh[0]):
+        for j in range(x_sh[1]):
+            for k in range(x_sh[2]):
+                x0 = x[i, j, k, 0]
+                x1 = x[i, j, k, 1]
+                x2 = x[i, j, k, 2]
+                distances[i, j, k] = np.sqrt(x0 * x0 + x1 * x1 + x2 * x2)
+    return distances
+
+@nb.njit(
+    float64[:, :](float64[:, :], float64[:, :]),
+    fastmath=True, parallel=True, cache=True,
+)
+def compute_dot(M, x):
+    y = np.empty_like(x)
+    for i in nb.prange(x.shape[0]):
+        y[i, 0] = M[0, 0] * x[i, 0] + M[0, 1] * x[i, 1] + M[0, 2] * x[i, 2]
+        y[i, 1] = M[1, 0] * x[i, 0] + M[1, 1] * x[i, 1] + M[1, 2] * x[i, 2]
+        y[i, 2] = M[2, 0] * x[i, 0] + M[2, 1] * x[i, 1] + M[2, 2] * x[i, 2]
+    return y
