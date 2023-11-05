@@ -61,6 +61,11 @@ def find_circles(
     # ax.scatter(positions[:, 0], positions[:, 1], positions[:, 2], s=0.5, c='r')
     allowed_pts_idx = []
     excluded_pts_idx = []
+    distances = compute_topology_distances(manifold, positions)
+    N_allowed_points = len(distances[distances >= 1])
+    N_excluded_points = len(distances[distances < 1])
+    print(N_allowed_points / precision, N_excluded_points / precision)
+    exit()
     for i in range(precision):
         # ax.scatter(positions[i, 0], positions[i, 1], positions[i, 2], s=20, c='k')
         distance = compute_topology_distance(manifold, positions[i])
@@ -115,6 +120,45 @@ def sample_topology_box(
     # ax.scatter(scatter[:, 0], scatter[:, 1], scatter[:, 2], s=0.5, c='b')
     return scatter
 
+def compute_topology_distances(
+    manifold,
+    points,
+):
+    # find_point_clones
+    clones = np.empty((manifold.nontriv_g_seqs.shape[0], points.shape[0], 3))
+    for j, comb in enumerate(manifold.nontriv_g_seqs):
+        x = points
+        for i in range(manifold.num_gens):
+            for _ in range(1, comb[i]):
+                x = np.einsum("ij,kj->ki", manifold.M[i], x - manifold.x0) + manifold.translations[i] + manifold.x0
+        clones[j] = x
+    clones = np.swapaxes(clones, 0, 1)
+    
+    # find_translated_clones
+    translated_clones = clones[..., None, :] + manifold.all_translations[None, :]
+    
+    distances = np.sqrt(np.einsum(
+        "...i,...i->...",
+        x := translated_clones - points[:, None, None, :], x,
+    ))
+    
+    idx = np.argmin(distances, axis=-1)
+    indices = np.indices(idx.shape)
+    nearest_layer_clones = translated_clones[indices[0], indices[1], ..., idx, :]
+    nearest_distances = distances[indices[0], indices[1], ..., idx]
+
+    distances = distances.reshape(distances.shape[0], distances.shape[1] * distances.shape[2])
+    min_distances = np.min(distances, axis=-1)
+
+    pure_translation_distances = np.sqrt(np.einsum(
+        "...i,...i->...",
+        x := manifold.pure_translations - manifold.x0, x,
+    ))
+    idx_pt_min = np.argmin(pure_translation_distances)
+    pt_distance_min = pure_translation_distances[idx_pt_min]
+
+    min_distances[np.where(min_distances > pt_distance_min)] = pt_distance_min
+    return min_distances
 # @nb.njit(
 #     nb.float64[:, :](Manifold.class_type.instance_type, nb.float64[:]),
 # )
@@ -141,20 +185,62 @@ def compute_topology_distance(
             point,
         )
     """
-    distances = np.sqrt(np.einsum("...i,...i->...", x := translated_clone_positions - point, x))
+    distances = np.sqrt(np.einsum(
+        "...i,...i->...",
+        x := translated_clone_positions - point, x,
+    ))
+
     idx = np.argmin(distances, axis=-1)
     indices = np.indices(idx.shape)
     nearest_pt_from_layer = translated_clone_positions[indices[0], ..., idx, :]
     nearest_distances = distances[indices[0], ..., idx]
-    
-    closest_clone, distance = find_closest_clone(
-        manifold,
-        nearest_pt_from_layer,
-        nearest_distances,
-        point,
-    )
 
-    return distance
+    # closest_clone, distance = find_closest_clone(
+    #     manifold,
+    #     nearest_pt_from_layer,
+    #     nearest_distances,
+    #     point,
+    # )
+    
+    translated_clones = manifold.pure_translations + point
+    translated_clone_distances = np.sqrt(np.einsum(
+        "...i,...i->...",
+        x := manifold.pure_translations - manifold.x0, x,
+    ))
+
+    all_clones = np.vstack((nearest_pt_from_layer, translated_clones))
+    all_clone_distances = np.hstack((nearest_distances, translated_clone_distances))
+    min_idx = all_clone_distances.argmin()
+    closest_clone_new = all_clones[min_idx]
+    closest_distance = all_clone_distances[min_idx]
+        
+    return closest_distance
+
+# @nb.njit
+# def find_closest_clone(
+#     manifold: Type[Manifold],
+#     generated_clones: NDArray,
+#     generated_distances: NDArray,
+#     point: NDArray,
+# ) -> Tuple[NDArray, Real]:
+#     pure_translations = manifold.pure_translations
+#     x0 = manifold.x0
+
+#     translated_clones = np.empty((3, 3), dtype=np.float64)
+#     translated_clone_distances = np.empty(3, dtype=np.float64)
+
+#     for i in range(3):
+#         translated_clones[i] = pure_translations[i] + point
+#     translated_clone_distances = dist(pure_translations, x0)
+
+#     all_clone_pts = np.vstack((generated_clones, translated_clones))
+#     all_clones_dists = np.hstack((generated_distances, translated_clone_distances))
+
+#     print(all_clone_pts)
+#     print(all_clones_dists)
+
+#     min_idx = all_clones_dists.argmin()
+#     return all_clone_pts[min_idx], all_clones_dists[min_idx]
 
 # @nb.njit(
 #     nb.float64[:, :](Manifold.class_type.instance_type, nb.float64[:]),
@@ -222,29 +308,6 @@ def dist(x, y):
     for i in range(N):
         result[i] = np.linalg.norm(x[i] - y)
     return result
-
-# @nb.njit
-def find_closest_clone(
-    manifold: Type[Manifold],
-    generated_clones: NDArray,
-    generated_distances: NDArray,
-    point: NDArray,
-) -> Tuple[NDArray, Real]:
-    pure_translations = manifold.pure_translations
-    x0 = manifold.x0
-
-    translated_clones = np.empty((3, 3), dtype=np.float64)
-    translated_clone_distances = np.empty(3, dtype=np.float64)
-
-    for i in range(3):
-        translated_clones[i] = pure_translations[i] + point
-    translated_clone_distances = dist(pure_translations, x0)
-
-    all_clone_pts = np.vstack((generated_clones, translated_clones))
-    all_clones_dists = np.hstack((generated_distances, translated_clone_distances))
-
-    min_idx = all_clones_dists.argmin()
-    return all_clone_pts[min_idx], all_clones_dists[min_idx]
 
 
 if __name__ == "__main__":
