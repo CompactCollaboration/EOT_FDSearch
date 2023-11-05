@@ -49,6 +49,8 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
     "translations": float64[:, :],
     # "all_translations": List(float64[:]),
     "all_translations": float64[:, :],
+    "min_pure_trans_idx": uint8,
+    "min_pure_trans_distance": float64,
 })
 class Manifold(object):
     def __init__(self, name: Literal) -> None:
@@ -77,6 +79,7 @@ class Manifold(object):
         self.center: boolean
         self.g_seqs: List3
         self.nontriv_g_seqs: List3
+        self.min_pure_trans_idx: Integral; self.min_pure_trans_distance: Real
 
         self.x0 = np.array([0., 0., 0.])
 
@@ -270,6 +273,7 @@ class Manifold(object):
 
         self._find_generator_seqs()
         self._find_all_translations()
+        self._find_min_pure_translation_distance()
 
     @staticmethod
     def _array(array_list):
@@ -314,6 +318,17 @@ class Manifold(object):
         self.nontriv_g_seqs = self._array([
             seq for seq in self.g_seqs if not equal(seq, np.ones(3))
         ])
+
+    def _find_min_pure_translation_distance(self) -> None:
+        pure_translation_distances = np.zeros(3, dtype=np.float64)
+        x = self.pure_translations - self.x0
+        for i in range(3):
+            pure_translation_distances[i] = np.sqrt(
+                x[i, 0]*x[i, 0] + x[i, 1]*x[i, 1] + x[i, 2]*x[i, 2]
+            )
+
+        self.min_pure_trans_idx = np.argmin(pure_translation_distances)
+        self.min_pure_trans_distance = pure_translation_distances[self.min_pure_trans_idx]
 
     def apply_generator(self, x: Array3) -> Array3:
         """Apply the manifold's generators to a given point.
