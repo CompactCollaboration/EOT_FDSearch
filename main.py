@@ -6,7 +6,7 @@ from typing import Type, List, Tuple, Literal
 from numpy.typing import NDArray
 
 from time import process_time
-
+from tools import equal
 from manifold import Manifold
 
 
@@ -65,7 +65,7 @@ def find_circles(
     N_allowed_points = len(distances[distances >= 1])
     N_excluded_points = len(distances[distances < 1])
     print(N_allowed_points / precision, N_excluded_points / precision)
-    exit()
+
     for i in range(precision):
         # ax.scatter(positions[i, 0], positions[i, 1], positions[i, 2], s=20, c='k')
         distance = compute_topology_distance(manifold, positions[i])
@@ -136,12 +136,9 @@ def compute_topology_distances(
     
     # find_translated_clones
     translated_clones = clones[..., None, :] + manifold.all_translations[None, :]
-    
-    distances = np.sqrt(np.einsum(
-        "...i,...i->...",
-        x := translated_clones - points[:, None, None, :], x,
-    ))
-    
+
+    distances = compute_distances(translated_clones - points[:, None, None, :])
+
     idx = np.argmin(distances, axis=-1)
     indices = np.indices(idx.shape)
     nearest_layer_clones = translated_clones[indices[0], indices[1], ..., idx, :]
@@ -150,15 +147,26 @@ def compute_topology_distances(
     distances = distances.reshape(distances.shape[0], distances.shape[1] * distances.shape[2])
     min_distances = np.min(distances, axis=-1)
 
-    pure_translation_distances = np.sqrt(np.einsum(
-        "...i,...i->...",
-        x := manifold.pure_translations - manifold.x0, x,
-    ))
-    idx_pt_min = np.argmin(pure_translation_distances)
-    pt_distance_min = pure_translation_distances[idx_pt_min]
-
-    min_distances[np.where(min_distances > pt_distance_min)] = pt_distance_min
+    min_distances[np.where(min_distances > manifold.min_pure_trans_distance)] = manifold.min_pure_trans_distance
     return min_distances
+
+@nb.njit(
+    fastmath=True, cache=True,
+)
+def compute_distances(x):
+    x_sh = x.shape
+    distances = np.zeros((x_sh[0], x_sh[1], x_sh[2]), dtype=np.float64)
+    for i in range(x_sh[0]):
+        for j in range(x_sh[1]):
+            for k in range(x_sh[2]):
+                distances[i, j, k] = np.sqrt(
+                    x[i, j, k, 0] * x[i, j, k, 0] 
+                    + x[i, j, k, 1] * x[i, j, k, 1] 
+                    + x[i, j, k, 2] * x[i, j, k, 2]
+                )
+    return distances
+    
+
 # @nb.njit(
 #     nb.float64[:, :](Manifold.class_type.instance_type, nb.float64[:]),
 # )
