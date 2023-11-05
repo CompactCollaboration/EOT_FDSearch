@@ -29,25 +29,19 @@ List3x3x3 = Annotated[ListType[Array3x3], Literal[3]]
     "α": float64, "β": float64, "γ": float64,
     "M1": float64[:, :], "M2": float64[:, :], "M3": float64[:, :],
     "MA": float64[:, :], "MB": float64[:, :],
-    # "M": List(float64[:, :]),
     "M": float64[:, :, :],
     "g1": uint8, "g2": uint8, "g3": uint8,
-    # "g": List(uint8),
     "g": uint8[:],
     "T1": float64[:], "T2": float64[:], "T3": float64[:],
     "TA1": float64[:], "TA2": float64[:],
     "TB": float64[:],
     "center": boolean,
     "x0": float64[:],
-    # "g_seqs": List(uint8[:]),
     "g_seqs": uint8[:, :],
-    # "nontriv_g_seqs": List(uint8[:]),
     "nontriv_g_seqs": uint8[:, :],
-    # "pure_translations": List(float64[:]),
+    "nontriv_g_seqs_exist": boolean,
     "pure_translations": float64[:, :],
-    # "translations": List(float64[:]),
     "translations": float64[:, :],
-    # "all_translations": List(float64[:]),
     "all_translations": float64[:, :],
     "min_pure_trans_idx": uint8,
     "min_pure_trans_distance": float64,
@@ -57,8 +51,8 @@ class Manifold(object):
         """Initialize a new Manifold instance with a given topology.
 
         Args:
-            name (Literal): The name of the topology, which must be one of the
-                predefined topologies in the 'topologies' list.
+            name (Literal): The name of the topology, which must be one 
+                of the predefined topologies in the 'topologies' list.
 
         Raises:
             AssertionError: If the given topology name is not supported.
@@ -79,6 +73,7 @@ class Manifold(object):
         self.center: boolean
         self.g_seqs: List3
         self.nontriv_g_seqs: List3
+        self.nontriv_g_seqs_exist: boolean
         self.min_pure_trans_idx: Integral; self.min_pure_trans_distance: Real
 
         self.x0 = np.array([0., 0., 0.])
@@ -315,9 +310,14 @@ class Manifold(object):
             for gi in self.g
         ]
         self.g_seqs = product(g_ranges)
-        self.nontriv_g_seqs = self._array([
+        nontriv_g_seqs_list = [
             seq for seq in self.g_seqs if not equal(seq, np.ones(3))
-        ])
+        ]
+        if len(nontriv_g_seqs_list) > 0:
+            self.nontriv_g_seqs_exist = True
+            self.nontriv_g_seqs = self._array(nontriv_g_seqs_list)
+        else:
+            self.nontriv_g_seqs_exist = False
 
     def _find_min_pure_translation_distance(self) -> None:
         pure_translation_distances = np.zeros(3, dtype=np.float64)
