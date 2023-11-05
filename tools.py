@@ -56,4 +56,30 @@ def product(arrays):
 
 @nb.njit(cache=True)
 def equal(a, b):
+    """
+    Check if two arrays are element-wise equal.
+
+    This function compares two arrays and determines if they are equal, 
+    i.e., all their corresponding elements are the same. The comparison 
+    is done element-wise.
+
+    Args:
+        a (np.ndarray): The first array to compare.
+        b (np.ndarray): The second array to compare.
+
+    Returns:
+        bool: True if the arrays are equal, and False otherwise.
+
+    Examples:
+        >>> equal(np.array([1, 2, 3]), np.array([1, 2, 3]))
+        True
+        >>> equal(np.array([1, 2, 3]), np.array([4, 5, 6]))
+        False
+
+    Notes:
+        - The function is JIT-compiled with Numba for performance.
+        - The input arrays should be of the same shape and data type.
+        - If arrays are of different shapes, a broadcasting error will 
+          be raised by NumPy.
+    """
     return np.all(a == b)
