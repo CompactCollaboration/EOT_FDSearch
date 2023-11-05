@@ -388,7 +388,7 @@ class Manifold(object):
         return self._array(layer_translations)
 
     def _find_all_translations_corner(self) -> None:
-        """Find all translations for manifolds without corner symmetry."""
+        """Find all translations for manifolds with corner symmetry."""
         """
         To be implemented
         """
