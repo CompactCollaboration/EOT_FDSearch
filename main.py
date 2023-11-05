@@ -6,7 +6,7 @@ from typing import Type, List, Tuple, Literal
 from numpy.typing import NDArray
 
 from time import process_time
-from tools import equal
+from tools import compute_distances, compute_dot
 from manifold import Manifold
 
 
@@ -124,48 +124,37 @@ def compute_topology_distances(
     manifold,
     points,
 ):
-    # find_point_clones
-    clones = np.empty((manifold.nontriv_g_seqs.shape[0], points.shape[0], 3))
+    clones = find_clones(manifold, points)
+    translated_clones = clones[..., None, :] + manifold.all_translations[None, :]
+    distances = compute_distances(translated_clones - points[:, None, None, :])
+
+    # idx = np.argmin(distances, axis=-1)
+    # indices = np.indices(idx.shape)
+    # nearest_layer_clones = translated_clones[indices[0], indices[1], ..., idx, :]
+    # nearest_distances = distances[indices[0], indices[1], ..., idx]
+
+    distances = distances.reshape(distances.shape[0], distances.shape[1] * distances.shape[2])
+    min_distances = np.min(distances, axis=-1)
+    min_distances[np.where(min_distances > manifold.min_pure_trans_distance)] = manifold.min_pure_trans_distance
+    return min_distances
+
+def find_clones(
+    manifold,
+    points,
+):
+    if manifold.nontriv_g_seqs_exist is False: return points[:, None, :]
+    clones = np.empty(
+        (manifold.nontriv_g_seqs.shape[0], points.shape[0], 3),
+        dtype=np.float64,
+    )
     for j, comb in enumerate(manifold.nontriv_g_seqs):
         x = points
         for i in range(manifold.num_gens):
             for _ in range(1, comb[i]):
-                x = np.einsum("ij,kj->ki", manifold.M[i], x - manifold.x0) + manifold.translations[i] + manifold.x0
+                x = compute_dot(manifold.M[i], x - manifold.x0) + manifold.translations[i] + manifold.x0
         clones[j] = x
     clones = np.swapaxes(clones, 0, 1)
-    
-    # find_translated_clones
-    translated_clones = clones[..., None, :] + manifold.all_translations[None, :]
-
-    distances = compute_distances(translated_clones - points[:, None, None, :])
-
-    idx = np.argmin(distances, axis=-1)
-    indices = np.indices(idx.shape)
-    nearest_layer_clones = translated_clones[indices[0], indices[1], ..., idx, :]
-    nearest_distances = distances[indices[0], indices[1], ..., idx]
-
-    distances = distances.reshape(distances.shape[0], distances.shape[1] * distances.shape[2])
-    min_distances = np.min(distances, axis=-1)
-
-    min_distances[np.where(min_distances > manifold.min_pure_trans_distance)] = manifold.min_pure_trans_distance
-    return min_distances
-
-@nb.njit(
-    fastmath=True, cache=True,
-)
-def compute_distances(x):
-    x_sh = x.shape
-    distances = np.zeros((x_sh[0], x_sh[1], x_sh[2]), dtype=np.float64)
-    for i in range(x_sh[0]):
-        for j in range(x_sh[1]):
-            for k in range(x_sh[2]):
-                distances[i, j, k] = np.sqrt(
-                    x[i, j, k, 0] * x[i, j, k, 0] 
-                    + x[i, j, k, 1] * x[i, j, k, 1] 
-                    + x[i, j, k, 2] * x[i, j, k, 2]
-                )
-    return distances
-    
+    return clones
 
 # @nb.njit(
 #     nb.float64[:, :](Manifold.class_type.instance_type, nb.float64[:]),
@@ -321,7 +310,7 @@ def dist(x, y):
 if __name__ == "__main__":
     np.random.seed(1234)
 
-    manifold_name = "E5"
+    manifold_name = "E2"
     manifold = Manifold(manifold_name)
     α = β = γ = np.pi / 2
     angles = np.array([α, β, γ])
@@ -330,7 +319,7 @@ if __name__ == "__main__":
     param_precision = 2
     
     L_samples = sample_associated_E1_topology(manifold_name, param_precision)
-    L_samples = np.array([[2.1, 2.1, 0.32564806]])
+    L_samples = np.array([[2.1, 2.1, 0.82564806]])
     # L_samples = np.array([[1.62210877, 1.94390309, 0.92723427]])
 
     L_accept = []
