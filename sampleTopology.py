@@ -48,7 +48,7 @@ def samplePoints(Manifold, angles, precision, L_Scale):
         genNum = 3
     else:
         genNum = 2
-    
+    np.random.seed(1234)
     randomPoints = np.random.rand(precision, 3)
     
     if genNum == 3:
@@ -67,16 +67,13 @@ def samplePoints(Manifold, angles, precision, L_Scale):
     
 
     for k in range(precision):
-        
-        
         dist = d.sampleTopol(Manifold, L_Scale, pos[k], angles)
-        
+        # print(dist)
         if dist < 1:
             count +=1
             excludedPoints.append(pos[k])
         else:
             allowedPoints.append(pos[k])
-
 
     percents = 1 - (count/precision)
     

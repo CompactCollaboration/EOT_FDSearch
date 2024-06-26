@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
+# __version__ = '1.0'
 
-# ### Finds distance to closest clone for a given Fundamental Domain
-
-__version__ = '1.0'
-
-get_ipython().run_line_magic('matplotlib', 'widget')
+# get_ipython().run_line_magic('matplotlib', 'widget')
 import numpy as np
 from scipy.spatial import distance
 from numpy.linalg import inv, pinv
@@ -177,8 +172,20 @@ def E_general_topol(Manifold, pos, x0, M, translations, pureTranslations, E1Dict
     """
     
     clonePositions, genApplied = findClones(pos, x0, M, translations, E1Dict, genNum)
+    ##############
+    if Manifold == "E1":
+        clonePositions = [clonePositions]
+    ##############
     translatedClonePos = [translateClones(clonePositions[i], translationList) for i in range(len(clonePositions))]
+    # print("Translated clones")
+    # print(Manifold)
+    # print(np.array(translatedClonePos).shape)
+    # print(translatedClonePos)
+    # print()
     nearestFromLayer = [distances(translatedClonePos[i], pos, x0) for i in range(len(translatedClonePos))]
+    # print("Nearest")
+    # print(nearestFromLayer)
+    # print()
     closestClone = findClosestClone(nearestFromLayer, pureTranslations, x0, pos)
     
     return (closestClone[1])
@@ -205,6 +212,7 @@ def findAllTranslationsCorner(pureTranslations):
     """
     
     _trans1 = [list(it.combinations_with_replacement(pureTranslations, i)) for i in range(len(pureTranslations) + 2)]
+    # print(_trans1)
     _trans2 = [[(np.add.reduce(_trans1[i][j])) for j in range(len(_trans1[i]))] for i in range(len(_trans1))]
     
     
@@ -338,7 +346,6 @@ def translateClones(clonePos, translations):
     -----------------------------------------
     Returns: A nested array of how a specific clone position is translated by all the pure translation vectors    
     """
-    
     translatedClonePos = [(clonePos + translations[i]) for i in range(len(translations))]
     
     return(translatedClonePos)
@@ -364,7 +371,6 @@ def distances(clonePos, pos, x0):
     of generators) and then all the pre-determined pure translations to that clone, which of these new clones is closest to the original position.
     For example, E3 has 3 unique clones (g3, g3^2, and g3^3) and so has 3 unique layers. This function returns the closest clone (to the original position)
     in each of these layers"""
-    
     _TransDist = [distance.euclidean(pos, clonePos[i]) for i in range(len(clonePos))]
     min_TransDist = min(_TransDist)
     closestClonePos = clonePos[_TransDist.index(min_TransDist)]
@@ -602,7 +608,7 @@ class manifolds:
             T3 = 2*LCz * np.array([0,0,1])
             
             center = True          
-                
+             
         
             
         translations = np.around(np.array([TA1, TA2, TB]), decimals = 5)
